@@ -1,0 +1,427 @@
+/* ===== card base ada di components.css ===== */
+#main-content .greeting-title,
+#main-content .settings-panel-title,
+#main-content .toggle-title {
+  transform: none;
+  line-height: 1.35;
+  letter-spacing: normal;
+}
+
+.settings-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+/* ===== layout: nav kiri + panel kanan ===== */
+.settings-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: 480px;
+}
+
+.settings-nav {
+  border-right: 1px solid var(--border-color, #e6e9e8);
+  padding: 14px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: var(--bg-body, #f4f6f5);
+}
+.settings-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm, 8px);
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-secondary, #667169);
+  text-align: left;
+}
+.settings-nav-item i {
+  width: 16px;
+  text-align: center;
+  color: var(--text-muted, #97a19c);
+}
+.settings-nav-item:hover {
+  background: var(--bg-card, #ffffff);
+  color: var(--text-primary, #1a231f);
+}
+.settings-nav-item.active {
+  background: var(--color-teal);
+  color: #fff;
+}
+.settings-nav-item.active i {
+  color: #fff;
+}
+
+.settings-content {
+  padding: 26px 30px;
+}
+
+.settings-panel {
+  display: none;
+}
+.settings-panel.active {
+  display: block;
+}
+.settings-panel-title {
+  font-size: 17px;
+  font-weight: 400;
+  color: var(--text-primary, #1a231f);
+  margin-bottom: 4px;
+}
+.settings-panel-desc {
+  font-size: 13px;
+  color: var(--text-muted, #97a19c);
+  margin-bottom: 22px;
+}
+
+/* ===== form field (dipake di semua panel) ===== */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+.form-row.single {
+  grid-template-columns: 1fr;
+}
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.form-field label {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-secondary, #667169);
+}
+.form-field input,
+.form-field select {
+  border: 1px solid var(--border-color-strong, #d8dcda);
+  border-radius: var(--radius-sm, 8px);
+  padding: 9px 12px;
+  font-size: 13px;
+  background: var(--bg-body, #f4f6f5);
+  color: var(--text-primary, #1a231f);
+  width: 100%;
+}
+.form-field input:focus,
+.form-field select:focus {
+  outline: none;
+  border-color: var(--color-teal);
+  background: var(--bg-card, #ffffff);
+}
+
+.settings-save {
+  margin-top: 4px;
+}
+
+/* ===== toggle switch ===== */
+.toggle-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 22px;
+}
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-color, #e6e9e8);
+}
+.toggle-list .toggle-row:last-child {
+  border-bottom: none;
+}
+.toggle-title {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-primary, #1a231f);
+}
+.toggle-sub {
+  font-size: 12px;
+  color: var(--text-muted, #97a19c);
+  margin-top: 2px;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 22px;
+  flex-shrink: 0;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.switch-track {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+  background: var(--border-color-strong, #d8dcda);
+  border-radius: 999px;
+  transition: background 0.15s ease;
+}
+.switch-track::before {
+  content: '';
+  position: absolute;
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  top: 3px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.15s ease;
+}
+.switch input:checked + .switch-track {
+  background: var(--color-teal);
+}
+.switch input:checked + .switch-track::before {
+  transform: translateX(18px);
+}
+
+/* ===== tampilan: swatch warna & pill ukuran font ===== */
+.theme-swatches {
+  display: flex;
+  gap: 10px;
+}
+.theme-swatch {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+}
+.theme-swatch.active {
+  border-color: var(--text-primary, #1a231f);
+}
+
+.radio-pill-group {
+  display: flex;
+  gap: 8px;
+}
+.radio-pill {
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border-color-strong, #d8dcda);
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-secondary, #667169);
+  background: var(--bg-card, #ffffff);
+}
+.radio-pill.active {
+  background: var(--color-teal);
+  border-color: var(--color-teal);
+  color: #fff;
+}
+
+/* ===== sesi login ===== */
+.session-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.session-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--border-color, #e6e9e8);
+  border-radius: var(--radius-sm, 8px);
+}
+.badge-current {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--color-teal);
+  background: var(--color-green-light);
+  padding: 3px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+/* ===== backup & data ===== */
+.backup-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.backup-log-item {
+  font-size: 12px;
+  color: var(--text-muted, #97a19c);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.backup-log-item i {
+  color: var(--color-teal);
+}
+
+/* ===== preview dark mode lokal (cuma nge-preview halaman ini) ===== */
+body.umum-dark-preview {
+  background: #10201a;
+}
+body.umum-dark-preview .main-content .card {
+  background: #16261f;
+  border-color: #223a30;
+}
+body.umum-dark-preview .settings-nav {
+  background: #0e1a15;
+  border-color: #223a30;
+}
+body.umum-dark-preview .settings-nav-item {
+  color: #9fb3a9;
+}
+body.umum-dark-preview .settings-panel-title,
+body.umum-dark-preview .toggle-title,
+body.umum-dark-preview .greeting-title,
+body.umum-dark-preview .form-field label {
+  color: #eef4f1;
+}
+body.umum-dark-preview .form-field input,
+body.umum-dark-preview .form-field select {
+  background: #0e1a15;
+  color: #eef4f1;
+  border-color: #2c463b;
+}
+
+/* ==========================================================
+   JABATAN — tab YMBPK + tabel input penamaan
+   ========================================================== */
+
+.jabatan-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-muted, #97a19c);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.jabatan-tab i {
+  font-size: 12px;
+}
+
+.jabatan-tab:hover {
+  color: var(--text-dark, #1a231f);
+}
+
+.jabatan-tab.active {
+  color: var(--color-teal);
+  border-bottom-color: var(--color-teal);
+  font-weight: 500;
+}
+
+.jabatan-panel {
+  display: none;
+}
+
+.jabatan-panel.active {
+  display: block;
+}
+
+.jabatan-table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.jabatan-table-title {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-primary, #1a231f);
+}
+
+.jabatan-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.jabatan-table th {
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-muted, #97a19c);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  border-bottom: 1px solid var(--border-color, #e6e9e8);
+  background: var(--bg-body, #f4f6f5);
+}
+
+.jabatan-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-color, #e6e9e8);
+  vertical-align: middle;
+}
+
+.jabatan-table td:first-child {
+  width: 40px;
+  color: var(--text-muted, #97a19c);
+}
+
+.jabatan-table td:last-child {
+  width: 90px;
+  white-space: nowrap;
+}
+
+.jabatan-input {
+  width: 100%;
+  max-width: 320px;
+  border: 1px solid var(--border-color-strong, #d8dcda);
+  border-radius: var(--radius-sm, 6px);
+  padding: 7px 10px;
+  font-size: 13px;
+  background: var(--bg-body, #f4f6f5);
+  color: var(--text-primary, #1a231f);
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+
+.jabatan-input:focus {
+  outline: none;
+  border-color: var(--color-teal);
+  background: var(--bg-card, #ffffff);
+}
+
+.btn-jabatan-tambah {
+  font-size: 11px;
+  padding: 7px 12px;
+}
+
+/* ===== responsive ===== */
+@media (max-width: 780px) {
+  .settings-layout {
+    grid-template-columns: 1fr;
+  }
+  .settings-nav {
+    flex-direction: row;
+    overflow-x: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color, #e6e9e8);
+  }
+  .settings-nav-item span {
+    white-space: nowrap;
+  }
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}

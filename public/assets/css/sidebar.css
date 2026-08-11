@@ -1,0 +1,283 @@
+.sidebar {
+  width: var(--sidebar-width);
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--sidebar-border);
+  flex-shrink: 0;
+  position: fixed;
+  top: calc(var(--topbar-height) + var(--header-height));
+  left: 0;
+  height: calc(100vh - var(--topbar-height) - var(--header-height));
+  overflow-y: auto;
+  z-index: 90;
+}
+
+body.topbar-collapsed .sidebar {
+  top: var(--header-height);
+  height: calc(100vh - var(--header-height));
+}
+
+.sidebar-nav {
+  padding: 12px 0 24px;
+}
+
+.sidebar {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color 0.3s ease; /* Firefox: sembunyiin total default */
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar:hover {
+  scrollbar-color: #c9cdd3 transparent;
+}
+
+.sidebar:hover::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.sidebar:hover::-webkit-scrollbar-thumb {
+  background-color: #c9cdd3;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-section {
+  margin-bottom: 4px;
+}
+
+.sidebar-section-label {
+  display: block;
+  padding: 16px 20px 8px;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0.5px;
+  color: var(--sidebar-section-label);
+  text-transform: uppercase;
+}
+
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-item {
+  width: 100%;
+  border-bottom: 1px solid var(--sidebar-border);
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 20px;
+  color: var(--sidebar-text);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.4;
+  transition:
+    background 0.15s,
+    color 0.15s;
+  position: relative;
+}
+
+.sidebar-icon {
+  width: 16px;
+  text-align: center;
+  font-size: 15px;
+  color: #9a9d8e;
+  flex-shrink: 0;
+}
+
+body.dark-mode .sidebar-icon {
+  color: #64748b;
+}
+
+.sidebar-link:hover {
+  background: #edefea;
+  color: var(--sidebar-active-text);
+}
+
+body.dark-mode .sidebar-link:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.sidebar-item.active > .sidebar-link {
+  background: var(--sidebar-active-bg);
+  color: var(--sidebar-active-text);
+  font-weight: 400;
+  border-left: 3px solid var(--sidebar-active-text);
+  padding-left: 17px;
+}
+
+.sidebar-item.active > .sidebar-link .sidebar-icon {
+  color: var(--sidebar-active-text);
+}
+
+/* --- Submenu / dropdown --- */
+.submenu-arrow {
+  margin-left: auto;
+  font-size: 10px;
+  color: #9a9d8e;
+  transition: transform 0.2s;
+}
+
+.sidebar-item.has-submenu.open > .sidebar-link .submenu-arrow {
+  transform: rotate(180deg);
+}
+
+.submenu {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease;
+  background: #fafbfa;
+}
+
+body.dark-mode .submenu {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.sidebar-item.has-submenu.open .submenu {
+  max-height: 300px;
+}
+
+.submenu-link {
+  display: block;
+  padding: 10px 20px 10px 48px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--sidebar-text);
+  border-top: 1px solid var(--sidebar-border);
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.submenu-link.active {
+  color: var(--sidebar-active-text);
+  font-weight: 400;
+  background: #f0f2ee;
+}
+
+body.dark-mode .submenu-link.active {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.submenu-link:hover {
+  background: #edefea;
+  color: var(--sidebar-active-text);
+}
+
+body.dark-mode .submenu-link:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* --- Logout section --- */
+.sidebar-logout {
+  margin-top: 8px;
+}
+
+/* ============================
+   SIDEBAR COLLAPSE/EXPAND
+   ============================ */
+
+.sidebar-item {
+  position: relative;
+}
+
+/* --- State: body.sidebar-collapsed --- */
+body.sidebar-collapsed .sidebar {
+  width: var(--sidebar-width-collapsed);
+}
+
+body.sidebar-collapsed .main-content {
+  margin-left: var(--sidebar-width-collapsed);
+}
+
+body.sidebar-collapsed .sidebar-section-label {
+  display: none;
+}
+
+body.sidebar-collapsed .sidebar-link {
+  justify-content: center;
+  padding: 12px 0;
+  gap: 0;
+}
+
+body.sidebar-collapsed .sidebar-link span {
+  display: none;
+}
+
+body.sidebar-collapsed .submenu-arrow {
+  display: none;
+}
+
+body.sidebar-collapsed .sidebar-icon {
+  font-size: 16px;
+}
+
+body.sidebar-collapsed .sidebar-item.active > .sidebar-link {
+  padding-left: 0;
+  justify-content: center;
+}
+
+/* --- Submenu jadi popout pas collapsed --- */
+body.sidebar-collapsed .has-submenu .submenu {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  margin-left: 6px;
+  width: 190px;
+  background: var(--sidebar-bg);
+  border: 1px solid var(--sidebar-border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  max-height: 0;
+  overflow: hidden;
+  z-index: 120;
+  transition: max-height 0.2s ease;
+}
+
+body.sidebar-collapsed .has-submenu:hover .submenu {
+  max-height: 300px;
+}
+
+body.sidebar-collapsed .has-submenu .submenu-link {
+  padding: 10px 16px;
+}
+
+/* ⚠️ SEMENTARA — hapus bareng block HTML-nya kalo udah gak kepake */
+.sidebar-presentasi-section {
+  background: #fef6e6;
+  border-bottom: 2px solid var(--color-yellow);
+  padding-bottom: 4px;
+  margin-bottom: 4px;
+}
+
+.sidebar-presentasi-section .sidebar-section-label {
+  color: var(--color-yellow);
+}
+
+.sidebar-link-presentasi {
+  font-weight: 700;
+  color: #a3720a;
+}
+
+.sidebar-link-presentasi .sidebar-icon {
+  color: var(--color-yellow);
+}
+
+.sidebar-link-presentasi:hover {
+  background: #fdedc9;
+}

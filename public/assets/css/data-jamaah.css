@@ -1,0 +1,713 @@
+/* ============================
+   DATA JAMAAH - Page Specific
+   Reuse: .card, .data-table, .status-badge, .btn, .btn-primary dari design system
+   ============================ */
+
+/* --- Breadcrumb --- */
+.breadcrumb {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+
+.breadcrumb span {
+  color: var(--text-dark);
+  font-weight: 400;
+}
+
+/* --- Page Header (judul + tombol tambah) --- */
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.page-title {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-dark);
+  margin-bottom: 4px;
+}
+
+.page-subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* --- Stat Cards versi Data Jemaah (icon di kanan, bukan badge) --- */
+.stat-cards-jamaah {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.stat-card-jamaah {
+  background: var(--color-white);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.stat-card-jamaah-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  min-height: 26px;
+}
+
+.stat-icon-circle {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.icon-blue {
+  background: #e8f0fe;
+  color: var(--color-blue);
+}
+.icon-red {
+  background: #fdeaea;
+  color: var(--color-red);
+}
+.icon-green {
+  background: var(--color-green-light);
+  color: var(--color-green);
+}
+
+/* --- Filter Bar --- */
+.filter-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.filter-search-group {
+  flex: 1;
+  min-width: 200px;
+}
+
+.filter-label {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-dark);
+}
+
+.filter-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  background: var(--color-white);
+}
+
+.filter-search i {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.filter-search input {
+  border: none;
+  outline: none;
+  font-size: 13px;
+  width: 100%;
+  color: var(--text-dark);
+  background: transparent;
+}
+
+/* --- Table Scroll Wrapper (biar rapi di tablet) --- */
+.table-scroll {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.data-table {
+  min-width: 780px;
+}
+
+.data-table td:nth-child(5) {
+  white-space: nowrap;
+}
+
+/* --- Table Avatar --- */
+.table-avatar-jamaah {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #eef0f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 15px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.table-avatar-jamaah img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+body.dark-mode .table-avatar-jamaah {
+  background: #334155;
+}
+
+/* --- Nama Jemaah lebih menonjol --- */
+.jamaah-name {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-dark);
+}
+
+/* --- Action buttons (Detail / Edit / Hapus) --- */
+.table-actions {
+  display: flex;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+/* --- Pagination --- */
+.table-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 16px;
+  font-size: 11px;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.page-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--border-color);
+  background: var(--color-white);
+  border-radius: var(--radius-sm);
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-dark);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.page-btn:hover:not(:disabled) {
+  background: #f5f6f8;
+}
+
+body.dark-mode .page-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.page-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.page-numbers {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.page-number-btn {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-color);
+  background: var(--color-white);
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-dark);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.page-number-btn:hover {
+  background: #f5f6f8;
+}
+
+body.dark-mode .page-number-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.page-number-btn.active {
+  background: var(--color-green-light);
+  border-color: var(--color-green);
+  color: var(--color-green);
+}
+
+/* ============================
+   DETAIL JAMAAH MODAL
+   ============================ */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 26, 33, 0.45);
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-box {
+  background: var(--color-white);
+  border-radius: var(--radius-md);
+  box-shadow: 0 20px 45px rgba(20, 26, 33, 0.18);
+  width: 100%;
+  max-width: 680px;
+  max-height: 88vh;
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header h2 {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text-dark);
+}
+
+.modal-close {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: #f5f6f8;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+body.dark-mode .modal-close {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.modal-close:hover {
+  background: #eef0f2;
+}
+
+body.dark-mode .modal-close:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.modal-body {
+  padding: 24px 22px;
+}
+
+.detail-modal-body {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 28px;
+}
+
+.detail-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.detail-avatar-large {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: #eef0f2;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+}
+
+.detail-avatar-large img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+body.dark-mode .detail-avatar-large {
+  background: #334155;
+}
+
+.detail-name {
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--text-dark);
+  line-height: 1.3;
+}
+
+.detail-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.detail-info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  background: var(--color-white);
+}
+
+.detail-info-item-wide {
+  grid-column: 1 / -1;
+}
+
+.detail-info-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-green-light);
+  color: var(--color-green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.detail-info-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.detail-info-label {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.detail-info-value {
+  font-size: 13px;
+  color: var(--text-dark);
+  font-weight: 400;
+  word-break: break-word;
+}
+
+.detail-note-box {
+  margin-top: 16px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  background: #fafbfc;
+}
+
+body.dark-mode .detail-note-box {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.detail-note-box p {
+  font-size: 13px;
+  color: var(--text-dark);
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 22px;
+  border-top: 1px solid var(--border-color);
+}
+
+/* ============================
+   TAMBAH JAMAAH MODAL (FORM)
+   ============================ */
+.add-modal {
+  max-width: 620px;
+}
+
+.avatar-upload-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.avatar-upload {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: #eef0f2;
+  color: var(--text-muted);
+  border: 1px dashed var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  overflow: hidden;
+}
+
+body.dark-mode .avatar-upload {
+  background: #334155;
+}
+
+.avatar-upload img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-upload-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid var(--border-color);
+  background: var(--color-white);
+  border-radius: var(--radius-sm);
+  padding: 7px 14px;
+  font-size: 12.5px;
+  font-weight: 400;
+  color: var(--text-dark);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.avatar-upload-btn:hover {
+  background: #f5f6f8;
+}
+
+body.dark-mode .avatar-upload-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+.avatar-upload-btn i {
+  color: var(--color-green);
+  font-size: 12px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group-wide {
+  grid-column: 1 / -1;
+}
+
+.form-label {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-dark);
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 9px 12px;
+  font-size: 13px;
+  color: var(--text-dark);
+  background: var(--color-white);
+  font-family: inherit;
+  width: 100%;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--color-green);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 44px;
+}
+
+/* ============================
+   TOAST NOTIFIKASI
+   ============================ */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--color-white);
+  border: 1px solid var(--border-color);
+  border-left: 3px solid var(--color-green);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 12px 28px rgba(20, 26, 33, 0.16);
+  padding: 12px 18px;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-dark);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px);
+  transition:
+    opacity 0.2s,
+    transform 0.2s,
+    visibility 0.2s;
+  z-index: 1100;
+}
+
+.toast.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.toast i {
+  color: var(--color-green);
+  font-size: 16px;
+}
+
+/* ============================
+   RESPONSIVE - Data Jemaah
+   ============================ */
+@media (max-width: 1024px) {
+  .stat-cards-jamaah {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .filter-actions {
+    margin-left: 0;
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 640px) {
+  .detail-modal-body {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .table-pagination {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* --- Modal konfirmasi hapus --- */
+.confirm-modal {
+  max-width: 420px;
+}
+
+.confirm-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.confirm-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #fdeaea;
+  color: var(--color-red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+body.dark-mode .confirm-icon {
+  background: rgba(248, 113, 113, 0.15);
+}
+
+.confirm-message p {
+  font-size: 13.5px;
+  color: var(--text-dark);
+  line-height: 1.5;
+  margin-top: 2px;
+}
+
+.btn-danger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-red);
+  color: #fff;
+  border: 1px solid var(--color-red);
+  border-radius: var(--radius-sm);
+  padding: 9px 16px;
+  font-size: 13px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  white-space: nowrap;
+}
+
+.btn-danger:hover {
+  opacity: 0.9;
+}

@@ -1,0 +1,486 @@
+/* --- Page header — judul di bawah breadcrumb --- */
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* --- Page title — samakan dengan halaman lain --- */
+.page-title {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-dark);
+  margin-bottom: 4px;
+}
+
+.page-subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* ---------- Layout: Timeline + Sidebar kanan ---------- */
+.jk-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+/* ---------- Timeline ---------- */
+/* Layout flex per baris: [jam] [garis+titik] [kartu] — tidak ada
+   positioning absolute yang saling tumpuk, jadi aman di semua lebar layar. */
+.jk-timeline {
+  position: relative;
+}
+.jk-timeline::before {
+  content: '';
+  position: absolute;
+  left: 66px;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  background: var(--border-color);
+  z-index: 0;
+}
+
+.jk-timeline-item {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+.jk-timeline-item:last-child {
+  margin-bottom: 0;
+}
+
+.jk-timeline-time {
+  width: 44px;
+  flex-shrink: 0;
+  padding-top: 16px;
+  text-align: right;
+  font-size: 12.5px;
+  font-weight: 400;
+  color: var(--text-dark);
+}
+
+.jk-timeline-dot-col {
+  width: 16px;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  padding-top: 21px;
+  position: relative;
+  z-index: 1;
+}
+
+.jk-timeline-dot {
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-blue);
+  box-shadow:
+    0 0 0 3px var(--color-white),
+    0 0 0 4px var(--border-color);
+}
+.jk-timeline-item.status-berlangsung .jk-timeline-dot {
+  background: var(--color-green);
+  box-shadow:
+    0 0 0 3px var(--color-white),
+    0 0 0 4px var(--color-green-light);
+}
+.jk-timeline-item.status-selesai .jk-timeline-dot {
+  background: #b0b5bd;
+  box-shadow:
+    0 0 0 3px var(--color-white),
+    0 0 0 4px var(--border-color);
+}
+
+body.dark-mode .jk-timeline-item.status-selesai .jk-timeline-dot {
+  background: #475569;
+  box-shadow:
+    0 0 0 3px var(--color-white),
+    0 0 0 4px rgba(255, 255, 255, 0.06);
+}
+
+.jk-activity-card {
+  flex: 1;
+  min-width: 0;
+}
+
+.jk-activity-card {
+  background: var(--color-white);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.15s ease;
+}
+.jk-activity-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.jk-activity-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.jk-activity-name {
+  font-size: 14.5px;
+  font-weight: 700; /* dari 400 → 700 */
+  color: var(--text-dark);
+  margin-bottom: 6px;
+}
+
+.jk-activity-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+.jk-activity-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.jk-activity-meta svg {
+  flex-shrink: 0;
+}
+
+.jk-badges {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.jk-badge {
+  font-size: 11px;
+  font-weight: 400;
+  padding: 3px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+/* kategori */
+.jk-badge.cat-kajian {
+  background: var(--color-green-light);
+  color: var(--color-teal);
+}
+.jk-badge.cat-rapat {
+  background: #e8f0fb;
+  color: var(--color-blue);
+}
+body.dark-mode .jk-badge.cat-rapat {
+  background: rgba(59, 130, 246, 0.15);
+  color: var(--color-blue);
+}
+.jk-badge.cat-sosial {
+  background: #fdf1e6;
+  color: var(--color-orange);
+}
+body.dark-mode .jk-badge.cat-sosial {
+  background: rgba(251, 146, 60, 0.15);
+  color: var(--color-orange);
+}
+.jk-badge.cat-operasional {
+  background: #f1f2f4;
+  color: var(--text-muted);
+}
+body.dark-mode .jk-badge.cat-operasional {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-muted);
+}
+
+/* status */
+.jk-badge.status-selesai {
+  background: #f1f2f4;
+  color: var(--text-muted);
+}
+body.dark-mode .jk-badge.status-selesai {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-muted);
+}
+.jk-badge.status-berlangsung {
+  background: var(--color-green-light);
+  color: var(--color-green);
+}
+.jk-badge.status-akan-datang {
+  background: #e8f0fb;
+  color: var(--color-blue);
+}
+body.dark-mode .jk-badge.status-akan-datang {
+  background: rgba(59, 130, 246, 0.15);
+  color: var(--color-blue);
+}
+
+.jk-activity-bottom {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #f0f1f3;
+}
+
+/* Tombol "Detail" kini pakai class bawaan .btn-sm.btn-detail dari components.css. */
+
+/* ---------- Accordion detail panel ---------- */
+.jk-detail-panel {
+  display: none;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--border-color);
+}
+.jk-detail-panel.open {
+  display: block;
+  animation: jkFadeIn 0.15s ease;
+}
+@keyframes jkFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.jk-detail-row {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-dark);
+  margin-bottom: 9px;
+}
+.jk-detail-row:last-of-type {
+  margin-bottom: 12px;
+}
+.jk-detail-row .label {
+  color: var(--text-muted);
+}
+
+/* Tombol "Edit Kegiatan" kini pakai class bawaan .btn-sm.btn-edit dari components.css. */
+
+/* ---------- Sidebar kanan ---------- */
+.jk-side-card {
+  margin-bottom: 16px;
+}
+.jk-side-card:last-child {
+  margin-bottom: 0;
+}
+
+.jk-next-activity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.jk-next-time {
+  width: 46px;
+  height: 46px;
+  border-radius: var(--radius-sm);
+  background: var(--color-green-light);
+  color: var(--color-teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 400;
+  flex-shrink: 0;
+}
+.jk-next-info .jk-next-title {
+  font-size: 13.5px;
+  font-weight: 400;
+  color: var(--text-dark);
+}
+.jk-next-info .jk-next-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.jk-mini-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.jk-mini-item {
+  display: flex;
+  align-items: center;
+  font-size: 12.5px;
+  color: var(--text-dark);
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-color);
+}
+.jk-mini-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.jk-mini-item .time {
+  color: var(--color-teal);
+  font-weight: 400;
+  width: 42px;
+  flex-shrink: 0;
+}
+.jk-mini-item .name {
+  flex: 1;
+  margin: 0 8px;
+}
+.jk-mini-item .loc {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.jk-week-count {
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--text-dark);
+  line-height: 1;
+}
+.jk-week-label {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin-top: 6px;
+}
+
+/* ---------- Riwayat kegiatan (bottom) ---------- */
+.jk-history {
+  margin-top: 20px;
+}
+.jk-history-list {
+  display: flex;
+  flex-direction: column;
+}
+.jk-history-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+.jk-history-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.jk-history-item:first-child {
+  padding-top: 0;
+}
+.jk-history-check {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--color-green-light);
+  color: var(--color-green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.jk-history-info {
+  flex: 1;
+  min-width: 0;
+}
+.jk-history-title {
+  font-size: 13.5px;
+  font-weight: 400;
+  color: var(--text-dark);
+}
+.jk-history-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* ---------- Empty state (hasil filter kosong) ---------- */
+.jk-empty {
+  display: none;
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-muted);
+  font-size: 13.5px;
+  background: var(--color-white);
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-md);
+}
+.jk-empty.show {
+  display: block;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1024px) {
+  .jk-layout {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 640px) {
+  .filter-bar .filter-select {
+    min-width: 0;
+    flex: 1 1 45%;
+  }
+  .jk-timeline::before {
+    left: 55px;
+  }
+  .jk-timeline-time {
+    width: 34px;
+    font-size: 11px;
+    padding-top: 15px;
+  }
+  .jk-timeline-dot-col {
+    width: 14px;
+    padding-top: 20px;
+  }
+  .jk-activity-meta {
+    gap: 10px;
+  }
+  .jk-detail-row {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+}
+
+.jk-stat-card[data-status-filter='berlangsung'] {
+  border-left: 3px solid var(--color-green);
+}
+.jk-stat-card[data-status-filter='berlangsung'] .stat-value {
+  color: var(--color-green);
+}
+
+.jk-stat-card[data-status-filter='akan-datang'] {
+  border-left: 3px solid var(--color-blue);
+}
+.jk-stat-card[data-status-filter='akan-datang'] .stat-value {
+  color: var(--color-blue);
+}
+
+.jk-stat-card[data-status-filter='selesai'] {
+  border-left: 3px solid #b0b5bd;
+}
+
+/* --- State "active" (kartu yang lagi dipake buat filter) --- */
+.jk-stat-card.active {
+  border-color: var(--color-teal);
+  box-shadow:
+    0 0 0 1px var(--color-teal),
+    var(--shadow-sm);
+}
+
+/* --- Compact stat cards --- */
+.jk-stat-card {
+  padding: 10px 14px;
+}
+
+.jk-stat-card .stat-value {
+  font-size: 18px;
+}
+
+.jk-stat-card .stat-label {
+  font-size: 12px;
+}
