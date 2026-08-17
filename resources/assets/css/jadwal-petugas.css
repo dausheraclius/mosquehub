@@ -1,0 +1,213 @@
+/* ============================
+   JADWAL PETUGAS SHOLAT - Page Specific
+   ============================ */
+
+/* --- Badge sholat --- */
+.sholat-jumat {
+  background: var(--color-green-light);
+  color: var(--color-green);
+}
+.sholat-harian {
+  background: #e8f0fe;
+  color: var(--color-blue);
+}
+body.dark-mode .sholat-harian {
+  background: rgba(59, 130, 246, 0.15);
+  color: #93c5fd;
+}
+
+/* --- Baris yang sudah lewat tampil redup --- */
+tr.jadwal-lewat td {
+  opacity: 0.55;
+}
+
+/* --- Pagination: gaya .pagination-btn ada di components.css (global) --- */
+
+/* --- Modal form jarak antar field --- */
+#formModal .modal-body .form-group,
+#formModal .modal-body .form-row {
+  margin-bottom: 16px;
+}
+
+#formModal .modal-body .form-group {
+  gap: 8px;
+}
+
+/* ========================================================== */
+/* CUSTOM DROPDOWN (Khatib / Imam / Muadzin)                  */
+/* Meniru pola .jabatan-dropdown di halaman Kepengurusan      */
+/* ========================================================== */
+.jp-select {
+  position: relative;
+  width: 100%;
+}
+
+.jp-select-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 9px 12px;
+  background: var(--color-white);
+  cursor: pointer;
+  min-height: 40px;
+  transition: border-color 0.15s;
+}
+
+.jp-select-trigger:hover {
+  border-color: var(--color-teal);
+}
+
+.jp-select-label {
+  font-size: 13px;
+  color: var(--text-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.jp-select-label.placeholder {
+  color: var(--text-muted);
+}
+
+.jp-select-arrow {
+  font-size: 10px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  transition: transform 0.15s;
+}
+
+.jp-select.open .jp-select-arrow {
+  transform: rotate(180deg);
+}
+
+.jp-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--color-white);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  max-height: 240px;
+  overflow-y: auto;
+  z-index: 60;
+  display: none;
+}
+
+.jp-dropdown.show {
+  display: block;
+}
+
+.jp-dropdown-search {
+  padding: 8px;
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  background: var(--color-white);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.jp-dropdown-search i {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.jp-dropdown-search input {
+  width: 100%;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 12px;
+  outline: none;
+  background: var(--color-white);
+  color: var(--text-dark);
+  font-family: inherit;
+}
+
+.jp-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  cursor: pointer;
+}
+
+.jp-dropdown-item:hover {
+  background: #f5f6f8;
+}
+
+body.dark-mode .jp-dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.jp-dropdown-item.selected {
+  background: var(--color-green-light);
+}
+
+.jp-dropdown-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--color-green-light);
+  color: var(--color-teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.jp-dropdown-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.jp-dropdown-name {
+  font-size: 12.5px;
+  font-weight: 400;
+  color: var(--text-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.jp-dropdown-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.jp-dropdown-check {
+  color: var(--color-green);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.jp-dropdown-empty {
+  padding: 16px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* ========================================================== */
+/* FORM & MODAL — TIDAK ADA TEKS DENGAN BOBOT > 500          */
+/* ========================================================== */
+.modal-overlay,
+.modal-overlay * {
+  font-weight: 400 !important;
+}
+
+.modal-overlay .fa-solid {
+  font-weight: 900 !important;
+}

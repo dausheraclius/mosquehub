@@ -6,11 +6,6 @@
     >
   </div>
   <div class="topbar-right">
-    <span class="topbar-promo">
-      Diskon khusus pendaftaran 48 masjid pertama! <a href="#" class="topbar-link">Sisa kuota : 12</a>
-    </span>
-    <button class="btn-daftar">Daftar Segera</button>
-    <div class="topbar-divider"></div>
     <button class="topbar-icon-btn" id="darkModeToggle" title="Mode Gelap">
       <i class="fa-regular fa-moon"></i>
     </button>

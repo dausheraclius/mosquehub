@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Kegiatan extends Model
 {
+    public function relawans()
+    {
+    return $this->hasMany(KegiatanRelawan::class, 'kegiatan_id');
+    }
+    
     protected $fillable = [
         'mosque_id',
         'tanggal',

@@ -1,0 +1,173 @@
+/* ============================
+   INVENTARIS - Page Specific
+   ============================ */
+
+/* --- Badge kondisi --- */
+.status-good {
+  background: var(--color-green-light);
+  color: var(--color-green);
+}
+.status-needs-repair {
+  background: #fef6e6;
+  color: var(--color-yellow);
+}
+body.dark-mode .status-needs-repair {
+  background: rgba(251, 191, 36, 0.12);
+  color: var(--color-yellow);
+}
+.status-damaged {
+  background: #fdeaea;
+  color: var(--color-red);
+}
+body.dark-mode .status-damaged {
+  background: rgba(248, 113, 113, 0.12);
+  color: var(--color-red);
+}
+.status-inactive {
+  background: #eef0f2;
+  color: var(--text-muted);
+}
+body.dark-mode .status-inactive {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-muted);
+}
+
+/* --- Panel Detail (kanan) --- */
+.detail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0f1f3;
+}
+
+body.dark-mode .detail-row {
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.detail-label {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.detail-value {
+  font-weight: 400;
+  color: var(--text-dark);
+  text-align: right;
+}
+
+.detail-panel-image {
+  width: 100%;
+  height: 140px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.detail-panel-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.detail-panel-image-placeholder {
+  width: 100%;
+  height: 140px;
+  border-radius: var(--radius-md);
+  background: var(--color-green-light);
+  color: var(--color-teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42px;
+  margin-bottom: 16px;
+}
+
+/* --- Override modal show (data-jamaah.css pakai display:none, agenda.css pakai opacity) --- */
+.modal-overlay.show {
+  display: flex;
+}
+
+/* --- File Upload --- */
+.file-upload-wrapper {
+  position: relative;
+}
+
+.file-upload-wrapper input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.file-upload-preview {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-size: 13px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.file-upload-preview i {
+  font-size: 16px;
+  color: var(--text-muted);
+}
+
+.file-upload-preview:hover {
+  border-color: var(--color-teal);
+  color: var(--color-teal);
+}
+
+.file-upload-preview:hover i {
+  color: var(--color-teal);
+}
+
+/* --- Form modal: jarak antar field biar tidak berdempetan --- */
+#tambahModal .modal-body .form-group,
+#tambahModal .modal-body .form-row {
+  margin-bottom: 16px;
+}
+
+#tambahModal .modal-body .form-group {
+  gap: 8px;
+}
+
+#tambahModal .modal-body > :last-child {
+  margin-bottom: 0;
+}
+
+/* --- Stat cards: ukuran seragam dari dashboard.css --- */
+
+/* ========================================================== */
+/* FORM & MODAL — TIDAK ADA TEKS DENGAN BOBOT > 500          */
+/* ========================================================== */
+.modal-overlay,
+.modal-overlay *,
+.confirm-overlay,
+.confirm-overlay * {
+  font-weight: 400 !important;
+}
+
+/* Kecualikan ikon Font Awesome solid yang butuh bobot 900 */
+.modal-overlay .fa-solid,
+.confirm-overlay .fa-solid {
+  font-weight: 900 !important;
+}
+

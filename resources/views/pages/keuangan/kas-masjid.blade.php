@@ -3,11 +3,11 @@
 @section('title', 'MosqueHub - Kas Masjid')
 
 @push('styles-before-components')
-  <link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}">
+  @vite('resources/assets/css/dashboard.css')
 @endpush
 
 @push('styles-after-components')
-  <link rel="stylesheet" href="{{ asset('assets/css/kas-masjid.css') }}">
+  @vite('resources/assets/css/kas-masjid.css')
 @endpush
 
 @section('content')
@@ -132,7 +132,6 @@
           <th>Ket</th>
           <th class="col-income">Pemasukan</th>
           <th class="col-expense">Pengeluaran</th>
-          <th>Dibuat Oleh</th>
           <th>Aksi</th>
         </tr>
       </thead>
@@ -170,11 +169,9 @@
             <label class="form-label" for="txJenis">Nama Transaksi</label>
             <input class="form-input" type="text" id="txJenis" placeholder="Contoh: Infaq Jumat">
           </div>
-          <div class="form-grid">
-            <div class="form-group">
-              <label class="form-label" for="txKategori">Kategori</label>
-              <input class="form-input" type="text" id="txKategori" placeholder="Contoh: Operasional">
-            </div>
+          <div class="form-group">
+            <label class="form-label" for="txKategori">Kategori</label>
+            <input class="form-input" type="text" id="txKategori" placeholder="Contoh: Operasional">
           </div>
           <div class="form-group">
             <label class="form-label" for="txKeterangan">Keterangan</label>
@@ -234,10 +231,6 @@
       </div>
     </div>
   </div>
-
-  <!-- Toast Notifikasi -->
-  <div class="toast" id="appToast"></div>
-
 @endsection
 
 @push('scripts')

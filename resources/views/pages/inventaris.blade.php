@@ -3,12 +3,12 @@
 @section('title', 'MosqueHub - Inventaris')
 
 @push('styles-before-components')
-  <link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}">
+  @vite('resources/assets/css/dashboard.css')
 @endpush
 
 @push('styles-after-components')
-  <link rel="stylesheet" href="{{ asset('assets/css/data-jamaah.css') }}">
-  <link rel="stylesheet" href="{{ asset('assets/css/inventaris.css') }}">
+  @vite('resources/assets/css/data-jamaah.css')
+  @vite('resources/assets/css/inventaris.css')
 @endpush
 
 @section('content')
@@ -17,6 +17,9 @@
     <button class="btn btn-primary" id="tambahInventarisBtn">
       <i class="fa-solid fa-plus"></i> Tambah Inventaris
     </button>
+    <a href="{{ route('ekspor.inventaris') }}" class="btn btn-outline" title="Unduh seluruh inventaris sebagai Excel">
+      <i class="fa-solid fa-file-excel"></i> Ekspor Excel
+    </a>
   </x-page-header>
 
   <!-- STAT CARDS -->
@@ -112,7 +115,7 @@
   <div class="modal-overlay" id="tambahModal">
     <div class="modal-box">
       <div class="modal-header">
-        <span class="modal-title">Tambah Inventaris</span>
+        <span class="modal-title" id="tambahModalTitle">Tambah Inventaris</span>
         <button class="modal-close" id="closeTambahModal"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="modal-body">
@@ -165,11 +168,9 @@
             <input type="date" class="form-control" id="formTglBeli">
           </div>
         </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Harga Beli</label>
-            <input type="text" class="form-control" id="formHarga" placeholder="Contoh: Rp 1.000.000">
-          </div>
+        <div class="form-group">
+          <label class="form-label">Harga Beli</label>
+          <input type="text" class="form-control" id="formHarga" placeholder="Contoh: Rp 1.000.000">
         </div>
         <div class="form-group">
           <label class="form-label">Catatan</label>
@@ -186,5 +187,8 @@
 @endsection
 
 @push('scripts')
+  <script>
+    window.inventarisData = @json($inventarisList)
+  </script>
   <script src="{{ asset('assets/js/inventaris.js') }}"></script>
 @endpush

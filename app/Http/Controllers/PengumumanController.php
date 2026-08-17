@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Pengumuman;
 use Illuminate\Http\Request;
 
+use App\Support\Concerns\HasMosqueContext;
+
 class PengumumanController extends Controller
 {
-    private int $mosqueId = 1; // TODO: ganti setelah Auth dibikin
-
+    use HasMosqueContext;
     public function index()
     {
         $list = Pengumuman::where('mosque_id', $this->mosqueId)->orderByDesc('tanggal')->get();
@@ -42,13 +43,7 @@ class PengumumanController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'judul' => 'required|string|max:255',
-            'isi' => 'required|string',
-            'kategori' => 'nullable|string|max:100',
-            'status' => 'required|in:Aktif,Terjadwal,Arsip',
-            'tanggal' => 'required|date',
-        ]);
+        $validated = $request->validate($this->rules());
         $validated['mosque_id'] = $this->mosqueId;
 
         Pengumuman::create($validated);
@@ -58,13 +53,7 @@ class PengumumanController extends Controller
 
     public function update(Request $request, Pengumuman $pengumuman)
     {
-        $validated = $request->validate([
-            'judul' => 'required|string|max:255',
-            'isi' => 'required|string',
-            'kategori' => 'nullable|string|max:100',
-            'status' => 'required|in:Aktif,Terjadwal,Arsip',
-            'tanggal' => 'required|date',
-        ]);
+        $validated = $request->validate($this->rules());
 
         $pengumuman->update($validated);
 
@@ -76,5 +65,16 @@ class PengumumanController extends Controller
         $pengumuman->delete();
 
         return redirect()->route('pengumuman')->with('success', 'Pengumuman dihapus.');
+    }
+
+    private function rules(): array
+    {
+        return [
+            'judul' => 'required|string|max:255',
+            'isi' => 'required|string',
+            'kategori' => 'nullable|string|max:100',
+            'status' => 'required|in:Aktif,Terjadwal,Arsip',
+            'tanggal' => 'required|date',
+        ];
     }
 }

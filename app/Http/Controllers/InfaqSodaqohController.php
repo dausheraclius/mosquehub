@@ -9,10 +9,11 @@ use App\Models\QurbanPesertaMember;
 use App\Models\QurbanSetoran;
 use Illuminate\Http\Request;
 
+use App\Support\Concerns\HasMosqueContext;
+
 class InfaqSodaqohController extends Controller
 {
-    private int $mosqueId = 1; // TODO: ganti setelah Auth dibikin
-
+    use HasMosqueContext;
     public function index()
     {
         $donasiList = Donasi::where('mosque_id', $this->mosqueId)
@@ -51,19 +52,7 @@ class InfaqSodaqohController extends Controller
 
     public function storeDonasi(Request $request)
     {
-        $validated = $request->validate([
-            'tanggal' => 'required|date',
-            'tanggal_akhir' => 'nullable|date',
-            'donatur' => 'required|string|max:255',
-            'kategori' => 'required|in:Zakat,Zakat Fitrah,Zakat Maal,Infaq,Infaq Jumat,Infaq Harian,Sodaqoh,Sodaqoh Dhuafa,Sodaqoh Anak Yatim,Sodaqoh Bencana,Wakaf,Wakaf Uang,Wakaf Tanah,Wakaf Bangunan,"Wakaf Al-Qur\'an",Donasi,Donasi Bencana,Donasi Pendidikan,Donasi Kesehatan,Donasi Umum',
-            'jenis' => 'required|string|max:255',
-            'tipe' => 'required|in:Uang,Barang',
-            'nominal' => 'required|numeric|min:0',
-            'keterangan' => 'nullable|string',
-            'metode' => 'nullable|string|max:100',
-            'petugas' => 'required|string|max:255',
-            'status' => 'required|in:Berhasil,Pending',
-        ]);
+        $validated = $request->validate($this->rules());
 
         $validated['mosque_id'] = $this->mosqueId;
 
@@ -76,19 +65,7 @@ class InfaqSodaqohController extends Controller
     {
         $donasi = Donasi::where('mosque_id', $this->mosqueId)->findOrFail($id);
 
-        $validated = $request->validate([
-            'tanggal' => 'required|date',
-            'tanggal_akhir' => 'nullable|date',
-            'donatur' => 'required|string|max:255',
-            'kategori' => 'required|in:Zakat,Zakat Fitrah,Zakat Maal,Infaq,Infaq Jumat,Infaq Harian,Sodaqoh,Sodaqoh Dhuafa,Sodaqoh Anak Yatim,Sodaqoh Bencana,Wakaf,Wakaf Uang,Wakaf Tanah,Wakaf Bangunan,"Wakaf Al-Qur\'an",Donasi,Donasi Bencana,Donasi Pendidikan,Donasi Kesehatan,Donasi Umum',
-            'jenis' => 'required|string|max:255',
-            'tipe' => 'required|in:Uang,Barang',
-            'nominal' => 'required|numeric|min:0',
-            'keterangan' => 'nullable|string',
-            'metode' => 'nullable|string|max:100',
-            'petugas' => 'required|string|max:255',
-            'status' => 'required|in:Berhasil,Pending',
-        ]);
+        $validated = $request->validate($this->rules());
 
         $donasi->update($validated);
 
@@ -105,15 +82,7 @@ class InfaqSodaqohController extends Controller
 
     public function storePeserta(Request $request)
     {
-        $validated = $request->validate([
-            'nama' => 'required|string|max:255',
-            'paket' => 'required|in:Patungan Sapi,Kambing,Sapi Utuh',
-            'target' => 'required|numeric|min:1',
-            'mulai' => 'required|date',
-            'members' => 'nullable|array|min:1|max:7',
-            'members.*.nama' => 'required|string|max:255',
-            'members.*.jamaah_id' => 'nullable|exists:jamaah,id',
-        ]);
+        $validated = $request->validate($this->rulesPeserta());
 
         $validated['mosque_id'] = $this->mosqueId;
         $members = $request->input('members', []);
@@ -146,15 +115,7 @@ class InfaqSodaqohController extends Controller
     {
         $peserta = QurbanPeserta::where('mosque_id', $this->mosqueId)->findOrFail($id);
 
-        $validated = $request->validate([
-            'nama' => 'required|string|max:255',
-            'paket' => 'required|in:Patungan Sapi,Kambing,Sapi Utuh',
-            'target' => 'required|numeric|min:1',
-            'mulai' => 'required|date',
-            'members' => 'nullable|array|min:1|max:7',
-            'members.*.nama' => 'required|string|max:255',
-            'members.*.jamaah_id' => 'nullable|exists:jamaah,id',
-        ]);
+        $validated = $request->validate($this->rulesPeserta());
 
         $members = $request->input('members', []);
 
@@ -309,6 +270,36 @@ class InfaqSodaqohController extends Controller
         $setoran->delete();
 
         return response()->json(['message' => 'Setoran dihapus']);
+    }
+
+    private function rules(): array
+    {
+        return [
+            'tanggal' => 'required|date',
+            'tanggal_akhir' => 'nullable|date',
+            'donatur' => 'required|string|max:255',
+            'kategori' => "required|in:Zakat,Zakat Fitrah,Zakat Maal,Infaq,Infaq Jumat,Infaq Harian,Sodaqoh,Sodaqoh Dhuafa,Sodaqoh Anak Yatim,Sodaqoh Bencana,Wakaf,Wakaf Uang,Wakaf Tanah,Wakaf Bangunan,Wakaf Al-Qur'an,Donasi,Donasi Bencana,Donasi Pendidikan,Donasi Kesehatan,Donasi Umum",
+            'jenis' => 'required|string|max:255',
+            'tipe' => 'required|in:Uang,Barang',
+            'nominal' => 'required|numeric|min:0',
+            'keterangan' => 'nullable|string',
+            'metode' => 'nullable|string|max:100',
+            'petugas' => 'required|string|max:255',
+            'status' => 'required|in:Berhasil,Pending',
+        ];
+    }
+
+    private function rulesPeserta(): array
+    {
+        return [
+            'nama' => 'required|string|max:255',
+            'paket' => 'required|in:Patungan Sapi,Kambing,Sapi Utuh',
+            'target' => 'required|numeric|min:1',
+            'mulai' => 'required|date',
+            'members' => 'nullable|array|min:1|max:7',
+            'members.*.nama' => 'required|string|max:255',
+            'members.*.jamaah_id' => 'nullable|exists:jamaah,id',
+        ];
     }
 
     private function donasiToArray(Donasi $d): array

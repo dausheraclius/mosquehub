@@ -42,11 +42,23 @@ function renderStatCards() {
 // ============================================================
 // 2. GRID ALBUM
 // ============================================================
+let albumSearchQuery = ''
+
 function renderAlbumGrid() {
   const grid = document.getElementById('albumGrid')
   grid.innerHTML = ''
 
-  dataAlbum.forEach((album) => {
+  const keyword = albumSearchQuery.toLowerCase().trim()
+  const visible = dataAlbum.filter(
+    (album) => !keyword || album.nama.toLowerCase().includes(keyword),
+  )
+
+  if (visible.length === 0) {
+    grid.innerHTML = `<p style="text-align:center; padding:32px; color:var(--text-muted);">Tidak ada album yang cocok.</p>`
+    return
+  }
+
+  visible.forEach((album) => {
     const cover = album.photos.find((p) => p.isCover) || album.photos[0]
     const badgeClass = album.status === 'published' ? 'published' : 'draft'
     const badgeLabel = album.status === 'published' ? 'Tayang di Web' : 'Draft'
@@ -55,14 +67,14 @@ function renderAlbumGrid() {
       'beforeend',
       `
       <div class="album-card" data-album-id="${album.id}">
-        <span class="album-card-badge ${badgeClass}">${badgeLabel}</span>
+        <span class="album-card-badge ${badgeClass}">${esc(badgeLabel)}</span>
         ${
           cover && cover.url
-            ? `<img class="album-cover-img" src="${cover.url}" alt="${album.nama}">`
+            ? `<img class="album-cover-img" src="${cover.url}" alt="${esc(album.nama)}">`
             : `<div class="album-cover-placeholder"><i class="fa-solid fa-images"></i></div>`
         }
         <div class="album-card-overlay">
-          <div class="album-card-title">${album.nama}</div>
+          <div class="album-card-title">${esc(album.nama)}</div>
           <div class="album-card-meta">
             <span><i class="fa-regular fa-calendar"></i> ${formatTanggal(album.tanggal)}</span>
             <span><i class="fa-regular fa-image"></i> ${album.photos.length} foto</span>
@@ -162,12 +174,11 @@ function renderPhotoGrid() {
 async function setCover(index) {
   const album = getActiveAlbum()
   const photo = album.photos[index]
-  const csrf = document.querySelector('meta[name="csrf-token"]').content
 
   try {
     await fetch(`/kegiatan/galeri/${album.id}/photos/${photo.id}/cover`, {
       method: 'POST',
-      headers: { Accept: 'application/json', 'X-CSRF-TOKEN': csrf },
+      headers: getHeaders(),
     })
     album.photos.forEach((p, i) => (p.isCover = i === index))
     renderPhotoGrid()
@@ -185,12 +196,11 @@ async function deletePhoto(index) {
     title: 'Hapus Foto?',
     message: 'Yakin ingin menghapus foto ini dari album?',
     onConfirm: async () => {
-      const csrf = document.querySelector('meta[name="csrf-token"]').content
 
       try {
         const res = await fetch(`/kegiatan/galeri/${album.id}/photos/${photo.id}`, {
           method: 'DELETE',
-          headers: { Accept: 'application/json', 'X-CSRF-TOKEN': csrf },
+          headers: getHeaders(),
         })
         const result = await res.json()
 
@@ -220,14 +230,13 @@ async function handleFiles(fileList) {
 
   const formData = new FormData()
   files.forEach((file) => formData.append('photos[]', file))
-  const csrf = document.querySelector('meta[name="csrf-token"]').content
 
   showToast('Sedang mengupload foto...')
 
   try {
     const res = await fetch(`/kegiatan/galeri/${album.id}/photos`, {
       method: 'POST',
-      headers: { Accept: 'application/json', 'X-CSRF-TOKEN': csrf },
+      headers: getHeaders({ multipart: true }),
       body: formData,
     })
     if (!res.ok) throw new Error('gagal upload')
@@ -317,6 +326,7 @@ function openAlbumModal(albumId = null) {
     document.getElementById('inputAlbumDeskripsi').value = ''
   }
 
+  if (typeof syncCustomSelects === 'function') syncCustomSelects()
   overlay.classList.add('active')
 }
 
@@ -336,7 +346,6 @@ async function saveAlbumModal() {
     status: document.getElementById('inputAlbumStatus').value,
     deskripsi: document.getElementById('inputAlbumDeskripsi').value.trim(),
   }
-  const csrf = document.querySelector('meta[name="csrf-token"]').content
 
   const isEdit = !!editingAlbumId
   const url = isEdit ? `/kegiatan/galeri/${editingAlbumId}` : '/kegiatan/galeri'
@@ -345,13 +354,11 @@ async function saveAlbumModal() {
   try {
     const res = await fetch(url, {
       method,
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json', 'X-CSRF-TOKEN': csrf },
+      headers: getHeaders(),
       body: JSON.stringify(payload),
     })
     if (!res.ok) {
-      const errData = await res.json()
-      const firstError = Object.values(errData.errors || {})[0]?.[0] || 'Gagal menyimpan album.'
-      showToast(firstError)
+      await showFetchError(res, 'Gagal menyimpan album.')
       return
     }
     const saved = await res.json()
@@ -386,17 +393,22 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('btnEditAlbum').addEventListener('click', () => openAlbumModal(activeAlbumId))
   document.getElementById('btnBackToAlbums').addEventListener('click', closeAlbumDetail)
 
+  // Pencarian album
+  document.getElementById('albumSearch').addEventListener('input', (e) => {
+    albumSearchQuery = e.target.value
+    renderAlbumGrid()
+  })
+
   document.getElementById('btnHapusAlbum').addEventListener('click', () => {
     openConfirmDelete({
       title: 'Hapus Album?',
       message: 'Yakin ingin menghapus album ini beserta semua fotonya? Tindakan ini tidak bisa dibatalkan.',
       onConfirm: async () => {
-        const csrf = document.querySelector('meta[name="csrf-token"]').content
 
         try {
           await fetch(`/kegiatan/galeri/${activeAlbumId}`, {
             method: 'DELETE',
-            headers: { Accept: 'application/json', 'X-CSRF-TOKEN': csrf },
+            headers: getHeaders(),
           })
           const idx = dataAlbum.findIndex((a) => a.id === activeAlbumId)
           if (idx > -1) dataAlbum.splice(idx, 1)
@@ -412,12 +424,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
   document.getElementById('albumPublishToggle').addEventListener('change', async (e) => {
     const album = getActiveAlbum()
-    const csrf = document.querySelector('meta[name="csrf-token"]').content
 
     try {
       await fetch(`/kegiatan/galeri/${album.id}/publish`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json', 'X-CSRF-TOKEN': csrf },
+        headers: getHeaders(),
         body: JSON.stringify({ published: e.target.checked }),
       })
       album.status = e.target.checked ? 'published' : 'draft'

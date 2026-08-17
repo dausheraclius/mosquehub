@@ -1,45 +1,4 @@
-let suratData = [
-  {
-    id: 1,
-    nomor: '911230100001',
-    subjek: 'Undangan Maulid Nabi',
-    jenis: 'Surat Undangan',
-    tanggal: '2024-06-15',
-    status: 'Terkirim',
-    isi: 'Sehubungan dengan akan diselenggarakannya peringatan Maulid Nabi Muhammad SAW, kami mengundang Bapak/Ibu untuk hadir pada acara tersebut.',
-    kepada: 'Bpk. Hendra',
-  },
-  {
-    id: 2,
-    nomor: '911230100002',
-    subjek: 'Sertifikat YMBPK',
-    jenis: 'Sertifikat',
-    tanggal: '2024-06-16',
-    status: 'Draft',
-    isi: 'Diberikan kepada pengurus YMBPK atas dedikasi dan partisipasi aktif dalam kegiatan kepengurusan masjid.',
-    kepada: 'M. Reza',
-  },
-  {
-    id: 3,
-    nomor: '911230100003',
-    subjek: 'Undangan Maulid',
-    jenis: 'Surat Undangan',
-    tanggal: '2024-06-15',
-    status: 'Terkirim',
-    isi: 'Sehubungan dengan akan diselenggarakannya peringatan Maulid Nabi Muhammad SAW, kami mengundang Bapak/Ibu untuk hadir pada acara tersebut.',
-    kepada: 'Ibu Sri',
-  },
-  {
-    id: 4,
-    nomor: '911230100004',
-    subjek: 'Keterangan Aktif Jamaah',
-    jenis: 'Surat Keterangan',
-    tanggal: '2024-06-20',
-    status: 'Terkirim',
-    isi: 'Surat ini menerangkan bahwa yang bersangkutan benar merupakan jamaah aktif YMBPK Baiturrahim.',
-    kepada: 'S. Abdullah',
-  },
-]
+let suratData = window.suratData || []
 
 const statusClassMap = { Terkirim: 'status-berlangsung', Draft: 'status-empty' }
 
@@ -79,44 +38,54 @@ function renderTable() {
       'beforeend',
       `
       <tr>
-        <td>${s.nomor}</td>
-        <td>${s.subjek}</td>
-        <td>${s.jenis}</td>
+        <td>${esc(s.nomor)}</td>
+        <td>${esc(s.subjek)}</td>
+        <td>${esc(s.jenis)}</td>
         <td>${formatTanggal(s.tanggal)}</td>
-        <td><span class="status-badge ${statusClassMap[s.status]}">${s.status}</span></td>
+        <td><span class="status-badge ${statusClassMap[s.status]}">${esc(s.status)}</span></td>
         <td>
-          <button class="btn-sm btn-detail" data-id="${s.id}">Detail</button>
-          <button class="btn-sm btn-hapus" data-id="${s.id}">Hapus</button>
+          <div class="table-actions">
+            <button class="icon-action-btn btn-detail-surat" data-id="${s.id}" title="Lihat Detail"><i class="fa-regular fa-eye"></i></button>
+            <button class="icon-action-btn hapus btn-hapus-surat" data-id="${s.id}" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+          </div>
         </td>
       </tr>
     `,
     )
   })
 
-  tbody.querySelectorAll('.btn-detail').forEach((btn) => {
+  tbody.querySelectorAll('.btn-detail-surat').forEach((btn) => {
     btn.addEventListener('click', () => openDetailModal(parseInt(btn.dataset.id)))
   })
 
-  tbody.querySelectorAll('.btn-hapus').forEach((btn) => {
-    btn.addEventListener('click', () => {
+  tbody.querySelectorAll('.btn-hapus-surat').forEach((btn) => {
+    btn.addEventListener('click', async () => {
       const id = parseInt(btn.dataset.id)
       const item = suratData.find((s) => s.id === id)
-      if (!item) return
-      openConfirmDelete({
-        title: 'Hapus Surat?',
-        message: `Yakin ingin menghapus surat "${item.subjek}"? Tindakan ini tidak bisa dibatalkan.`,
-        onConfirm: async () => {
-          suratData = suratData.filter((s) => s.id !== id)
-          renderTable()
-          showToast('Surat berhasil dihapus.', 'fa-solid fa-trash')
-        },
-      })
+      if (!confirm(`Yakin mau hapus surat "${item.subjek}"?`)) return
+
+      try {
+        const res = await fetch(`/surat/${id}`, {
+          method: 'DELETE',
+          headers: {
+            'X-CSRF-TOKEN': getCsrf(),
+            Accept: 'application/json',
+          },
+        })
+        if (!res.ok) throw new Error('Gagal hapus surat')
+
+        suratData = suratData.filter((s) => s.id !== id)
+        renderTable()
+      } catch (err) {
+        alert('Gagal menghapus surat. Coba lagi.')
+        console.error(err)
+      }
     })
   })
 }
 
 function filePreviewHtml(s) {
-  if (!s.fileData) return ''
+  if (!s.fileUrl) return ''
 
   const ext = s.fileName ? s.fileName.split('.').pop().toLowerCase() : ''
 
@@ -127,9 +96,9 @@ function filePreviewHtml(s) {
         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
           <i class="fa-solid fa-file-pdf" style="color: #ef4444; font-size: 18px;"></i>
           <span style="font-size: 13px;">${s.fileName}</span>
-          <a href="${s.fileData}" download="${s.fileName}" class="btn btn-outline" style="margin-left: auto; padding: 4px 12px; font-size: 11px; text-decoration: none;"><i class="fa-solid fa-download"></i> Unduh</a>
+          <a href="${s.fileUrl}" download="${s.fileName}" class="btn btn-outline" style="margin-left: auto; padding: 4px 12px; font-size: 11px; text-decoration: none;"><i class="fa-solid fa-download"></i> Unduh</a>
         </div>
-        <embed src="${s.fileData}" type="application/pdf" style="width: 100%; height: 400px; border: 1px solid var(--border-color); border-radius: var(--radius-sm);" />
+        <embed src="${s.fileUrl}" type="application/pdf" style="width: 100%; height: 400px; border: 1px solid var(--border-color); border-radius: var(--radius-sm);" />
       </div>
     `
   }
@@ -141,9 +110,9 @@ function filePreviewHtml(s) {
         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
           <i class="fa-solid fa-file-image" style="color: #3b82f6; font-size: 18px;"></i>
           <span style="font-size: 13px;">${s.fileName}</span>
-          <a href="${s.fileData}" download="${s.fileName}" class="btn btn-outline" style="margin-left: auto; padding: 4px 12px; font-size: 11px; text-decoration: none;"><i class="fa-solid fa-download"></i> Unduh</a>
+          <a href="${s.fileUrl}" download="${s.fileName}" class="btn btn-outline" style="margin-left: auto; padding: 4px 12px; font-size: 11px; text-decoration: none;"><i class="fa-solid fa-download"></i> Unduh</a>
         </div>
-        <img src="${s.fileData}" alt="${s.fileName}" style="width: 100%; max-height: 400px; object-fit: contain; border: 1px solid var(--border-color); border-radius: var(--radius-sm);" />
+        <img src="${s.fileUrl}" alt="${s.fileName}" style="width: 100%; max-height: 400px; object-fit: contain; border: 1px solid var(--border-color); border-radius: var(--radius-sm);" />
       </div>
     `
   }
@@ -154,7 +123,7 @@ function filePreviewHtml(s) {
       <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
         <i class="fa-solid fa-file" style="color: var(--text-muted); font-size: 18px;"></i>
         <span style="font-size: 13px;">${s.fileName}</span>
-        <a href="${s.fileData}" download="${s.fileName}" class="btn btn-primary" style="margin-left: auto; padding: 4px 12px; font-size: 11px; text-decoration: none;"><i class="fa-solid fa-download"></i> Unduh</a>
+        <a href="${s.fileUrl}" download="${s.fileName}" class="btn btn-primary" style="margin-left: auto; padding: 4px 12px; font-size: 11px; text-decoration: none;"><i class="fa-solid fa-download"></i> Unduh</a>
       </div>
     </div>
   `
@@ -165,18 +134,18 @@ function openDetailModal(id) {
   document.getElementById('detailModalTitle').textContent = s.subjek
   document.getElementById('detailModalBody').innerHTML = `
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
-      <div><strong style="font-size: 11px; color: var(--text-muted);">Nomor Surat</strong><br><span style="font-size: 13px;">${s.nomor}</span></div>
+      <div><strong style="font-size: 11px; color: var(--text-muted);">Nomor Surat</strong><br><span style="font-size: 13px;">${esc(s.nomor)}</span></div>
       <div><strong style="font-size: 11px; color: var(--text-muted);">Tanggal</strong><br><span style="font-size: 13px;">${formatTanggal(s.tanggal)}</span></div>
-      <div><strong style="font-size: 11px; color: var(--text-muted);">Jenis</strong><br><span style="font-size: 13px;">${s.jenis}</span></div>
-      <div><strong style="font-size: 11px; color: var(--text-muted);">Status</strong><br><span class="status-badge ${statusClassMap[s.status]}">${s.status}</span></div>
+      <div><strong style="font-size: 11px; color: var(--text-muted);">Jenis</strong><br><span style="font-size: 13px;">${esc(s.jenis)}</span></div>
+      <div><strong style="font-size: 11px; color: var(--text-muted);">Status</strong><br><span class="status-badge ${statusClassMap[s.status]}">${esc(s.status)}</span></div>
     </div>
     <div style="margin-bottom: 12px;">
       <strong style="font-size: 11px; color: var(--text-muted);">Kepada</strong><br>
-      <span style="font-size: 13px;">${s.kepada}</span>
+      <span style="font-size: 13px;">${esc(s.kepada)}</span>
     </div>
     <div>
       <strong style="font-size: 11px; color: var(--text-muted);">Isi Surat</strong><br>
-      <p style="font-size: 13px; line-height: 1.6; margin-top: 4px;">${s.isi}</p>
+      <p style="font-size: 13px; line-height: 1.6; margin-top: 4px;">${esc(s.isi)}</p>
     </div>
     ${filePreviewHtml(s)}
   `
@@ -197,6 +166,7 @@ function resetTambahForm() {
   document.getElementById('inputIsi').value = ''
   document.getElementById('inputFile').value = ''
   document.getElementById('fileInfo').style.display = 'none'
+  if (typeof syncCustomSelects === 'function') syncCustomSelects()
 }
 
 document.getElementById('inputFile').addEventListener('change', (e) => {
@@ -222,40 +192,47 @@ document.getElementById('batalTambahBtn').addEventListener('click', () => {
   document.getElementById('tambahModal').classList.remove('active')
 })
 
-document.getElementById('simpanTambahBtn').addEventListener('click', () => {
+document.getElementById('simpanTambahBtn').addEventListener('click', async () => {
   const nomor = document.getElementById('inputNomor').value.trim()
   const subjek = document.getElementById('inputSubjek').value.trim()
   if (!nomor || !subjek) return
 
-  const fileInput = document.getElementById('inputFile')
-  const file = fileInput.files[0]
+  const btn = document.getElementById('simpanTambahBtn')
+  btn.disabled = true
 
-  const simpan = (fileData) => {
-    const suratBaru = {
-      id: Date.now(),
-      nomor,
-      subjek,
-      jenis: document.getElementById('inputJenis').value,
-      tanggal: document.getElementById('inputTanggal').value,
-      status: document.getElementById('inputStatus').value,
-      kepada: document.getElementById('inputKepada').value.trim() || '-',
-      isi: document.getElementById('inputIsi').value.trim() || '-',
-      fileName: fileData ? file.name : null,
-      fileType: fileData ? file.type : null,
-      fileData: fileData || null,
-    }
+  const formData = new FormData()
+  formData.append('nomor', nomor)
+  formData.append('subjek', subjek)
+  formData.append('jenis', document.getElementById('inputJenis').value)
+  formData.append('tanggal', document.getElementById('inputTanggal').value)
+  formData.append('status', document.getElementById('inputStatus').value)
+  formData.append('kepada', document.getElementById('inputKepada').value.trim())
+  formData.append('isi', document.getElementById('inputIsi').value.trim())
 
+  const file = document.getElementById('inputFile').files[0]
+  if (file) formData.append('file', file)
+
+  try {
+    const res = await fetch('/surat', {
+      method: 'POST',
+      headers: {
+        'X-CSRF-TOKEN': getCsrf(),
+        Accept: 'application/json',
+      },
+      body: formData,
+    })
+
+    if (!res.ok) throw new Error('Gagal simpan surat')
+
+    const suratBaru = await res.json()
     suratData.unshift(suratBaru)
     document.getElementById('tambahModal').classList.remove('active')
     renderTable()
-  }
-
-  if (file) {
-    const reader = new FileReader()
-    reader.onload = (e) => simpan(e.target.result)
-    reader.readAsDataURL(file)
-  } else {
-    simpan(null)
+  } catch (err) {
+    alert('Gagal menyimpan surat. Coba lagi.')
+    console.error(err)
+  } finally {
+    btn.disabled = false
   }
 })
 

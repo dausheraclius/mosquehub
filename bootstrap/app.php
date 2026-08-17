@@ -12,7 +12,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // Batasi akses menu berdasarkan role & permissions user (RBAC)
+        $middleware->alias([
+            'menu.access' => \App\Http\Middleware\EnsureMenuAccess::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

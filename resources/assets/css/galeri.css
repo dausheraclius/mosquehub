@@ -1,0 +1,541 @@
+/* ============================
+   GALERI - Page Specific
+   Reuse: .card, .stat-card, .btn, .btn-primary, .btn-outline,
+   .form-group/.form-input/.form-select/.form-textarea,
+   .modal-overlay/.modal-box/.modal-header/.modal-body/.modal-footer,
+   .toast dari design system (sama kaya data-jamaah.css)
+   ============================ */
+
+/* --- Breadcrumb & page header (reuse pola yang sama) --- */
+.breadcrumb {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+.breadcrumb span {
+  color: var(--text-dark);
+}
+
+/* --- Page header: gaya .page-header dkk. ada di components.css --- */
+
+/* ============================================================
+   GRID ALBUM (cover foto + gradient overlay, ala Google Photos)
+   ============================================================ */
+.album-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.album-card {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  cursor: pointer;
+  aspect-ratio: 4 / 3;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  background: linear-gradient(135deg, var(--color-green-light), #d7ece7);
+}
+
+.album-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md, 0 10px 26px rgba(15, 118, 110, 0.18));
+}
+
+.album-cover-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+.album-card:hover .album-cover-img {
+  transform: scale(1.06);
+}
+
+.album-cover-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  color: var(--color-teal);
+  opacity: 0.55;
+}
+
+.album-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(10, 20, 18, 0.82) 0%, rgba(10, 20, 18, 0.15) 55%, transparent 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 12px;
+  color: #fff;
+}
+
+.album-card-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 10px;
+  font-weight: 400;
+  padding: 3px 8px;
+  border-radius: 999px;
+  backdrop-filter: blur(2px);
+}
+.album-card-badge.published {
+  background: rgba(47, 158, 68, 0.9);
+  color: #fff;
+}
+.album-card-badge.draft {
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--text-dark);
+}
+
+.album-card-title {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.3;
+  margin-bottom: 2px;
+}
+
+.album-card-meta {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.85);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.album-card-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ============================================================
+   STAT CARDS — gaya .stat-cards/.stat-card ada di dashboard.css
+   (ukuran & grid seragam untuk semua halaman admin)
+   ============================================================ */
+
+/* ============================================================
+   VIEW DETAIL ALBUM
+   ============================================================ */
+.album-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.album-back-btn:hover {
+  color: var(--color-teal);
+}
+
+.album-detail-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.album-detail-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.publish-toggle-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--text-dark);
+  font-weight: 400;
+}
+
+.btn-danger-outline {
+  color: var(--color-red);
+  border-color: #f3caca;
+}
+.btn-danger-outline:hover {
+  background: #fdeaea;
+}
+
+/* toggle switch (dipake buat "Tampilkan di Website") */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 38px;
+  height: 21px;
+  flex-shrink: 0;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.switch-track {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+  background: var(--border-color);
+  border-radius: 999px;
+  transition: background 0.15s ease;
+}
+.switch-track::before {
+  content: '';
+  position: absolute;
+  height: 15px;
+  width: 15px;
+  left: 3px;
+  top: 3px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.15s ease;
+}
+.switch input:checked + .switch-track {
+  background: var(--color-teal);
+}
+.switch input:checked + .switch-track::before {
+  transform: translateX(17px);
+}
+
+/* ============================================================
+   FORM & MODAL GALERI — teks pakai weight 400 (nggak ada bold)
+   ============================================================ */
+#albumModalOverlay .modal-header h2 {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-dark);
+}
+
+#albumModalOverlay .form-label {
+  font-weight: 400;
+}
+
+.upload-dropzone-text strong {
+  font-weight: 400;
+}
+
+/* --- Grid form (Tanggal & Status sejajar, bukan menumpuk) --- */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 600px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================================
+   UPLOAD DROPZONE
+   ============================================================ */
+.upload-dropzone {
+  border: 2px dashed var(--border-color);
+  border-radius: var(--radius-lg);
+  background: var(--color-white);
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 12px;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+  margin-bottom: 24px;
+}
+.upload-dropzone:hover,
+.upload-dropzone.drag-over {
+  border-color: var(--color-teal);
+  background: var(--color-green-light);
+}
+.upload-dropzone-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-green-light);
+  color: var(--color-teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+.upload-dropzone.drag-over .upload-dropzone-icon {
+  background: #fff;
+}
+.upload-dropzone-text strong {
+  display: block;
+  font-size: 13px;
+  color: var(--text-dark);
+  margin-bottom: 2px;
+}
+.upload-dropzone-text span {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* ============================================================
+   GRID FOTO DALAM ALBUM
+   ============================================================ */
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.photo-tile {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  background: linear-gradient(135deg, #eef0f2, #e2e6e4);
+  border: 1px solid var(--border-color);
+}
+
+.photo-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.25s ease;
+}
+.photo-tile:hover img {
+  transform: scale(1.08);
+}
+
+.photo-tile-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 26px;
+}
+
+.photo-tile-cover-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(255, 193, 7, 0.95);
+  color: #6b4a00;
+  font-size: 10px;
+  font-weight: 400;
+  padding: 3px 8px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.photo-tile-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 20, 18, 0.45);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.photo-tile:hover .photo-tile-overlay {
+  opacity: 1;
+}
+
+.photo-tile-action {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--text-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  border: none;
+  cursor: pointer;
+}
+.photo-tile-action:hover {
+  background: #fff;
+}
+.photo-tile-action.danger {
+  color: var(--color-red);
+}
+
+/* ============================================================
+   LIGHTBOX
+   ============================================================ */
+.lightbox-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 12, 10, 0.92);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+}
+.lightbox-overlay.active {
+  display: flex;
+}
+
+.lightbox-img {
+  max-width: 78vw;
+  max-height: 74vh;
+  border-radius: var(--radius-md);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 22px;
+  right: 26px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+.lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+.lightbox-nav:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+.lightbox-prev {
+  left: 26px;
+}
+.lightbox-next {
+  right: 26px;
+}
+
+.lightbox-toolbar {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+}
+.lightbox-toolbar-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border: none;
+  font-size: 12.5px;
+  font-weight: 400;
+  cursor: pointer;
+}
+.lightbox-toolbar-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+.lightbox-toolbar-danger:hover {
+  background: rgba(214, 69, 69, 0.85);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 1024px) {
+  .stat-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 640px) {
+  .album-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .photo-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .album-detail-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .lightbox-img {
+    max-width: 92vw;
+  }
+  .lightbox-nav {
+    width: 38px;
+    height: 38px;
+  }
+}
+
+/* ============================================================
+   DARK MODE — override warna yang masih hardcoded terang
+   ============================================================ */
+body.dark-mode .album-card {
+  background: linear-gradient(135deg, var(--color-green-light), #1c2b33);
+}
+
+body.dark-mode .album-card-badge.draft {
+  background: rgba(30, 41, 59, 0.9);
+  color: #cbd5e1;
+}
+
+body.dark-mode .photo-tile {
+  background: linear-gradient(135deg, #24324a, #1a2332);
+}
+
+body.dark-mode .photo-tile-action {
+  background: rgba(30, 41, 59, 0.92);
+  color: #e2e8f0;
+}
+body.dark-mode .photo-tile-action:hover {
+  background: #334155;
+}
+
+body.dark-mode .upload-dropzone.drag-over .upload-dropzone-icon {
+  background: #1e293b;
+}
+
+body.dark-mode .btn-danger-outline {
+  border-color: rgba(248, 113, 113, 0.4);
+}
+body.dark-mode .btn-danger-outline:hover {
+  background: rgba(248, 113, 113, 0.12);
+}

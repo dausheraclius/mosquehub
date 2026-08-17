@@ -1,0 +1,652 @@
+/* ============================
+   KEPENGURUSAN - Page Specific
+   ============================ */
+
+/* --- Page header — samakan dengan halaman lain --- */
+/* --- Page title: gaya .page-title dkk. ada di components.css --- */
+
+/* --- Action row: tombol aksi utama di antara breadcrumb & konten --- */
+.kepengurusan-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 0 16px;
+}
+
+/* --- Top row: 4 card ringkasan --- */
+.kepengurusan-top-row {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.top-card {
+  background: var(--color-white);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  box-shadow: var(--shadow-sm);
+}
+
+.top-card-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.top-card-value {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text-dark);
+}
+
+.top-card-split {
+  display: flex;
+  gap: 20px;
+}
+
+.top-card-split > div {
+  flex: 1;
+}
+
+.top-card-badge-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* --- Tab Organisasi YMBPK — ganti dropdown lama --- */
+.org-tabs {
+  display: flex;
+  gap: 6px;
+}
+
+.org-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease,
+    background 0.15s ease;
+  white-space: nowrap;
+  flex: 1;
+  justify-content: center;
+}
+
+.org-tab i {
+  font-size: 12px;
+}
+
+.org-tab:hover {
+  color: var(--text-dark);
+  border-color: #b0b5bd;
+}
+
+.org-tab.active {
+  color: var(--color-teal);
+  border-color: var(--color-teal);
+  background: var(--color-green-light);
+  font-weight: 500;
+}
+
+/* --- Org Chart --- */
+.org-chart-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 10px 10px;
+  overflow-x: auto;
+}
+
+.org-node {
+  background: var(--color-white);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: var(--shadow-sm);
+  min-width: 170px;
+  position: relative;
+}
+
+.org-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-green-light);
+  color: var(--color-teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.org-node-info {
+  display: flex;
+  flex-direction: column;
+}
+.org-role {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--color-teal);
+}
+.org-name {
+  font-size: 12px;
+  color: var(--text-dark);
+}
+
+.org-connector {
+  width: 1px;
+  height: 24px;
+  background: var(--border-color);
+}
+
+.org-children {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  border-top: 1px solid var(--border-color);
+  padding-top: 24px;
+  position: relative;
+}
+
+.org-child-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.org-child-col::before {
+  content: '';
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  width: 1px;
+  height: 24px;
+  background: var(--border-color);
+}
+
+.bidang-section {
+  margin-top: 32px;
+  width: 100%;
+}
+
+.bidang-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+.bidang-card {
+  background: var(--color-white);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  text-align: center;
+  font-size: 11.5px;
+  font-weight: 400;
+  color: var(--text-dark);
+  box-shadow: var(--shadow-sm);
+}
+
+/* --- List Jabatan (kanan) --- */
+.jabatan-list-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 4px 10px;
+  font-size: 11.5px;
+  font-weight: 400;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 4px;
+}
+
+.jabatan-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 4px;
+  border-bottom: 1px solid #f0f1f3;
+}
+
+body.dark-mode .jabatan-row {
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+.jabatan-row:last-child {
+  border-bottom: none;
+}
+
+.jabatan-name {
+  font-size: 12.5px;
+  font-weight: 400;
+  color: var(--text-dark);
+  flex-shrink: 0;
+  width: 100px;
+}
+
+/* --- Custom Searchable Select "Pilih Jemaah" --- */
+.jabatan-select {
+  position: relative;
+  flex: 1;
+}
+
+.jabatan-select-trigger {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 7px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  gap: 8px;
+  background: var(--color-white);
+}
+
+.jabatan-select-trigger:hover {
+  background: #fafbfc;
+}
+
+body.dark-mode .jabatan-select-trigger:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.jabatan-select-person {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow: hidden;
+}
+
+.jabatan-select-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #eef0f2;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+.jabatan-select-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.jabatan-select-name {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.jabatan-select-meta {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.jabatan-select-placeholder {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.jabatan-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--color-white);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  max-height: 240px;
+  overflow-y: auto;
+  z-index: 60;
+  display: none;
+}
+
+.jabatan-dropdown.show {
+  display: block;
+}
+
+.jabatan-dropdown-search {
+  padding: 8px;
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  background: var(--color-white);
+}
+
+.jabatan-dropdown-search input {
+  width: 100%;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 12px;
+  outline: none;
+}
+
+.jabatan-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  cursor: pointer;
+}
+
+.jabatan-dropdown-item:hover {
+  background: #f5f6f8;
+}
+
+body.dark-mode .jabatan-dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.jabatan-dropdown-item.selected {
+  background: var(--color-green-light);
+}
+
+.jabatan-dropdown-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--color-green-light);
+  color: var(--color-teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.jabatan-dropdown-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.jabatan-dropdown-name {
+  font-size: 12.5px;
+  font-weight: 400;
+  color: var(--text-dark);
+}
+.jabatan-dropdown-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.jabatan-dropdown-empty {
+  padding: 16px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* --- Footer tombol Reset / Simpan --- */
+.jabatan-footer-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+}
+
+/* ============================
+   ORG CHART BUILDER (rekursif)
+   ============================ */
+
+.org-tree-root {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 10px;
+}
+
+.org-node-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+/* Mode edit: pasang jarak bawah biar tombol + bawah gak ketumpuk */
+.is-editing .org-node-wrapper {
+  padding-bottom: 20px;
+}
+
+.org-connector-line { width: 1px; height: 20px; background: var(--border-color); }
+
+.org-children-row {
+  display: flex;
+  gap: 24px;
+  position: relative;
+  padding-top: 20px;
+}
+
+.org-children-row > .org-node-wrapper::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  width: 1px;
+  height: 20px;
+  background: var(--border-color);
+}
+
+/* --- Panel "Atur Struktur Jabatan" --- */
+.struktur-section {
+  padding: 14px;
+  background: #f9fafa;
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-sm);
+  margin-bottom: 18px;
+}
+
+body.dark-mode .struktur-section {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.struktur-section-title { font-size: 13px; font-weight: 700; color: var(--text-dark); margin-bottom: 4px; }
+.struktur-section-hint { font-size: 11px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.5; }
+
+.struktur-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 0;
+}
+
+.struktur-row-name { font-size: 12px; font-weight: 600; color: var(--text-dark); width: 130px; flex-shrink: 0; }
+
+.struktur-select {
+  flex: 1;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 12px;
+  background: var(--color-white);
+  color: var(--text-dark);
+}
+
+body.dark-mode .struktur-select {
+  background: transparent;
+}
+
+/* ============================
+   ORG CHART - Layout Bagan Kompleks
+   ============================ */
+
+.org-arms-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 40px;
+  padding-top: 20px;
+  width: 100%;
+}
+
+.org-arms-side { display: flex; gap: 16px; flex-wrap: wrap; }
+.org-arms-spacer { flex: 1; }
+
+.org-pair-box {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  background: var(--color-white);
+}
+
+.org-pair-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-color);
+  min-width: 160px;
+}
+
+.org-pair-row:last-child { border-bottom: none; }
+
+.org-dashed-list-box {
+  border: 1.5px dashed var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 170px;
+}
+
+.org-dashed-list-item { display: flex; flex-direction: column; }
+.org-dashed-list-name { font-size: 11.5px; font-weight: 600; color: var(--text-dark); }
+.org-dashed-list-person { font-size: 10.5px; color: var(--text-muted); }
+
+/* ============================
+   DRAG & DROP - Org Chart
+   ============================ */
+
+.org-node[draggable="true"] {
+  cursor: grab;
+}
+
+.org-node * {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.org-node[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+.org-node.dragging {
+  opacity: 0.4;
+  border-style: dashed;
+}
+
+.org-node.drag-over {
+  border-color: var(--color-teal);
+  background: var(--color-green-light);
+  box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.25);
+  transform: scale(1.02);
+  transition: all 0.12s ease;
+}
+
+/* --- Tombol + tambah jabatan anak — di samping & bawah node --- */
+.org-node-add {
+  display: none;
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-teal);
+  color: #fff;
+  border: 2px solid var(--color-white);
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  cursor: pointer;
+  z-index: 10;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+body.dark-mode .org-node-add {
+  border-color: #1a1d23;
+}
+
+.org-node-add:hover {
+  background: var(--color-green);
+}
+
+.org-node-add.visible {
+  display: flex;
+}
+
+.org-node-add--side {
+  right: -13px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.org-node-add--side:hover {
+  transform: translateY(-50%) scale(1.2);
+}
+
+.org-node-add--bottom {
+  bottom: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.org-node-add--bottom:hover {
+  transform: translateX(-50%) scale(1.2);
+}
+
+.org-chart-wrapper.drag-over-root {
+  background: rgba(15, 118, 110, 0.03);
+  border: 2px dashed var(--color-teal);
+  border-radius: var(--radius-md);
+}
+
+
+
+.org-chart-wrapper .org-drop-hint {
+  display: none;
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-muted);
+  padding: 10px;
+  margin-top: 8px;
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-sm);
+}
+
+.org-chart-wrapper.drag-over-root .org-drop-hint {
+  display: block;
+}

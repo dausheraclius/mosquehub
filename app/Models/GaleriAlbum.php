@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\MediaHelper;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -25,7 +26,7 @@ class GaleriAlbum extends Model implements HasMedia
         return $this->getMedia('photos')->map(function (Media $m) {
             return [
                 'id' => $m->id,
-                'url' => $m->getUrl(),
+                'url' => MediaHelper::relativeUrl($m->getUrl()),
                 'isCover' => (bool) $m->getCustomProperty('is_cover', false),
             ];
         })->values()->toArray();

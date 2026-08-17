@@ -3,11 +3,11 @@
 @section('title', 'MosqueHub - Pengumuman')
 
 @push('styles-before-components')
-  <link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}">
+  @vite('resources/assets/css/dashboard.css')
 @endpush
 
 @push('styles-after-components')
-  <link rel="stylesheet" href="{{ asset('assets/css/pengumuman.css') }}">
+  @vite('resources/assets/css/pengumuman.css')
 @endpush
 
 @section('content')
@@ -16,6 +16,9 @@
     <button class="btn btn-primary" id="btnBuatPengumuman">
       <i class="fa-solid fa-plus"></i> Buat Pengumuman
     </button>
+    <a href="{{ route('ekspor.pengumuman') }}" class="btn btn-outline" title="Unduh seluruh pengumuman sebagai Excel">
+      <i class="fa-solid fa-file-excel"></i> Ekspor Excel
+    </a>
   </x-page-header>
 
   @if (session('success'))
@@ -88,7 +91,7 @@
             <span class="tag">{{ $featured->kategori }}</span>
           @endif
           @if ($featured->status === 'Aktif')
-            <span class="tag tag-penting">{{ $featured->status }}</span>
+            <span class="status-badge status-aktif">{{ $featured->status }}</span>
           @endif
         </div>
         <button class="btn btn-primary btn-featured">Lihat Detail</button>
@@ -158,11 +161,11 @@
             <span class="status-badge status-arsip">Arsip</span>
           @endif
           <div class="pengumuman-actions">
-            <button class="btn-sm btn-detail" onclick="event.stopPropagation(); openModal({{ $pengumuman->id }})">Detail</button>
-            <button class="btn-sm btn-edit" onclick="event.stopPropagation(); openEditModal({{ $pengumuman->id }})">
-              <i class="fa-solid fa-pen"></i> Edit
+            <button class="icon-action-btn btn-detail" title="Lihat Detail" onclick="event.stopPropagation(); openModal({{ $pengumuman->id }})"><i class="fa-regular fa-eye"></i></button>
+            <button class="icon-action-btn edit btn-edit" title="Edit" onclick="event.stopPropagation(); openEditModal({{ $pengumuman->id }})">
+              <i class="fa-solid fa-pen"></i>
             </button>
-            <button class="btn-sm btn-hapus" onclick="event.stopPropagation(); openDeleteModal({{ $pengumuman->id }})">
+            <button class="icon-action-btn hapus btn-hapus" title="Hapus" onclick="event.stopPropagation(); openDeleteModal({{ $pengumuman->id }})">
               <i class="fa-solid fa-trash"></i>
             </button>
           </div>
@@ -170,7 +173,7 @@
       </div>
     @empty
       <div class="card pengumuman-item" style="justify-content:center">
-        <p style="color: var(--text-muted); font-size: 13px;">Belum ada pengumuman. Klik "Buat Pengumuman" untuk membuat yang pertama.</p>
+        <p class="empty-state">Belum ada pengumuman. Klik "Buat Pengumuman" untuk membuat yang pertama.</p>
       </div>
     @endforelse
   </div>

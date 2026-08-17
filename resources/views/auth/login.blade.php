@@ -8,12 +8,10 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-  <link rel="stylesheet" href="{{ asset('assets/css/variables.css') }}">
-  <link rel="stylesheet" href="{{ asset('assets/css/reset.css') }}">
-  <link rel="stylesheet" href="{{ asset('assets/css/components.css') }}">
-  <link rel="stylesheet" href="{{ asset('assets/css/login.css') }}">
-
-  @vite('resources/css/app.css')
+  @vite('resources/assets/css/variables.css')
+  @vite('resources/assets/css/reset.css')
+  @vite('resources/assets/css/components.css')
+  @vite('resources/assets/css/login.css')
 </head>
 <body>
 
@@ -28,7 +26,7 @@
               <img src="{{ asset('assets/img/logomasjid.png') }}" alt="Logo Masjid">
             </div>
             <div>
-              <div class="login-brand-name">YMBPK Baiturrahim</div>
+              <div class="login-brand-name">{{ $siteMosque->name }}</div>
               <div class="login-brand-sub">Sistem Informasi Masjid</div>
             </div>
           </div>
@@ -113,7 +111,7 @@
               <input type="checkbox" name="remember">
               Ingat saya
             </label>
-            <a href="#" class="login-forgot">Lupa kata sandi?</a>
+            <a href="{{ route('password.request') }}" class="login-forgot">Lupa password?</a>
           </div>
 
           <button type="submit" class="btn btn-primary login-submit-btn">
@@ -124,6 +122,10 @@
         <div class="login-footer-note">
           Butuh bantuan akses? Hubungi pengurus aplikasi masjid Anda.
         </div>
+
+        <a href="{{ route('public.beranda') }}" class="login-public-link" target="_blank" rel="noopener">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i> Lihat website masjid
+        </a>
       </div>
 
     </div>

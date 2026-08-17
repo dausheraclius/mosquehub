@@ -8,21 +8,19 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-  <link rel="stylesheet" href="{{ asset('assets/css/variables.css') }}">
-  <link rel="stylesheet" href="{{ asset('assets/css/reset.css') }}">
-  <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
-  <link rel="stylesheet" href="{{ asset('assets/css/topbar.css') }}">
-  <link rel="stylesheet" href="{{ asset('assets/css/header.css') }}">
-  <link rel="stylesheet" href="{{ asset('assets/css/sidebar.css') }}">
-  <link rel="stylesheet" href="{{ asset('assets/css/content-header.css') }}">
+  @vite('resources/assets/css/variables.css')
+  @vite('resources/assets/css/reset.css')
+  @vite('resources/assets/css/style.css')
+  @vite('resources/assets/css/topbar.css')
+  @vite('resources/assets/css/header.css')
+  @vite('resources/assets/css/sidebar.css')
+  @vite('resources/assets/css/content-header.css')
   @stack('styles-before-components')
-  <link rel="stylesheet" href="{{ asset('assets/css/components.css') }}">
+  @vite('resources/assets/css/components.css')
   @stack('styles-after-components')
   @stack('styles-late')
-  <link rel="stylesheet" href="{{ asset('assets/css/responsive.css') }}">
+  @vite('resources/assets/css/responsive.css')
   @stack('styles-final')
-
-  @vite('resources/css/app.css')
 </head>
 <body>
 
@@ -60,6 +58,9 @@
       </div>
     </div>
   </div>
+
+  <!-- GLOBAL TOAST NOTIFICATION -->
+  <div class="toast" id="appToast"></div>
 
   @yield('modals')
 

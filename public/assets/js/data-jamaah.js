@@ -99,7 +99,7 @@ function renderPagination(totalItems) {
   pageNumbers.innerHTML = ''
   for (let i = 1; i <= totalPages; i++) {
     const btn = document.createElement('button')
-    btn.className = 'page-number-btn' + (i === currentPage ? ' active' : '')
+    btn.className = 'pagination-btn' + (i === currentPage ? ' active' : '')
     btn.type = 'button'
     btn.textContent = i
     btn.addEventListener('click', () => {
@@ -253,12 +253,11 @@ function openDeleteModal(id) {
     title: 'Hapus Jemaah?',
     message: `Yakin ingin menghapus jemaah "${item.nama}"? Tindakan ini tidak bisa dibatalkan.`,
     onConfirm: async () => {
-      const csrf = document.querySelector('meta[name="csrf-token"]').content
 
       try {
         const res = await fetch(`/data-jamaah/${item.id}`, {
           method: 'DELETE',
-          headers: { Accept: 'application/json', 'X-CSRF-TOKEN': csrf },
+          headers: getHeaders(),
         })
         if (!res.ok) throw new Error('gagal hapus jemaah')
 
@@ -287,6 +286,7 @@ function openAddModal() {
   document.getElementById('addModalTitle').textContent = 'Tambah Jemaah Baru'
   document.getElementById('addModalSubmitBtn').innerHTML = '<i class="fa-solid fa-check"></i> Simpan Jemaah'
   avatarUploadPreview.innerHTML = `<i class="fa-solid fa-user"></i>`
+  if (typeof syncCustomSelects === 'function') syncCustomSelects()
   addModalOverlay.classList.add('active')
 }
 
@@ -315,6 +315,7 @@ function openEditModal(id) {
     ? `<img src="${esc(item.foto)}" alt="Foto ${esc(item.nama)}">`
     : `<i class="fa-solid fa-user"></i>`
 
+  if (typeof syncCustomSelects === 'function') syncCustomSelects()
   addModalOverlay.classList.add('active')
 }
 
@@ -375,15 +376,13 @@ addJamaahForm.addEventListener('submit', async (e) => {
       method: 'POST',
       headers: {
         Accept: 'application/json',
-        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+        'X-CSRF-TOKEN': getCsrf(),
       },
       body: formData,
     })
 
     if (!res.ok) {
-      const errData = await res.json()
-      const firstError = Object.values(errData.errors || {})[0]?.[0] || 'Gagal menyimpan data.'
-      showToast(firstError, 'fa-solid fa-triangle-exclamation')
+      await showFetchError(res, 'Gagal menyimpan data.')
       return
     }
 
@@ -409,12 +408,73 @@ document.addEventListener('keydown', (e) => {
   if (detailModalOverlay.classList.contains('active')) closeDetailModal()
 })
 
-// Tombol Impor / Ekspor (prototype)
-document.getElementById('importBtn').addEventListener('click', () => {
-  showToast('Fitur impor data jemaah (dummy)', 'fa-solid fa-upload')
-})
+// Tombol Impor / Ekspor
+const importJamaahInput = document.getElementById('importJamaahInput')
+
 document.getElementById('exportBtn').addEventListener('click', () => {
-  showToast('Fitur ekspor data jemaah (dummy)', 'fa-solid fa-download')
+  const rows = [
+    ['Nama', 'Jenis Kelamin', 'Tempat Lahir', 'Tanggal Lahir', 'No HP', 'Email', 'Alamat', 'Pekerjaan', 'Status Pernikahan', 'Status Jemaah', 'Tanggal Bergabung', 'Catatan'],
+  ]
+  dataJamaah.forEach((item) => {
+    rows.push([
+      item.nama,
+      item.gender,
+      item.tempatLahir || '',
+      item.tanggalLahirIso || '',
+      item.hp || '',
+      item.email || '',
+      item.alamat || '',
+      item.pekerjaan || '',
+      item.statusPernikahan || '',
+      item.status,
+      item.tanggalBergabungIso || '',
+      item.catatan && item.catatan !== '-' ? item.catatan : '',
+    ])
+  })
+
+  const csv = rows
+    .map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(','))
+    .join('\n')
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' })
+  const link = document.createElement('a')
+  link.href = URL.createObjectURL(blob)
+  link.download = `data-jemaah-${new Date().toISOString().slice(0, 10)}.csv`
+  link.click()
+  URL.revokeObjectURL(link.href)
+  showToast('Data jemaah diekspor ke CSV.', 'fa-solid fa-download')
+})
+
+document.getElementById('importBtn').addEventListener('click', () => importJamaahInput.click())
+
+importJamaahInput.addEventListener('change', async () => {
+  const file = importJamaahInput.files[0]
+  if (!file) return
+
+  const fd = new FormData()
+  fd.append('file', file)
+
+  try {
+    const res = await fetch('/data-jamaah/impor', {
+      method: 'POST',
+      headers: getHeaders({ multipart: true }),
+      body: fd,
+    })
+    const data = await res.json().catch(() => ({}))
+    if (!res.ok) {
+      showToast(data.message || 'Gagal mengimpor file.', 'fa-solid fa-triangle-exclamation')
+      return
+    }
+    const skipCount = (data.skipped || []).length
+    showToast(
+      skipCount ? `${data.imported} jemaah diimpor, ${skipCount} dilewati.` : `${data.imported} jemaah berhasil diimpor.`,
+      'fa-solid fa-file-import',
+    )
+    if (data.imported > 0) setTimeout(() => location.reload(), 900)
+  } catch (err) {
+    showToast('Terjadi kesalahan saat impor.', 'fa-solid fa-triangle-exclamation')
+  } finally {
+    importJamaahInput.value = ''
+  }
 })
 
 // Render pertama kali pas halaman dibuka

@@ -3,16 +3,20 @@
 @section('title', 'MosqueHub - Relawan')
 
 @push('styles-before-components')
-  <link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}">
+  @vite('resources/assets/css/dashboard.css')
 @endpush
 
 @push('styles-after-components')
-  <link rel="stylesheet" href="{{ asset('assets/css/relawan.css') }}">
+  @vite('resources/assets/css/relawan.css')
 @endpush
 
 @section('content')
 
-  <x-page-header crumb="Pengelolaan" active="Relawan" title="Relawan" subtitle="Halaman untuk mengelola relawan masjid dari kegiatan yang telah dijadwalkan." />
+  <x-page-header crumb="Pengelolaan" active="Relawan" title="Relawan" subtitle="Halaman untuk mengelola relawan masjid dari kegiatan yang telah dijadwalkan.">
+    <a href="{{ route('ekspor.relawan') }}" class="btn btn-outline" title="Unduh data relawan sebagai Excel">
+      <i class="fa-solid fa-file-excel"></i> Ekspor Excel
+    </a>
+  </x-page-header>
 
   <div class="filter-bar">
     <div class="filter-group filter-search-group">
@@ -79,5 +83,9 @@
 @endsection
 
 @push('scripts')
+  <script>
+    window.__KEGIATAN_RELAWAN__ = @json($kegiatanList);
+    window.__DAFTAR_JAMAAH_RELAWAN__ = @json($daftarJamaahRelawan);
+  </script>
   <script src="{{ asset('assets/js/relawan.js') }}"></script>
 @endpush

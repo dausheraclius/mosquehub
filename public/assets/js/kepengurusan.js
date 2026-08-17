@@ -1,86 +1,19 @@
-const JABATAN_STORAGE_KEY = 'mosquehub-jabatan-list'
-const PENEMPATAN_STORAGE_KEY = 'mosquehub-kepengurusan-penempatan'
-const HIERARKI_STORAGE_KEY = 'mosquehub-kepengurusan-hierarki'
-
-// --- Data dummy jamaah yang bisa dipilih ---
-const daftarJamaah = [
-  { nama: 'Ust. Daus Morgan', email: 'ust.daus@email.com', hp: '0812xxxxxxx' },
-  { nama: 'Ust. Hakim', email: 'hakim.m@email.com', hp: '0813xxxxxxx' },
-  { nama: 'M. Reza', email: 'reza.s@email.com', hp: '0814xxxxxxx' },
-  { nama: 'Fatimah', email: 'fatimah@email.com', hp: '0815xxxxxxx' },
-  { nama: 'S. Abdullah', email: 'abdullah@email.com', hp: '0816xxxxxxx' },
-]
-
-function getDefaultNamaJabatan() {
-  return ['Ketua YMBPK', 'Wakil Ketua YMBPK', 'Sekretaris YMBPK', 'Bendahara YMBPK', 'Sie Pendidikan', 'Sie Pembangunan']
-}
+const daftarJamaah = window.__DAFTAR_JAMAAH__ || []
 
 function getNamaJabatan() {
-  const saved = localStorage.getItem(JABATAN_STORAGE_KEY)
-  if (saved) {
-    const parsed = JSON.parse(saved)
-    if (Array.isArray(parsed)) return parsed
-  }
-  return getDefaultNamaJabatan()
+  return window.__JABATAN_LIST__ || []
 }
 
 // ============ HIERARKI (struktur atasan-bawahan) ============
 // Format: { [namaJabatan]: namaAtasan | null }
 function getHierarki() {
-  const namaList = getNamaJabatan()
-  const saved = localStorage.getItem(HIERARKI_STORAGE_KEY)
-  let hierarki = saved ? JSON.parse(saved) : {}
-
-  let changed = false
-
-  // Buang entri jabatan yang udah dihapus dari master list (menu Umum)
-  Object.keys(hierarki).forEach((nama) => {
-    if (!namaList.includes(nama)) {
-      delete hierarki[nama]
-      changed = true
-    }
-  })
-
-  // Self-healing: pastikan tiap nama jabatan yang ada di master list punya entri.
-  // Jabatan baru otomatis jadi anak dari jabatan pertama (kecuali dia sendiri jabatan pertama).
-  namaList.forEach((nama, idx) => {
-    if (!(nama in hierarki)) {
-      hierarki[nama] = idx === 0 ? null : namaList[0]
-      changed = true
-    }
-  })
-
-  // Bersihin referensi parent yang nganggur (parent-nya udah dihapus)
-  namaList.forEach((nama) => {
-    const parent = hierarki[nama]
-    if (parent !== null && !namaList.includes(parent)) {
-      hierarki[nama] = null
-      changed = true
-    }
-  })
-
-  if (changed) {
-    simpanHierarki(hierarki)
-    bersihkanPenempatan(namaList)
-  }
-  return hierarki
+  return window.__HIERARKI__ || {}
 }
 
-function bersihkanPenempatan(namaList) {
-  const penempatan = getPenempatan()
-  if (!penempatan) return
-  let changed = false
-  Object.keys(penempatan).forEach((nama) => {
-    if (!namaList.includes(nama)) {
-      delete penempatan[nama]
-      changed = true
-    }
-  })
-  if (changed) simpanPenempatan(penempatan)
-}
-
-function simpanHierarki(hierarki) {
-  localStorage.setItem(HIERARKI_STORAGE_KEY, JSON.stringify(hierarki))
+async function simpanHierarki(hierarki) {
+  window.__HIERARKI__ = hierarki
+  // Cari 1 pasangan nama+parent yang paling baru berubah dibanding sebelumnya udah susah dilacak di sini,
+  // jadi kita kirim ulang tiap kali dipanggil dari titik yang emang ubah 1 jabatan aja (lihat 8f & drag-drop).
 }
 
 // Cek: apakah `calonAtasan` adalah keturunan dari `nama`? (cegah struktur muter/cycle)
@@ -94,22 +27,21 @@ function isDescendant(hierarki, nama, calonAtasan) {
 }
 
 function getPenempatan() {
-  const saved = localStorage.getItem(PENEMPATAN_STORAGE_KEY)
-  if (saved) return JSON.parse(saved)
-  return null
+  return window.__PENEMPATAN__ || {}
 }
 
-function simpanPenempatan(penempatan) {
-  localStorage.setItem(PENEMPATAN_STORAGE_KEY, JSON.stringify(penempatan))
+async function simpanPenempatan(penempatan) {
+  await fetch('/kepengurusan/penempatan', {
+    method: 'POST',
+    headers: getHeaders(),
+    body: JSON.stringify({ penempatan }),
+  })
+  window.__PENEMPATAN__ = penempatan
 }
 
 function bangunJabatanData() {
   const namaList = getNamaJabatan()
-  let penempatan = getPenempatan()
-  if (!penempatan) {
-    penempatan = {}
-    simpanPenempatan(penempatan)
-  }
+  const penempatan = getPenempatan()
 
   return namaList.map((nama) => {
     const email = penempatan[nama] || null
@@ -286,14 +218,20 @@ function renderStrukturList() {
   }).join('')
 
   container.querySelectorAll('.struktur-select').forEach((sel) => {
-    sel.addEventListener('change', (e) => {
+    sel.addEventListener('change', async (e) => {
       const nama = e.target.dataset.nama
       const newParent = e.target.value === '' ? null : e.target.value
       const hierarki = getHierarki()
       hierarki[nama] = newParent
       simpanHierarki(hierarki)
       renderOrgChart()
-      renderStrukturList() // re-render biar opsi disabled/selected ke-update
+      renderStrukturList()
+
+      await fetch('/kepengurusan/jabatan/parent', {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify({ nama, parent_nama: newParent }),
+      })
     })
   })
 }
@@ -443,6 +381,7 @@ document.getElementById('simpanBtn').addEventListener('click', () => {
   const penempatan = {}
   jabatanData.forEach((j) => { if (j.person) penempatan[j.nama] = j.person.email })
   simpanPenempatan(penempatan)
+  updateRingkasan()
   showToast('Perubahan kepengurusan berhasil disimpan.')
 })
 
@@ -480,7 +419,7 @@ function closeAddJabatanModal() {
   addJabatanParent = null
 }
 
-function confirmAddJabatan() {
+async function confirmAddJabatan() {
   const parentNama = addJabatanParent
   if (!parentNama) return
 
@@ -506,13 +445,27 @@ function confirmAddJabatan() {
   }
 
   // Tambah ke master list jabatan
+  const res = await fetch('/kepengurusan/jabatan', {
+    method: 'POST',
+    headers: getHeaders(),
+    body: JSON.stringify({ nama: trimmed, parent_nama: parentNama }),
+  })
+  if (!res.ok) {
+    const err = await res.json()
+    addJabatanInput.classList.add('input-error')
+    addJabatanHint.textContent = err.message || 'Gagal menambah jabatan.'
+    addJabatanHint.style.color = 'var(--color-red)'
+    return
+  }
+
+  // Tambah ke master list jabatan (di memory)
   namaList.push(trimmed)
-  localStorage.setItem(JABATAN_STORAGE_KEY, JSON.stringify(namaList))
+  window.__JABATAN_LIST__ = namaList
 
   // Set hierarki: anak dari parentNama
   const hierarki = getHierarki()
   hierarki[trimmed] = parentNama
-  simpanHierarki(hierarki)
+  window.__HIERARKI__ = hierarki
 
   // Refresh data jabatanData
   jabatanData = bangunJabatanData()
@@ -521,6 +474,7 @@ function confirmAddJabatan() {
   renderOrgChart()
   renderJabatanList()
   if (isEditMode) renderStrukturList()
+  updateRingkasan()
 
   closeAddJabatanModal()
   showToast(`"${trimmed}" ditambahkan sebagai anak "${parentNama}"`)
@@ -564,8 +518,31 @@ addJabatanInput.addEventListener('input', () => {
 // Click tombol + di node pake event delegation
 dndWrapper.addEventListener('click', showAddJabatanModal)
 
+// ============ RINGKASAN ATAS (angka asli, bukan hardcode) ============
+function updateRingkasan() {
+  const namaList = getNamaJabatan()
+  const penempatan = getPenempatan()
+  const total = namaList.length
+  const terisi = Object.values(penempatan || {}).filter((v) => v).length
+  const kosong = Math.max(0, total - terisi)
+
+  const setVal = (id, val) => {
+    const el = document.getElementById(id)
+    if (el) el.textContent = val
+  }
+
+  setVal('jumlahPengurusValue', terisi)
+  setVal('jabatanTerisiValue', terisi)
+  setVal('jabatanKosongValue', kosong)
+  const terisiBadge = document.getElementById('jabatanTerisiBadge')
+  if (terisiBadge) terisiBadge.textContent = `+${terisi} Terisi`
+  const kosongBadge = document.getElementById('jabatanKosongBadge')
+  if (kosongBadge) kosongBadge.textContent = `+${kosong} Kosong`
+}
+
 renderOrgChart()
 renderJabatanList()
+updateRingkasan()
 
 // ============ DRAG & DROP — atur hierarki via seret node di bagan ============
 
@@ -653,6 +630,12 @@ dndWrapper.addEventListener('drop', (e) => {
     renderOrgChart()
     if (isEditMode) renderStrukturList()
     showToast(`"${draggedNama}" sekarang di bawah "${targetNama}"`)
+
+    fetch('/kepengurusan/jabatan/parent', {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({ nama: draggedNama, parent_nama: targetNama }),
+    })
   } else {
     // Drop ke root area — jadi level teratas
     hierarki[draggedNama] = null
@@ -660,6 +643,12 @@ dndWrapper.addEventListener('drop', (e) => {
     renderOrgChart()
     if (isEditMode) renderStrukturList()
     showToast(`"${draggedNama}" dipindah ke level teratas`)
+
+    fetch('/kepengurusan/jabatan/parent', {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({ nama: draggedNama, parent_nama: null }),
+    })
   }
 
   clearDragState()

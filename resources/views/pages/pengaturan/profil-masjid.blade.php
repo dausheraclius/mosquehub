@@ -3,37 +3,41 @@
 @section('title', 'MosqueHub - Profil Masjid')
 
 @push('styles-before-components')
-  <link rel="stylesheet" href="{{ asset('assets/css/profil-masjid.css') }}">
+  @vite('resources/assets/css/profil-masjid.css')
 @endpush
 
 @section('content')
 
-  <x-content-header title="Profil Masjid" subtitle="Ketua YMBPK · 20 Juli 2026" />
+  <x-page-header crumb="Pengaturan" active="Profil Masjid" title="Profil Masjid" subtitle="{{ auth()->user()->role ?? 'Ketua YMBPK' }} · {{ now()->translatedFormat('d F Y') }}" />
 
   <!-- BANNER PROFIL -->
   <div class="card profile-banner">
     <div class="profile-banner-logo" id="bannerLogo">
-      <i class="fa-solid fa-mosque"></i>
+      @if ($mosque->getFirstMediaUrl('logo'))
+        <img src="{{ $mosque->getFirstMediaUrl('logo') }}" alt="Logo" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">
+      @else
+        <i class="fa-solid fa-mosque"></i>
+      @endif
     </div>
     <div class="profile-banner-info">
       <div class="profile-banner-name">
-        YMBPK Baiturrahim
-        <span class="status-pill">Aktif</span>
+        {{ $mosque->name }}
+        <span class="status-pill">{{ ucfirst($mosque->status) }}</span>
       </div>
-      <div class="profile-banner-line">Masjid Jami' Pusat Kegiatan Umat di Bandung</div>
-      <div class="profile-banner-line">Jl. Merdeka No. 123, Bandung, Jawa Barat 40111</div>
+      <div class="profile-banner-line">{{ $mosque->short_name ?: '-' }}</div>
+      <div class="profile-banner-line">{{ $mosque->address ?: 'Alamat belum diisi' }}</div>
       <div class="profile-banner-contact">
-        <span><i class="fa-solid fa-phone"></i> +62 812 3456 7890</span>
-        <span><i class="fa-solid fa-envelope"></i> info@baiturrahim.id</span>
-        <span><i class="fa-solid fa-globe"></i> www.baiturrahim.id</span>
+        <span><i class="fa-solid fa-phone"></i> {{ $mosque->phone ?: '-' }}</span>
+        <span><i class="fa-solid fa-envelope"></i> {{ $mosque->email ?: '-' }}</span>
+        <span><i class="fa-solid fa-globe"></i> {{ $mosque->website ?: '-' }}</span>
       </div>
     </div>
     <div class="profile-banner-actions">
-      <button class="btn btn-outline" id="btnEditProfile"><i class="fa-solid fa-pen"></i> Edit Profil</button>
+      <button type="button" class="btn btn-outline" id="btnEditProfile"><i class="fa-solid fa-pen"></i> Edit Profil</button>
     </div>
   </div>
 
-  <form id="profilForm" onsubmit="return false">
+  <form id="profilForm" onsubmit="return false" enctype="multipart/form-data">
     <div class="profile-grid">
       <!-- KOLOM KIRI -->
       <div class="profile-col">
@@ -42,41 +46,41 @@
           <div class="form-row">
             <div class="form-field">
               <label for="mosqueName">Nama Masjid</label>
-              <input type="text" id="mosqueName" value="YMBPK Baiturrahim" disabled />
+              <input type="text" id="mosqueName" name="name" value="{{ $mosque->name }}" disabled />
             </div>
             <div class="form-field">
               <label for="shortName">Nama Singkat</label>
-              <input type="text" id="shortName" placeholder="Nama Singkat" disabled />
+              <input type="text" id="shortName" name="short_name" value="{{ $mosque->short_name }}" disabled />
             </div>
           </div>
           <div class="form-row">
             <div class="form-field">
               <label for="establishedYear">Tahun Berdiri</label>
-              <input type="text" id="establishedYear" value="2005" disabled />
+              <input type="text" id="establishedYear" name="established_year" value="{{ $mosque->established_year }}" disabled />
             </div>
             <div class="form-field">
               <label for="mosqueCategory">Kategori Masjid</label>
-              <select id="mosqueCategory" disabled>
-                <option>Masjid Jami'</option>
-                <option>Masjid Raya</option>
-                <option>Musholla</option>
+              <select id="mosqueCategory" name="category" disabled>
+                <option {{ $mosque->category === "Masjid Jami'" ? 'selected' : '' }}>Masjid Jami'</option>
+                <option {{ $mosque->category === 'Masjid Raya' ? 'selected' : '' }}>Masjid Raya</option>
+                <option {{ $mosque->category === 'Musholla' ? 'selected' : '' }}>Musholla</option>
               </select>
             </div>
           </div>
           <div class="form-row">
             <div class="form-field">
               <label for="phoneNumber">Nomor Telepon</label>
-              <input type="text" id="phoneNumber" value="+62 812 3456 7890" disabled />
+              <input type="text" id="phoneNumber" name="phone" value="{{ $mosque->phone }}" disabled />
             </div>
             <div class="form-field">
               <label for="email">Email</label>
-              <input type="email" id="email" value="info@baiturrahim.id" disabled />
+              <input type="email" id="email" name="email" value="{{ $mosque->email }}" disabled />
             </div>
           </div>
           <div class="form-row single">
             <div class="form-field">
               <label for="website">Website</label>
-              <input type="text" id="website" value="www.baiturrahim.id" disabled />
+              <input type="text" id="website" name="website" value="{{ $mosque->website }}" disabled />
             </div>
           </div>
         </div>
@@ -86,39 +90,39 @@
           <div class="form-row">
             <div class="form-field">
               <label for="province">Provinsi</label>
-              <input type="text" id="province" placeholder="Provinsi" disabled />
+              <input type="text" id="province" name="province" value="{{ $mosque->province }}" disabled />
             </div>
             <div class="form-field">
               <label for="city">Kota</label>
-              <input type="text" id="city" value="Bandung" disabled />
+              <input type="text" id="city" name="city" value="{{ $mosque->city }}" disabled />
             </div>
           </div>
           <div class="form-row">
             <div class="form-field">
               <label for="district">Kecamatan</label>
-              <input type="text" id="district" placeholder="Kecamatan" disabled />
+              <input type="text" id="district" name="district" value="{{ $mosque->district }}" disabled />
             </div>
             <div class="form-field">
               <label for="kelurahan">Kelurahan</label>
-              <input type="text" id="kelurahan" placeholder="Kelurahan" disabled />
+              <input type="text" id="kelurahan" name="kelurahan" value="{{ $mosque->kelurahan }}" disabled />
             </div>
           </div>
           <div class="form-row single">
             <div class="form-field">
               <label for="postalCode">Kode Pos</label>
-              <input type="text" id="postalCode" value="40111" disabled />
+              <input type="text" id="postalCode" name="postal_code" value="{{ $mosque->postal_code }}" disabled />
             </div>
           </div>
           <div class="form-row single">
             <div class="form-field">
               <label for="completeAddress">Alamat Lengkap</label>
-              <input type="text" id="completeAddress" value="Jl. Merdeka No. 123, Bandung, Jawa Barat" disabled />
+              <input type="text" id="completeAddress" name="address" value="{{ $mosque->address }}" disabled />
             </div>
           </div>
           <div class="form-row single">
             <div class="form-field">
               <label for="mapsLink">Link Google Maps</label>
-              <input type="text" id="mapsLink" placeholder="Link Google Maps" disabled />
+              <input type="text" id="mapsLink" name="maps_link" value="{{ $mosque->maps_link }}" disabled />
             </div>
           </div>
           <div class="map-placeholder"><i class="fa-solid fa-location-dot"></i></div>
@@ -127,24 +131,30 @@
         <div class="card">
           <div class="card-header"><h2 class="card-title">Media Sosial</h2></div>
           <div class="social-row">
-            <div class="social-icon ig"><i class="fa-brands fa-instagram"></i></div>
-            <input type="text" id="igLink" placeholder="Instagram/" disabled />
+            <div class="social-icon ig">
+              <svg width="14" height="16" viewBox="0 0 448 512" fill="none" stroke="currentColor" stroke-width="44" stroke-linecap="round" aria-hidden="true">
+                <rect x="56" y="56" width="336" height="400" rx="96" />
+                <circle cx="224" cy="256" r="76" />
+                <circle cx="324" cy="156" r="14" fill="currentColor" stroke="none" />
+              </svg>
+            </div>
+            <input type="text" id="igLink" name="instagram" value="{{ $mosque->instagram }}" placeholder="Instagram/" disabled />
           </div>
           <div class="social-row">
             <div class="social-icon fb"><i class="fa-brands fa-facebook-f"></i></div>
-            <input type="text" id="fbLink" placeholder="Facebook/" disabled />
+            <input type="text" id="fbLink" name="facebook" value="{{ $mosque->facebook }}" placeholder="Facebook/" disabled />
           </div>
           <div class="social-row">
             <div class="social-icon yt"><i class="fa-brands fa-youtube"></i></div>
-            <input type="text" id="ytLink" placeholder="YouTube/" disabled />
+            <input type="text" id="ytLink" name="youtube" value="{{ $mosque->youtube }}" placeholder="YouTube/" disabled />
           </div>
           <div class="social-row">
             <div class="social-icon tt"><i class="fa-brands fa-tiktok"></i></div>
-            <input type="text" id="ttLink" placeholder="TikTok/Tautan" disabled />
+            <input type="text" id="ttLink" name="tiktok" value="{{ $mosque->tiktok }}" placeholder="TikTok/Tautan" disabled />
           </div>
           <div class="social-row">
             <div class="social-icon wa"><i class="fa-brands fa-whatsapp"></i></div>
-            <input type="text" id="waLink" placeholder="WhatsApp/" disabled />
+            <input type="text" id="waLink" name="whatsapp" value="{{ $mosque->whatsapp }}" placeholder="WhatsApp/" disabled />
           </div>
         </div>
       </div>
@@ -162,26 +172,47 @@
           >
             <i class="fa-solid fa-upload"></i> Unggah Logo
           </button>
-          <input type="file" id="logoInput" accept="image/*" hidden />
+          <input type="file" id="logoInput" name="logo" accept="image/*" hidden />
           <div class="logo-upload-box" id="logoBox">
-            <i class="fa-solid fa-mosque"></i>
+            @if ($mosque->getFirstMediaUrl('logo'))
+              <img src="{{ $mosque->getFirstMediaUrl('logo') }}" alt="Logo Masjid">
+            @else
+              <i class="fa-solid fa-mosque"></i>
+            @endif
           </div>
+          @if ($mosque->getFirstMediaUrl('logo'))
+            <button type="button" class="btn btn-text" id="btnHapusLogo" style="margin-top: 8px; width: 100%; justify-content: center; color: var(--color-danger, #dc2626);">
+              <i class="fa-solid fa-trash"></i> Hapus Logo
+            </button>
+          @endif
         </div>
 
         <div class="card">
           <div class="card-header"><h2 class="card-title">Identitas Resmi</h2></div>
           <div class="identity-grid">
             <div class="identity-box" data-upload>
-              Stempel Resmi
-              <input type="file" accept="image/*,.pdf,.doc,.docx" hidden />
+              @if ($mosque->getFirstMediaUrl('stempel'))
+                <img src="{{ $mosque->getFirstMediaUrl('stempel') }}" style="width:100%;height:100%;object-fit:contain">
+              @else
+                Stempel Resmi
+              @endif
+              <input type="file" name="stempel" accept="image/*,.pdf,.doc,.docx" hidden />
             </div>
             <div class="identity-box" data-upload>
-              Pratinjau Kepala Surat
-              <input type="file" accept="image/*,.pdf,.doc,.docx" hidden />
+              @if ($mosque->getFirstMediaUrl('kop_surat'))
+                <img src="{{ $mosque->getFirstMediaUrl('kop_surat') }}" style="width:100%;height:100%;object-fit:contain">
+              @else
+                Pratinjau Kepala Surat
+              @endif
+              <input type="file" name="kop_surat" accept="image/*,.pdf,.doc,.docx" hidden />
             </div>
             <div class="identity-box" data-upload>
-              Tempat Tanda Tangan
-              <input type="file" accept="image/*,.pdf,.doc,.docx" hidden />
+              @if ($mosque->getFirstMediaUrl('ttd'))
+                <img src="{{ $mosque->getFirstMediaUrl('ttd') }}" style="width:100%;height:100%;object-fit:contain">
+              @else
+                Tempat Tanda Tangan
+              @endif
+              <input type="file" name="ttd" accept="image/*,.pdf,.doc,.docx" hidden />
             </div>
           </div>
         </div>
@@ -192,38 +223,26 @@
             <label>Ketua YMBPK</label>
             <div class="mgmt-select-wrap highlight">
               <div class="mgmt-select-avatar"><i class="fa-solid fa-user"></i></div>
-              <select class="mgmt-select-input" id="mgmtChairman">
-                <option value="1" selected>Ust. Daus Morgan</option>
-                <option value="2">M. Reza</option>
-                <option value="3">Fatimah</option>
-                <option value="4">S. Abdullah</option>
-              </select>
+              <span style="padding: 8px 4px; font-size: 13px;">{{ $pengurus['ketua'] ?? 'Belum ditentukan' }}</span>
             </div>
           </div>
           <div class="mgmt-field">
             <label>Sekretaris</label>
             <div class="mgmt-select-wrap">
               <div class="mgmt-select-avatar"><i class="fa-solid fa-user"></i></div>
-              <select class="mgmt-select-input" id="mgmtSecretary">
-                <option value="1">Ust. Daus Morgan</option>
-                <option value="2" selected>M. Reza</option>
-                <option value="3">Fatimah</option>
-                <option value="4">S. Abdullah</option>
-              </select>
+              <span style="padding: 8px 4px; font-size: 13px;">{{ $pengurus['sekretaris'] ?? 'Belum ditentukan' }}</span>
             </div>
           </div>
           <div class="mgmt-field">
             <label>Bendahara</label>
             <div class="mgmt-select-wrap">
               <div class="mgmt-select-avatar"><i class="fa-solid fa-user"></i></div>
-              <select class="mgmt-select-input" id="mgmtTreasurer">
-                <option value="1">Ust. Daus Morgan</option>
-                <option value="2">M. Reza</option>
-                <option value="3" selected>Fatimah</option>
-                <option value="4">S. Abdullah</option>
-              </select>
+              <span style="padding: 8px 4px; font-size: 13px;">{{ $pengurus['bendahara'] ?? 'Belum ditentukan' }}</span>
             </div>
           </div>
+          <p style="font-size: 11.5px; color: var(--text-muted); margin-top: 8px;">
+            Data ini ngikutin otomatis dari halaman Kepengurusan.
+          </p>
         </div>
 
         <div class="card">
@@ -256,7 +275,6 @@
 @endsection
 
 @section('modals')
-  <div class="toast" id="appToast"></div>
 @endsection
 
 @push('scripts')

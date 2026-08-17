@@ -1,98 +1,5 @@
-// --- Data dummy jemaah (sumbernya dari Data Jemaah, ini cuma cerminannya) ---
-const daftarJamaahRelawan = [
-  { nama: 'M. Reza', telepon: '0812-3456-7890' },
-  { nama: 'Fatimah', telepon: '0812-3456-7891' },
-  { nama: 'S. Abdullah', telepon: '0812-3456-7892' },
-  { nama: 'Ust. Hakim', telepon: '0812-3456-7893' },
-  { nama: 'Kirei', telepon: '0812-3456-7894' },
-  { nama: 'Sandi', telepon: '0812-3456-7895' },
-  { nama: 'Eman', telepon: '0812-3456-7896' },
-  { nama: 'Enjang', telepon: '0812-3456-7897' },
-]
-
-// --- Data dummy kegiatan relawan ---
-let kegiatanRelawan = [
-  {
-    id: 1,
-    nama: 'Kajian Subuh Rutin',
-    icon: 'fa-hand',
-    tanggal: '15 Jun 2026',
-    lokasi: 'YMBPK Baiturrahim - Ruang Utama',
-    slotMax: 20,
-    status: 'Akan Datang',
-    relawan: [daftarJamaahRelawan[0], daftarJamaahRelawan[1]],
-  },
-  {
-    id: 2,
-    nama: 'Pengajian Tahsin & Quran',
-    icon: 'fa-book-open',
-    tanggal: '15 Jun 2026',
-    lokasi: 'YMBPK Baiturrahim - Ruang Utama',
-    slotMax: 20,
-    status: 'Akan Datang',
-    relawan: [daftarJamaahRelawan[2]],
-  },
-  {
-    id: 3,
-    nama: 'Kerja Bakti Bulanan',
-    icon: 'fa-broom',
-    tanggal: '15 Jun 2026',
-    lokasi: 'YMBPK Baiturrahim - Ruang Utama',
-    slotMax: 20,
-    status: 'Berlangsung',
-    relawan: daftarJamaahRelawan.slice(0, 5),
-  },
-  {
-    id: 4,
-    nama: 'Rapat Koordinasi YMBPK',
-    icon: 'fa-users',
-    tanggal: '15 Jun 2026',
-    lokasi: 'YMBPK Baiturrahim - Ruang Utama',
-    slotMax: 20,
-    status: 'Selesai',
-    relawan: daftarJamaahRelawan.slice(0, 3),
-  },
-  {
-    id: 5,
-    nama: 'Penjajian Tahsin & Quran',
-    icon: 'fa-hand',
-    tanggal: '15 Jun 2026',
-    lokasi: 'YMBPK Baiturrahim - Ruang Utama',
-    slotMax: 20,
-    status: 'Akan Datang',
-    relawan: [],
-  },
-  {
-    id: 6,
-    nama: 'Rapat Koordinasi YMBPK',
-    icon: 'fa-users',
-    tanggal: '16 Jun 2026',
-    lokasi: 'YMBPK Baiturrahim - Ruang Utama',
-    slotMax: 20,
-    status: 'Akan Datang',
-    relawan: [daftarJamaahRelawan[3]],
-  },
-  {
-    id: 7,
-    nama: 'Rapat Koordinasi YMBPK',
-    icon: 'fa-users',
-    tanggal: '15 Jun 2026',
-    lokasi: 'YMBPK Baiturrahim - Ruang Utama',
-    slotMax: 20,
-    status: 'Berlangsung',
-    relawan: daftarJamaahRelawan.slice(0, 6),
-  },
-  {
-    id: 8,
-    nama: 'Persiapan Idul Adha',
-    icon: 'fa-mosque',
-    tanggal: '15 Jun 2026',
-    lokasi: 'YMBPK Baiturrahim - Ruang Utama',
-    slotMax: 20,
-    status: 'Selesai',
-    relawan: daftarJamaahRelawan,
-  },
-]
+const daftarJamaahRelawan = window.__DAFTAR_JAMAAH_RELAWAN__ || []
+let kegiatanRelawan = window.__KEGIATAN_RELAWAN__ || []
 
 const statusClassMap = {
   'Akan Datang': 'status-akan-datang',
@@ -273,11 +180,25 @@ document.getElementById('cancelRelawanBtn').addEventListener('click', () => {
   document.getElementById('relawanModal').classList.remove('active')
 })
 
-document.getElementById('saveRelawanBtn').addEventListener('click', () => {
+document.getElementById('saveRelawanBtn').addEventListener('click', async () => {
   const kegiatan = kegiatanRelawan.find((k) => k.id === activeKegiatanId)
-  kegiatan.relawan = daftarJamaahRelawan.filter((j) => tempSelectedPhones.includes(j.telepon))
-  document.getElementById('relawanModal').classList.remove('active')
-  renderGrid()
+  const relawanTerpilih = daftarJamaahRelawan.filter((j) => tempSelectedPhones.includes(j.telepon))
+
+  try {
+    const res = await fetch(`/relawan/${activeKegiatanId}`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({ relawan: relawanTerpilih }),
+    })
+    if (!res.ok) throw new Error('gagal simpan')
+    const updated = await res.json()
+
+    kegiatan.relawan = updated.relawan
+    document.getElementById('relawanModal').classList.remove('active')
+    renderGrid()
+  } catch (err) {
+    showToast('Gagal menyimpan relawan, coba lagi.')
+  }
 })
 
 document.querySelectorAll('.modal-overlay').forEach((overlay) => {

@@ -1,189 +1,8 @@
-const laporanData = [
-  {
-    id: 1,
-    judul: 'Data Jemaah',
-    kategori: 'Jemaah',
-    icon: 'fa-users',
-    desc: 'Informasi dan statistik jamaah secara lengkap.',
-    updated: 'Diperbarui: Hari Ini',
-    countLabel: 'Data',
-    count: '1,284',
-    summary: [
-      { label: 'Total Jemaah', value: '1,485' },
-      { label: 'Jemaah Aktif', value: '1,200' },
-    ],
-    columns: ['No.', 'Nama', 'Status', 'Terakhir Hadir'],
-    rows: [
-      ['1', 'M. Reza', 'Aktif', '15 Jun 2024'],
-      ['2', 'Fatimah', 'Anggota', '16 Jun 2024'],
-      ['3', 'S. Abdullah', 'Aktif', '17 Jun 2024'],
-    ],
-  },
-  {
-    id: 2,
-    judul: 'Laporan Keuangan',
-    kategori: 'Keuangan',
-    icon: 'fa-chart-pie',
-    desc: 'Rincian keuangan tahunan secara komprehensif.',
-    updated: 'Diperbarui: 1 Minggu Lalu',
-    countLabel: 'Modul',
-    count: '12',
-    summary: [
-      { label: 'Total Pemasukan', value: 'Rp 2.510.000.000' },
-      { label: 'Total Pengeluaran', value: 'Rp 1.850.000.000' },
-    ],
-    columns: ['Bulan', 'Pemasukan', 'Pengeluaran'],
-    rows: [
-      ['Mei', 'Rp 210jt', 'Rp 165jt'],
-      ['Jun', 'Rp 225jt', 'Rp 170jt'],
-      ['Jul', 'Rp 240jt', 'Rp 175jt'],
-    ],
-  },
-  {
-    id: 3,
-    judul: 'Kas Masjid',
-    kategori: 'Keuangan',
-    icon: 'fa-wallet',
-    desc: 'Arus kas harian dan bulanan secara detail.',
-    updated: 'Diperbarui: Hari Ini',
-    countLabel: 'Transaksi',
-    count: '54',
-    summary: [
-      { label: 'Saldo Kas', value: 'Rp 185.450.000' },
-      { label: 'Transaksi Bulan Ini', value: '54' },
-    ],
-    columns: ['Tanggal', 'Jenis', 'Nominal'],
-    rows: [
-      ['19/07', 'Donasi', 'Rp 50jt'],
-      ['18/07', 'Listrik', '-Rp 1.2jt'],
-      ['17/07', 'Infaq', 'Rp 8.5jt'],
-    ],
-  },
-  {
-    id: 4,
-    judul: 'Infaq & Sodaqoh',
-    kategori: 'Keuangan',
-    icon: 'fa-hand-holding-heart',
-    desc: 'Statistik penerimaan dan penggunaan secara detail.',
-    updated: 'Diperbarui: 2 Hari Lalu',
-    countLabel: 'Koleksi',
-    count: '89',
-    summary: [
-      { label: 'Total Donasi Bulan Ini', value: 'Rp 58.700.000' },
-      { label: 'Donatur Aktif', value: '312' },
-    ],
-    columns: ['Donatur', 'Jenis', 'Nominal'],
-    rows: [
-      ['Bpk. Hendra', 'Infaq Jumat', 'Rp 500rb'],
-      ['Anonim', 'Pembangunan', 'Rp 1jt'],
-      ['Ibu Sri', 'Sodaqoh', 'Rp 250rb'],
-    ],
-  },
-  {
-    id: 5,
-    judul: 'Agenda',
-    kategori: 'Kegiatan',
-    icon: 'fa-calendar-days',
-    desc: 'Ringkasan agenda dan kegiatan yang akan datang.',
-    updated: 'Diperbarui: Hari Ini',
-    countLabel: 'Acara',
-    count: '15',
-    summary: [
-      { label: 'Agenda Bulan Ini', value: '55' },
-      { label: 'Agenda Selesai', value: '210' },
-    ],
-    columns: ['Tanggal', 'Nama Agenda', 'Status'],
-    rows: [
-      ['22 Jul', 'Kajian Subuh', 'Berlangsung'],
-      ['21 Jul', 'Rapat YMBPK', 'Selesai'],
-      ['30 Jul', 'Jumsih', 'Akan Datang'],
-    ],
-  },
-  {
-    id: 6,
-    judul: 'Kepengurusan',
-    kategori: 'Kegiatan',
-    icon: 'fa-sitemap',
-    desc: 'Struktur pengurus dan status jabatan terkini.',
-    updated: 'Diperbarui: Hari Ini',
-    countLabel: 'Jabatan',
-    count: '12',
-    summary: [
-      { label: 'Jabatan Terisi', value: '9' },
-      { label: 'Jabatan Kosong', value: '3' },
-    ],
-    columns: ['Jabatan', 'Nama', 'Status'],
-    rows: [
-      ['Ketua YMBPK', 'Ust. Daus Morgan', 'Terisi'],
-      ['Wakil Ketua', 'Ust. Hakim', 'Terisi'],
-      ['Bendahara', '-', 'Kosong'],
-    ],
-  },
-  {
-    id: 7,
-    judul: 'Laporan Relawan',
-    kategori: 'Kegiatan',
-    icon: 'fa-hands-helping',
-    desc: 'Partisipasi dan jam kontribusi relawan.',
-    updated: 'Diperbarui: Hari Ini',
-    countLabel: 'Data',
-    count: '58',
-    summary: [
-      { label: 'Relawan Aktif', value: '58 Orang' },
-      { label: 'Total Jam Kontribusi', value: '312 Jam' },
-    ],
-    columns: ['Nama', 'Kegiatan', 'Status'],
-    rows: [
-      ['M. Reza', 'Kerja Bakti', 'Hadir'],
-      ['Fatimah', 'Rapat YMBPK', 'Hadir'],
-      ['S. Abdullah', 'Jumsih', 'Hadir'],
-    ],
-  },
-  {
-    id: 8,
-    judul: 'Inventaris',
-    kategori: 'Aset',
-    icon: 'fa-boxes-stacked',
-    desc: 'Daftar aset dan perlengkapan masjid.',
-    updated: 'Diperbarui: Hari Ini',
-    countLabel: 'Item',
-    count: '215',
-    summary: [
-      { label: 'Total Item', value: '9' },
-      { label: 'Kondisi Baik', value: '6' },
-    ],
-    columns: ['Item', 'Kategori', 'Kondisi'],
-    rows: [
-      ['Sound System', 'Audio', 'Good'],
-      ['Projector', 'Electronics', 'Good'],
-      ['Plastic Chairs', 'Furniture', 'Damaged'],
-    ],
-  },
-  {
-    id: 9,
-    judul: 'Surat Resmi',
-    kategori: 'Aset',
-    icon: 'fa-envelope-open-text',
-    desc: 'Arsip surat masuk dan keluar.',
-    updated: 'Diperbarui: Kemarin',
-    countLabel: 'Surat',
-    count: '102',
-    summary: [
-      { label: 'Terkirim', value: '72' },
-      { label: 'Draft', value: '30' },
-    ],
-    columns: ['No. Surat', 'Subjek', 'Status'],
-    rows: [
-      ['911230100001', 'Undangan Maulid', 'Terkirim'],
-      ['911230100002', 'Certificate of YMBPK', 'Draft'],
-      ['911230100003', 'Undangan Maulid', 'Terkirim'],
-    ],
-  },
-]
+const laporanData = window.laporanData || []
 
 let currentPage = 1
 const perPage = 9
-let activeReportId = 1 // default: Data Jemaah, sesuai referensi
+let activeReportId = laporanData.length > 0 ? laporanData[0].id : null // default: laporan pertama
 
 function getFilteredData() {
   const keyword = document.getElementById('searchInput').value.toLowerCase()
@@ -218,12 +37,12 @@ function renderGrid() {
       <div class="laporan-card ${r.id === activeReportId ? 'active' : ''}" data-id="${r.id}">
         <div class="laporan-card-top">
           <div class="laporan-card-icon"><i class="fa-solid ${r.icon}"></i></div>
-          <span class="laporan-card-title">${r.judul}</span>
+          <span class="laporan-card-title">${escapeHtml(r.judul)}</span>
         </div>
-        <div class="laporan-card-desc">${r.desc}</div>
+        <div class="laporan-card-desc">${escapeHtml(r.desc)}</div>
         <div class="laporan-card-meta">
-          <span>${r.updated}</span>
-          <span><strong>${r.count}</strong> ${r.countLabel}</span>
+          <span>${escapeHtml(r.updated)}</span>
+          <span><strong>${escapeHtml(r.count)}</strong> ${escapeHtml(r.countLabel)}</span>
         </div>
       </div>
     `,
@@ -284,10 +103,20 @@ function renderPreview(id) {
   const r = laporanData.find((item) => item.id === id)
   const panel = document.getElementById('previewPanel')
 
+  if (!r) {
+    panel.innerHTML = `
+      <div class="preview-empty">
+        <i class="fa-regular fa-file-lines"></i>
+        <span>Tidak ada laporan untuk ditampilkan.</span>
+      </div>
+    `
+    return
+  }
+
   panel.innerHTML = `
     <div class="preview-panel-header">
-      <div class="preview-panel-title">${r.judul} - Preview</div>
-      <div class="preview-panel-sub">Dibuat: 20 Jul 2026 | Periode: Semua data hingga saat ini</div>
+      <div class="preview-panel-title">${escapeHtml(r.judul)} - Preview</div>
+      <div class="preview-panel-sub">${escapeHtml(r.dibuat || 'Dibuat: -')} | ${escapeHtml(r.periode || 'Periode: Semua data hingga saat ini')}</div>
     </div>
     <div class="preview-summary-box">
       <div class="preview-summary-title">Ringkasan</div>
@@ -295,17 +124,17 @@ function renderPreview(id) {
         .map(
           (s) => `
         <div class="preview-summary-row">
-          <span class="preview-summary-label">${s.label}</span>
-          <span class="preview-summary-value">${s.value}</span>
+          <span class="preview-summary-label">${escapeHtml(s.label)}</span>
+          <span class="preview-summary-value">${escapeHtml(s.value)}</span>
         </div>
       `,
         )
         .join('')}
     </div>
     <table class="preview-mini-table">
-      <thead><tr>${r.columns.map((c) => `<th>${c}</th>`).join('')}</tr></thead>
+      <thead><tr>${r.columns.map((c) => `<th>${escapeHtml(c)}</th>`).join('')}</tr></thead>
       <tbody>
-        ${r.rows.map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join('')}</tr>`).join('')}
+        ${r.rows.map((row) => `<tr>${row.map((cell) => `<td>${escapeHtml(cell)}</td>`).join('')}</tr>`).join('')}
       </tbody>
     </table>
     <div class="preview-footer-actions">
@@ -315,18 +144,95 @@ function renderPreview(id) {
     </div>
   `
 
-  document
-    .getElementById('previewPrintBtn')
-    .addEventListener('click', () => showToast(`Cetak laporan "${r.judul}" (dummy).`, 'fa-solid fa-print'))
-  document.getElementById('previewPdfBtn').addEventListener('click', () => showToast(`Export PDF "${r.judul}" (dummy).`, 'fa-solid fa-file-pdf'))
-  document
-    .getElementById('previewExcelBtn')
-    .addEventListener('click', () => showToast(`Export Excel "${r.judul}" (dummy).`, 'fa-solid fa-file-excel'))
+  document.getElementById('previewPrintBtn').addEventListener('click', () => {
+    window.open(`/laporan/${r.id}/print${filterQuery()}`, '_blank')
+  })
+  document.getElementById('previewPdfBtn').addEventListener('click', () => {
+    downloadUrl(`/laporan/${r.id}/pdf${filterQuery()}`, `laporan-${slugify(r.judul)}.pdf`)
+  })
+  document.getElementById('previewExcelBtn').addEventListener('click', () => {
+    downloadUrl(`/laporan/${r.id}/excel${filterQuery()}`, `laporan-${slugify(r.judul)}.xlsx`)
+  })
 }
 
-document.getElementById('exportSemuaBtn').addEventListener('click', () => {
-  showToast('Export semua laporan (dummy, belum connect backend).', 'fa-solid fa-download')
+// ==================== FILTER PERIODE & TAHUN (server-side) ====================
+
+// Query string filter aktif (periode/tahun) untuk dipakai di fetch & ekspor.
+function filterQuery() {
+  const params = new URLSearchParams()
+  const periode = document.getElementById('periodeFilter').value
+  const tahun = document.getElementById('tahunFilter').value
+  if (periode) params.set('periode', periode)
+  if (tahun) params.set('tahun', tahun)
+  const qs = params.toString()
+  return qs ? '?' + qs : ''
+}
+
+// Minta ulang data laporan ke server sesuai filter aktif.
+async function reloadFromServer() {
+  try {
+    const res = await fetch(`/laporan${filterQuery()}`, {
+      headers: { Accept: 'application/json' },
+    })
+    if (!res.ok) throw new Error('Gagal memuat data laporan')
+
+    const data = await res.json()
+    laporanData.length = 0
+    laporanData.push(...data)
+
+    activeReportId = laporanData.length > 0 ? laporanData[0].id : null
+    currentPage = 1
+
+    renderGrid()
+    if (activeReportId !== null) renderPreview(activeReportId)
+    updateDateRangeBtn()
+  } catch (err) {
+    console.error(err)
+    showToast('Gagal memuat laporan dengan filter terpilih.', 'fa-solid fa-triangle-exclamation')
+  }
+}
+
+function updateDateRangeBtn() {
+  const span = document.querySelector('#dateRangeBtn span')
+  if (!span || laporanData.length === 0) return
+  span.textContent = laporanData[0].periode
+}
+
+// ==================== EKSPOR (server: cetak / PDF / Excel) ====================
+
+// Amankan data yang berasal dari input user sebelum dirender ke HTML.
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+}
+
+function slugify(text) {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
+document.getElementById('exportSemuaPdfBtn').addEventListener('click', () => {
+  if (laporanData.length === 0) {
+    showToast('Tidak ada data untuk diekspor.', 'fa-solid fa-triangle-exclamation')
+    return
+  }
+  downloadUrl(`/laporan/ekspor/pdf${filterQuery()}`, 'laporan-semua.pdf')
 })
+
+document.getElementById('exportSemuaBtn').addEventListener('click', () => {
+  if (laporanData.length === 0) {
+    showToast('Tidak ada data untuk diekspor.', 'fa-solid fa-triangle-exclamation')
+    return
+  }
+  downloadUrl(`/laporan/ekspor/excel${filterQuery()}`, 'laporan-semua.xlsx')
+})
+
+// ==================== FILTER & PENCARIAN ====================
 
 document.getElementById('searchInput').addEventListener('input', () => {
   currentPage = 1
@@ -336,8 +242,8 @@ document.getElementById('kategoriFilter').addEventListener('change', () => {
   currentPage = 1
   renderGrid()
 })
-document.getElementById('periodeFilter').addEventListener('change', renderGrid)
-document.getElementById('tahunFilter').addEventListener('change', renderGrid)
+document.getElementById('periodeFilter').addEventListener('change', reloadFromServer)
+document.getElementById('tahunFilter').addEventListener('change', reloadFromServer)
 
 renderGrid()
-renderPreview(activeReportId)
+if (activeReportId !== null) renderPreview(activeReportId)

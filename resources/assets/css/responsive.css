@@ -1,0 +1,177 @@
+/* Hamburger: default disembunyiin di desktop */
+.hamburger-btn {
+  display: none;
+  font-size: 18px;
+  color: var(--text-dark);
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.hamburger-btn:hover {
+  background: #f0f1f3;
+}
+
+body.dark-mode .hamburger-btn:hover {
+  background: #2d3a4f;
+}
+
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 85;
+}
+
+.sidebar-overlay.show {
+  display: block;
+}
+
+/* ============================================
+   TABLET  (≤ 1024px)
+   ============================================ */
+@media (max-width: 1024px) {
+  .stat-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .topbar-promo {
+    display: none;
+  }
+
+  .header-app-info {
+    display: none;
+  }
+
+  .header-divider {
+    display: none;
+  }
+}
+
+/* ============================================
+   MOBILE  (≤ 768px)
+   ============================================ */
+@media (max-width: 768px) {
+  /* Hamburger muncul */
+  .hamburger-btn {
+    display: flex;
+  }
+
+  /* Sidebar jadi overlay, default tersembunyi di luar layar */
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    z-index: 95;
+    width: 260px;
+  }
+
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  /* Main content full width, gak kepotong margin sidebar */
+  .main-content {
+    margin-left: 0;
+    padding: 18px;
+  }
+
+  /* Topbar: ringkas, sembunyiin promo & tombol daftar */
+  .topbar-text {
+    font-size: 12px;
+  }
+
+  .btn-daftar {
+    display: none;
+  }
+
+  /* Header: sembunyiin info instansi tengah biar gak sempit */
+  .header-center {
+    margin-left: 12px;
+  }
+
+  .header-institution-name {
+    font-size: 13.5px;
+  }
+
+  .header-institution-logo {
+    width: 30px;
+    height: 30px;
+  }
+
+  .header-user-info {
+    display: none;
+  }
+
+  .header-vendor-text {
+    display: none;
+  }
+
+  .main-header,
+  .topbar {
+    padding: 0 16px;
+  }
+
+  /* Content header: tombol wrap ke bawah, full width */
+  .content-header-actions {
+    width: 100%;
+  }
+
+  .content-header-actions .btn {
+    flex: 1;
+    justify-content: center;
+  }
+
+  /* Stat card jadi 1 kolom */
+  .stat-cards {
+    grid-template-columns: 1fr;
+  }
+
+  /* Chart tetep kebaca di layar kecil */
+  .chart-wrapper {
+    height: 200px;
+  }
+
+  /* Card header (judul + tools) wrap rapi */
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* Tabel: scroll horizontal, jangan numpuk */
+  .table-card {
+    overflow-x: auto;
+  }
+
+  .data-table {
+    min-width: 640px;
+  }
+}
+
+/* ============================================
+   SMALL MOBILE  (≤ 480px)
+   ============================================ */
+@media (max-width: 480px) {
+  .greeting-title {
+    font-size: 18px;
+  }
+
+  .content-header-actions {
+    flex-direction: column;
+  }
+
+  .stat-value {
+    font-size: 19px;
+  }
+
+  .header-institution-name {
+    display: none;
+  }
+}

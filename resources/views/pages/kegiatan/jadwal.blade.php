@@ -3,20 +3,24 @@
 @section('title', 'MosqueHub - Jadwal Kegiatan')
 
 @push('styles-before-components')
-  <link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}">
+  @vite('resources/assets/css/dashboard.css')
 @endpush
 
 @push('styles-after-components')
-  <link rel="stylesheet" href="{{ asset('assets/css/jadwal-kegiatan.css') }}">
+  @vite('resources/assets/css/jadwal-kegiatan.css')
 @endpush
 
 @section('content')
 
-  <x-page-header crumb="Kegiatan" active="Jadwal Kegiatan" title="Jadwal Kegiatan" subtitle="Pantau seluruh kegiatan masjid yang telah dijadwalkan hari ini." />
+  <x-page-header crumb="Kegiatan" active="Jadwal Kegiatan" title="Jadwal Kegiatan" subtitle="Pantau seluruh agenda masjid lengkap dengan tanggal, waktu, dan detailnya.">
+    <a href="{{ route('ekspor.jadwal') }}" class="btn btn-outline" title="Unduh jadwal hari ini sebagai Excel">
+      <i class="fa-solid fa-file-excel"></i> Ekspor Excel
+    </a>
+  </x-page-header>
 
   <div class="stat-cards" id="jkStatCards">
     <div class="stat-card jk-stat-card active" data-status-filter="">
-      <div class="stat-card-top"><span class="stat-label">Total Kegiatan Hari Ini</span></div>
+      <div class="stat-card-top"><span class="stat-label">Total Agenda</span></div>
       <span class="stat-value">{{ $stats['total'] }}</span>
     </div>
     <div class="stat-card jk-stat-card" data-status-filter="berlangsung">
@@ -38,31 +42,29 @@
       <span class="filter-label">Cari</span>
       <div class="filter-search">
         <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" id="jkSearch" placeholder="Cari nama kegiatan..." />
+        <input type="text" id="jkSearch" placeholder="Cari nama / kategori / lokasi..." />
       </div>
     </div>
     <div class="filter-group">
       <span class="filter-label">Tanggal</span>
-      <input type="date" class="filter-select" id="jkDate" value="{{ now()->format('Y-m-d') }}" />
+      <input type="date" id="jkDate" value="" />
     </div>
     <div class="filter-group">
       <span class="filter-label">Kategori</span>
       <select class="filter-select" id="jkKategori">
         <option value="">Semua Kategori</option>
-        <option value="kajian">Kajian</option>
-        <option value="rapat">Rapat</option>
-        <option value="sosial">Sosial</option>
-        <option value="operasional">Operasional</option>
+        @foreach ($kategoriOptions as $opt)
+          <option value="{{ $opt }}" @selected($filters['kategori'] === $opt)>{{ $opt }}</option>
+        @endforeach
       </select>
     </div>
     <div class="filter-group">
       <span class="filter-label">Lokasi</span>
       <select class="filter-select" id="jkLokasi">
         <option value="">Semua Lokasi</option>
-        <option value="aula-utama">Aula Utama</option>
-        <option value="ruang-sekretariat">Ruang Sekretariat</option>
-        <option value="halaman-masjid">Halaman Masjid</option>
-        <option value="ruang-serbaguna">Ruang Serbaguna</option>
+        @foreach ($lokasiOptions as $opt)
+          <option value="{{ $opt }}" @selected($filters['lokasi'] === $opt)>{{ $opt }}</option>
+        @endforeach
       </select>
     </div>
     <div class="filter-group">
@@ -80,54 +82,14 @@
   </div>
 
   <div class="jk-layout">
-    <div class="jk-timeline" id="jkTimeline">
-      @forelse ($kegiatanHariIni as $k)
-        <div
-          class="jk-timeline-item status-{{ $k['statusSlug'] }}"
-          data-name="{{ strtolower($k['nama']) }}"
-          data-category="{{ $k['kategoriSlug'] }}"
-          data-location="{{ $k['lokasiSlug'] }}"
-          data-status="{{ $k['statusSlug'] }}"
-        >
-          <div class="jk-timeline-time">{{ $k['jamMulaiDot'] }}</div>
-          <div class="jk-timeline-dot-col"><span class="jk-timeline-dot"></span></div>
-          <div class="jk-activity-card">
-            <div class="jk-activity-top">
-              <div>
-                <div class="jk-activity-name">{{ $k['nama'] }}</div>
-                <div class="jk-activity-meta">
-                  <span><i class="fa-regular fa-clock"></i>{{ $k['jamMulai'] }} - {{ $k['jamSelesai'] }}</span>
-                  <span><i class="fa-solid fa-location-dot"></i>{{ $k['lokasi'] ?: '-' }}</span>
-                  <span><i class="fa-solid fa-user"></i>{{ $k['pemateri'] ?: '-' }}</span>
-                </div>
-              </div>
-              <div class="jk-badges">
-                <span class="jk-badge cat-{{ $k['kategoriSlug'] }}">{{ $k['kategori'] }}</span>
-                <span class="jk-badge status-{{ $k['statusSlug'] }}">{{ $k['status'] }}</span>
-              </div>
-            </div>
-            <div class="jk-activity-bottom">
-              <button type="button" class="btn-sm btn-detail" onclick="jkToggleDetail(this)">Detail</button>
-            </div>
-            <div class="jk-detail-panel">
-              <div class="jk-detail-row">
-                <span class="label">Deskripsi</span><span>{{ $k['deskripsi'] ?: '-' }}</span>
-              </div>
-              <div class="jk-detail-row">
-                <span class="label">Pemateri</span><span>{{ $k['pemateri'] ?: '-' }}</span>
-              </div>
-              <div class="jk-detail-row">
-                <span class="label">Estimasi Peserta</span><span>{{ $k['peserta'] ?? '-' }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      @empty
-      @endforelse
-
-      <div class="jk-empty {{ $kegiatanHariIni->isEmpty() ? 'show' : '' }}" id="jkEmpty">
-        {{ $kegiatanHariIni->isEmpty() ? 'Tidak ada kegiatan hari ini.' : 'Tidak ada kegiatan yang cocok dengan filter yang dipilih.' }}
-      </div>
+    <div id="jkListWrap">
+      @include('pages.kegiatan.partials.jadwal-timeline', [
+          'agendaList' => $agendaList,
+          'isEmpty' => $isEmpty,
+          'paginator' => $paginator,
+          'pageWindow' => $pageWindow,
+          'hasActiveFilter' => $hasActiveFilter,
+      ])
     </div>
 
     <aside class="jk-rail">
@@ -170,7 +132,7 @@
   </div>
 
   <div class="card jk-history">
-    <div class="card-header"><span class="card-title">Riwayat Kegiatan Hari Ini</span></div>
+    <div class="card-header"><span class="card-title">Riwayat Kegiatan Selesai</span></div>
     <div class="jk-history-list">
       @forelse ($riwayatSelesai as $r)
         <div class="jk-history-item">
@@ -178,12 +140,12 @@
           <div class="jk-history-info">
             <div class="jk-history-title">{{ $r->nama }}</div>
             <div class="jk-history-sub">
-              {{ $r->jam_mulai ? substr($r->jam_mulai, 0, 5) : '-' }} - {{ $r->jam_selesai ? substr($r->jam_selesai, 0, 5) : '-' }} · {{ $r->lokasi ?: '-' }} · {{ $r->pemateri ?: $r->pj }}
+              {{ $r->tanggal?->format('d M Y') }} · {{ $r->jam_mulai ? substr($r->jam_mulai, 0, 5) : '-' }} - {{ $r->jam_selesai ? substr($r->jam_selesai, 0, 5) : '-' }} · {{ $r->lokasi ?: '-' }} · {{ $r->pemateri ?: $r->pj }}
             </div>
           </div>
         </div>
       @empty
-        <p style="font-size:13px;color:var(--text-muted);">Belum ada kegiatan yang selesai hari ini.</p>
+        <p style="font-size:13px;color:var(--text-muted);">Belum ada kegiatan yang selesai.</p>
       @endforelse
     </div>
   </div>

@@ -30,6 +30,7 @@ function attachHeaderListeners() {
     icon.classList.toggle('fa-sun')
     darkModeBtn.title = isDark ? 'Mode Terang' : 'Mode Gelap'
     localStorage.setItem('mosquehub-dark-mode', isDark)
+    document.dispatchEvent(new CustomEvent('mosquehub:darkmode', { detail: { dark: isDark } }))
   })
 
   // Topbar collapse
@@ -38,11 +39,13 @@ function attachHeaderListeners() {
     topbar.classList.add('collapsed')
     document.body.classList.add('topbar-collapsed')
   }
+  setTopbarCollapseIcon(topbarCollapsed)
 
   topbarCollapseBtn?.addEventListener('click', () => {
     const now = topbar.classList.toggle('collapsed')
     document.body.classList.toggle('topbar-collapsed')
     localStorage.setItem('mosquehub-topbar-collapsed', now)
+    setTopbarCollapseIcon(now)
   })
 
   // Logout — trigger modal dari app.js
@@ -52,10 +55,20 @@ function attachHeaderListeners() {
   })
 }
 
+// Chevron tombol collapse menyesuaikan arah: ke atas saat terbuka, ke bawah saat tertutup
+function setTopbarCollapseIcon(collapsed) {
+  const btn = document.getElementById('topbarCollapseBtn')
+  const icon = btn?.querySelector('i')
+  if (!icon) return
+  icon.classList.toggle('fa-chevron-up', !collapsed)
+  icon.classList.toggle('fa-chevron-down', collapsed)
+  if (btn) btn.title = collapsed ? 'Tampilkan Topbar' : 'Sembunyikan Topbar'
+}
+
 function applyFontSizeState() {
-  const sizeMap = { small: '13px', medium: '14px', large: '16px' }
   const saved = localStorage.getItem('mosquehub-font-size') || 'medium'
-  document.body.style.fontSize = sizeMap[saved] || '14px'
+  document.body.classList.remove('font-size-small', 'font-size-medium', 'font-size-large')
+  document.body.classList.add('font-size-' + saved)
 }
 
 // ===== Init saat komponen selesai di-load =====

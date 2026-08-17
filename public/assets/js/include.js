@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   setActiveSidebarLink()
+  scrollActiveLinkIntoView()
   injectCollapseButton()
   document.dispatchEvent(new Event('componentsLoaded'))
   document.body.classList.add('components-ready')
@@ -53,4 +54,26 @@ function setActiveSidebarLink() {
       link.closest('.sidebar-item.has-submenu')?.classList.add('active', 'open')
     }
   })
+}
+
+// Gulir sidebar ke item menu aktif kalo posisinya di bawah/atas layar.
+// Biasanya sidebar ke-reset ke atas tiap halaman di-reload, padahal menu
+// aktif (mis. Pengaturan) ada di bagian bawah — biar langsung keliatan.
+function scrollActiveLinkIntoView() {
+  const sidebar = document.getElementById('sidebar')
+  const active = document.querySelector('.sidebar-item.active > .sidebar-link, .submenu-link.active')
+  if (!sidebar || !active) return
+
+  const sidebarRect = sidebar.getBoundingClientRect()
+  const itemRect = active.getBoundingClientRect()
+
+  // Posisi item relatif terhadap sisi atas sidebar (dalam viewport)
+  const top = itemRect.top - sidebarRect.top
+  const bottom = itemRect.bottom - sidebarRect.top
+
+  // Kalo item keluar dari area sidebar yang terlihat, scroll biar item
+  // ke-tengah (item + konteks di sekitarnya ikut kebaca).
+  if (top < 0 || bottom > sidebarRect.height) {
+    sidebar.scrollTop += top - (sidebarRect.height - itemRect.height) / 2
+  }
 }

@@ -3,11 +3,11 @@
 @section('title', 'MosqueHub - Data Jemaah')
 
 @push('styles-before-components')
-  <link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}">
+  @vite('resources/assets/css/dashboard.css')
 @endpush
 
 @push('styles-after-components')
-  <link rel="stylesheet" href="{{ asset('assets/css/data-jamaah.css') }}">
+  @vite('resources/assets/css/data-jamaah.css')
 @endpush
 
 @section('content')
@@ -94,6 +94,7 @@
       <div class="filter-actions">
         <button class="btn-outline" id="importBtn"><i class="fa-solid fa-upload"></i> Impor</button>
         <button class="btn-outline" id="exportBtn"><i class="fa-solid fa-download"></i> Ekspor</button>
+        <input type="file" id="importJamaahInput" accept=".csv,text/csv" hidden />
       </div>
     </div>
 
@@ -117,12 +118,12 @@
     <div class="table-pagination">
       <span class="pagination-info" id="paginationInfo">Menampilkan data jemaah</span>
       <div class="pagination-controls" id="paginationControls">
-        <button class="page-btn" id="prevPageBtn" type="button">
-          <i class="fa-solid fa-chevron-left"></i> Sebelumnya
+        <button class="pagination-btn" id="prevPageBtn" type="button" aria-label="Halaman sebelumnya">
+          <i class="fa-solid fa-chevron-left"></i>
         </button>
         <div class="page-numbers" id="pageNumbers"></div>
-        <button class="page-btn" id="nextPageBtn" type="button">
-          Selanjutnya <i class="fa-solid fa-chevron-right"></i>
+        <button class="pagination-btn" id="nextPageBtn" type="button" aria-label="Halaman berikutnya">
+          <i class="fa-solid fa-chevron-right"></i>
         </button>
       </div>
     </div>
@@ -348,9 +349,7 @@
     </div>
   </div>
 
-  <!-- Toast Notifikasi -->
-  <div class="toast" id="appToast"></div>
-@endsection
+  @endsection
 
 @push('scripts')
   <script>

@@ -1,0 +1,136 @@
+.topbar {
+  height: var(--topbar-height);
+  background-color: var(--topbar-bg);
+  background-image: radial-gradient(var(--header-pattern-dot) 1px, transparent 1px);
+  background-size: 16px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  font-size: 13px;
+  color: var(--topbar-text);
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.topbar-icon {
+  color: var(--topbar-icon-color);
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.topbar-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.topbar-promo {
+  white-space: nowrap;
+}
+
+.topbar-link {
+  color: var(--color-blue);
+  text-decoration: underline;
+  font-weight: 400;
+  margin-left: 4px;
+}
+
+.btn-daftar {
+  background: var(--accent-orange);
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: var(--radius-sm);
+  font-weight: 400;
+  font-size: 11px;
+  transition: background 0.2s;
+}
+
+.btn-daftar:hover {
+  background: var(--accent-orange-hover);
+}
+
+.topbar-divider {
+  width: 1px;
+  height: 20px;
+  background: #c7d2db;
+}
+
+body.dark-mode .topbar-divider {
+  background: #334155;
+}
+
+/* --- Icon buttons: default polos --- */
+.topbar-icon-btn {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 11px;
+  transition:
+    background 0.2s,
+    opacity 0.2s;
+}
+
+/* Dark mode: lingkaran solid gelap SELALU keliatan */
+#darkModeToggle {
+  background: var(--darkmode-btn-bg);
+  color: #fff;
+}
+
+#darkModeToggle:hover {
+  opacity: 0.85;
+}
+
+/* Power: merah, outline lingkaran tipis */
+#logoutBtn {
+  color: var(--power-color);
+  border: 1px solid var(--power-color);
+}
+
+#logoutBtn:hover {
+  background: var(--power-bg);
+}
+
+/* Chevron collapse: polos abu-abu, gak ada bg */
+#topbarCollapseBtn {
+  color: var(--chevron-color);
+  font-size: 12px;
+}
+
+#topbarCollapseBtn:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.topbar.collapsed {
+  height: var(--topbar-collapsed-height);
+  justify-content: flex-end;
+}
+
+.topbar.collapsed .topbar-left,
+.topbar.collapsed .topbar-icon-btn:not(#topbarCollapseBtn) {
+  display: none;
+}
+/* --- Fixed position --- */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+}

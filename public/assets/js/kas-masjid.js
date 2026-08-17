@@ -28,7 +28,7 @@ function renderTable(data) {
   tbody.innerHTML = ''
 
   if (data.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:24px; color:var(--text-muted);">Data tidak ditemukan</td></tr>`
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:24px; color:var(--text-muted);">Data tidak ditemukan</td></tr>`
     return
   }
 
@@ -43,7 +43,6 @@ function renderTable(data) {
         <td>${esc(item.ket)}</td>
         <td class="amount-in">${formatRupiah(item.masuk)}</td>
         <td class="amount-out">${formatRupiah(item.keluar)}</td>
-        <td><div class="table-avatar"><i class="fa-solid fa-user"></i></div> ${esc(item.oleh)}</td>
         <td>
           <button class="btn-sm btn-detail" data-id="${item.id}" title="Lihat Detail"><i class="fa-regular fa-eye"></i></button>
           <button class="btn-sm btn-edit" data-id="${item.id}" title="Edit"><i class="fa-solid fa-pen"></i></button>
@@ -256,6 +255,7 @@ function openTransaksiModal(id = null) {
     document.getElementById('txTanggal').value = new Date().toISOString().slice(0, 10)
   }
 
+  if (typeof syncCustomSelects === 'function') syncCustomSelects()
   transaksiModalOverlay.classList.add('active')
 }
 
@@ -294,15 +294,13 @@ transaksiForm.addEventListener('submit', async (e) => {
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
-        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+        'X-CSRF-TOKEN': getCsrf(),
       },
       body: JSON.stringify(payload),
     })
 
     if (!res.ok) {
-      const errData = await res.json()
-      const firstError = Object.values(errData.errors || {})[0]?.[0] || 'Gagal menyimpan transaksi.'
-      showToast(firstError, 'fa-solid fa-triangle-exclamation')
+      await showFetchError(res, 'Gagal menyimpan transaksi.')
       return
     }
 
@@ -379,12 +377,11 @@ function openDeleteModal(id) {
     title: 'Hapus Transaksi?',
     message: `Yakin ingin menghapus transaksi "${item.jenis}"? Tindakan ini tidak bisa dibatalkan.`,
     onConfirm: async () => {
-      const csrf = document.querySelector('meta[name="csrf-token"]').content
 
       try {
         const res = await fetch(`/keuangan/kas-masjid/${item.id}`, {
           method: 'DELETE',
-          headers: { Accept: 'application/json', 'X-CSRF-TOKEN': csrf },
+          headers: getHeaders(),
         })
         if (!res.ok) throw new Error('gagal hapus transaksi')
 

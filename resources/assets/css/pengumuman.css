@@ -1,0 +1,270 @@
+/* --- Halaman Pengumuman --- */
+
+/* --- PERBAIKAN STATISTIK --- */
+.custom-stat-card .stat-value-row {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Jarak antara Ikon dan Angka */
+  margin-top: 4px;
+}
+
+.stat-icon-sm {
+  font-size: 20px; /* Ukuran ikon diperkecil */
+  color: var(--text-primary, #1f2937); /* Warna hitam pekat sesuai gambar */
+}
+
+.stat-value-sm {
+  font-size: 18px; /* Ukuran angka diperkecil */
+  font-weight: 400;
+  color: var(--text-primary, #1f2937);
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.filter-input {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--text-dark);
+  background: var(--color-white);
+  min-width: 150px;
+  cursor: pointer;
+}
+
+/* --- PERBAIKAN FEATURED CARD --- */
+.featured-card {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  align-items: center;
+  transition: box-shadow 0.2s;
+  margin-bottom: 20px;
+}
+
+.featured-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.featured-img-placeholder {
+  width: 280px;
+  height: 150px;
+  background: linear-gradient(135deg, #1e1b4b, #450a0a);
+  border-radius: 8px;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.featured-img-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.featured-content {
+  flex: 1;
+}
+
+.featured-title-wrap {
+  margin-bottom: 8px;
+}
+
+.featured-title {
+  font-size: 18px;
+  font-weight: 400;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.featured-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.featured-card .tags-container {
+  margin-bottom: 15px;
+}
+
+.btn-featured {
+  padding: 6px 16px;
+  font-size: 13px;
+}
+
+/* Responsive Featured Card */
+@media (max-width: 768px) {
+  .featured-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .featured-img-placeholder {
+    width: 100%;
+    height: 160px;
+  }
+}
+
+/* --- TAG (Kategori & Penting) --- */
+.tags-container {
+  display: flex;
+  gap: 8px;
+}
+
+.tag {
+  background: var(--bg-light, #f3f4f6);
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  color: var(--text-secondary, #6b7280);
+}
+
+.tag-penting {
+  background: #fce7f3;
+  color: #db2777;
+}
+
+/* --- LIST ITEM PENGUMUMAN --- */
+.pengumuman-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  margin-bottom: 15px;
+}
+
+.list-img-placeholder {
+  width: 50px;
+  height: 50px;
+  background: #1e1b4b;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.pengumuman-item-left,
+.pengumuman-item-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.pengumuman-item-title {
+  font-size: 15px;
+  font-weight: 400;
+  margin-bottom: 4px;
+}
+
+.pengumuman-item-meta {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.pengumuman-actions {
+  display: flex;
+  gap: 5px;
+}
+
+/* --- FILTER TOOLBAR --- */
+
+/* --- BUTTONS --- */
+
+.pengumuman-item .status-badge {
+  border-radius: 12px;
+}
+
+/* --- RESPONSIVE LIST --- */
+@media (max-width: 600px) {
+  .pengumuman-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  .pengumuman-item > div:last-child {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+/* --- MODAL STYLING --- */
+/* Modal overlay/box/header/body/footer dipakai dari komponen
+   reusable di components.css. Di sini hanya tambahan khusus detail. */
+
+.modal-img-placeholder {
+  width: 100%;
+  height: 160px;
+  background: linear-gradient(135deg, #1e1b4b, #450a0a);
+  border-radius: 8px;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.modal-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.modal-img-title {
+  font-weight: 400;
+}
+
+.modal-body p {
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+.attachment-link {
+  color: var(--color-teal, #0f766e);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.attachment-icon {
+  color: #ef4444;
+}
+
+/* Struktur form modal: <form> membungkus body & footer,
+   jadikan flex kolom agar body bisa scroll dalam box. */
+#formModal .modal-box > form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+#formModal .modal-body {
+  overflow-y: auto;
+}
+
+/* ========================================================== */
+/* TIDAK ADA TEKS TEBAL DI HALAMAN PENGUMUMAN                 */
+/* ========================================================== */
+#main-content,
+#main-content *,
+.modal-overlay,
+.modal-overlay *,
+.confirm-overlay,
+.confirm-overlay * {
+  font-weight: 400 !important;
+}
+
+/* Kecualikan ikon Font Awesome solid yang butuh bobot 900 */
+#main-content .fa-solid,
+.modal-overlay .fa-solid,
+.confirm-overlay .fa-solid {
+  font-weight: 900 !important;
+}

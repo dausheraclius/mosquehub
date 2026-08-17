@@ -3,39 +3,48 @@
 @section('title', 'MosqueHub - Infaq & Sodaqoh')
 
 @push('styles-before-components')
-  <link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}">
+  @vite('resources/assets/css/dashboard.css')
 @endpush
 
 @push('styles-after-components')
-  <link rel="stylesheet" href="{{ asset('assets/css/infaq-sodaqoh.css') }}">
+  @vite('resources/assets/css/infaq-sodaqoh.css')
 @endpush
 
 @section('content')
 
+  <!-- BREADCRUMB GLOBAL (di luar kedua view) — tombol collapse sidebar dari include.js
+       disisipkan ke sini, jadi tetap terlihat di tab manapun (tidak ikut tersembunyi
+       saat view standar di-hide ketika tab Qurban aktif). -->
+  <div class="breadcrumb">Keuangan / <span id="ziswafBreadcrumbLabel">Ziswaf</span></div>
+
+  <!-- PAGE HEADER GLOBAL (judul & tombol aksi berubah sesuai tab aktif via JS) -->
+  <x-page-header crumb="Keuangan" active="Infaq & Sodaqoh" title="Ringkasan Ziswaf" subtitle="Kelola seluruh penerimaan Zakat, Infaq, Sodaqoh, Waqaf dan Donasi jemaah." titleId="ziswafPageTitle" subtitleId="ziswafPageSubtitle">
+    <button class="btn btn-primary" id="btnCatatDonasi"><i class="fa-solid fa-plus"></i> Catat Donasi</button>
+    <button class="btn btn-primary" id="btnTambahPeserta" style="display:none"><i class="fa-solid fa-user-plus"></i> Tambah Peserta</button>
+  </x-page-header>
+
+  <!-- TAB KATEGORI: Ringkasan / Zakat / Infaq / Sodaqoh / Waqaf / Donasi / Qurban -->
+  <!-- Diletakkan DI LUAR #ziswafStandardView supaya tidak ikut tersembunyi saat tab Qurban aktif -->
+  <div class="ziswaf-tabs" id="ziswafTabs">
+    <button type="button" class="ziswaf-tab active" data-tab="ringkasan">
+      <i class="fa-solid fa-chart-pie"></i> Ringkasan
+    </button>
+    <button type="button" class="ziswaf-tab" data-tab="zakat">
+      <i class="fa-solid fa-hand-holding-dollar"></i> Zakat
+    </button>
+    <button type="button" class="ziswaf-tab" data-tab="infaq">
+      <i class="fa-solid fa-hand-holding-heart"></i> Infaq
+    </button>
+    <button type="button" class="ziswaf-tab" data-tab="sedekah"><i class="fa-solid fa-heart"></i> Sodaqoh</button>
+    <button type="button" class="ziswaf-tab" data-tab="wakaf">
+      <i class="fa-solid fa-building-columns"></i> Waqaf
+    </button>
+    <button type="button" class="ziswaf-tab" data-tab="donasi"><i class="fa-solid fa-gift"></i> Donasi</button>
+    <button type="button" class="ziswaf-tab" data-tab="qurban"><i class="fa-solid fa-piggy-bank"></i> Qurban</button>
+  </div>
+
   <!-- ============ VIEW STANDAR: Ringkasan/Zakat/Infaq/Sodaqoh/Waqaf/Donasi ============ -->
   <div id="ziswafStandardView">
-    <x-page-header crumb="Keuangan" active="Ziswaf" title="Ringkasan Ziswaf" subtitle="Kelola seluruh penerimaan Zakat, Infaq, Sodaqoh, Waqaf dan Donasi jemaah.">
-      <button class="btn btn-primary" id="btnCatatDonasi"><i class="fa-solid fa-plus"></i> Catat Donasi</button>
-    </x-page-header>
-
-    <!-- TAB KATEGORI: Ringkasan / Zakat / Infaq / Sodaqoh / Waqaf / Donasi / Qurban -->
-    <div class="ziswaf-tabs" id="ziswafTabs">
-      <button type="button" class="ziswaf-tab active" data-tab="ringkasan">
-        <i class="fa-solid fa-chart-pie"></i> Ringkasan
-      </button>
-      <button type="button" class="ziswaf-tab" data-tab="zakat">
-        <i class="fa-solid fa-hand-holding-dollar"></i> Zakat
-      </button>
-      <button type="button" class="ziswaf-tab" data-tab="infaq">
-        <i class="fa-solid fa-hand-holding-heart"></i> Infaq
-      </button>
-      <button type="button" class="ziswaf-tab" data-tab="sedekah"><i class="fa-solid fa-heart"></i> Sodaqoh</button>
-      <button type="button" class="ziswaf-tab" data-tab="wakaf">
-        <i class="fa-solid fa-building-columns"></i> Waqaf
-      </button>
-      <button type="button" class="ziswaf-tab" data-tab="donasi"><i class="fa-solid fa-gift"></i> Donasi</button>
-      <button type="button" class="ziswaf-tab" data-tab="qurban"><i class="fa-solid fa-piggy-bank"></i> Qurban</button>
-    </div>
 
     <!-- DONASI SUMMARY -->
     <div class="donasi-summary-card">
@@ -151,9 +160,6 @@
 
   <!-- ============ VIEW: TABUNGAN QURBAN ============ -->
   <div id="qurbanView" hidden>
-    <x-page-header crumb="Keuangan" active="Tabungan Qurban" title="Tabungan Qurban" subtitle="Pantau progres nabung tiap peserta menuju target hewan qurban.">
-      <button class="btn btn-primary" id="btnTambahPeserta"><i class="fa-solid fa-user-plus"></i> Tambah Peserta</button>
-    </x-page-header>
 
     <div class="stat-cards" id="qurbanStatCards"></div>
 
@@ -169,8 +175,6 @@
 @endsection
 
 @section('modals')
-  <div class="toast" id="appToast"></div>
-
   <!-- MODAL: CATAT DONASI -->
   <div class="modal-overlay" id="donasiModalOverlay">
     <div class="modal-box donasi-modal" id="donasiModalBox">

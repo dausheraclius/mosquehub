@@ -6,10 +6,6 @@ let editingId = null
 let currentDetailItem = null
 
 // --- Helper: request API dengan auto-refresh token CSRF (saat 419) ---
-function getCsrf() {
-  return document.querySelector('meta[name="csrf-token"]').content
-}
-
 async function refreshCsrf() {
   const res = await fetch('/csrf-token')
   const data = await res.json()
@@ -119,6 +115,8 @@ function renderCalendar() {
   const month = currentDate.getMonth()
   document.getElementById('monthSelect').value = month
   document.getElementById('yearSelect').value = year
+  // Month/Year sudah jadi dropdown custom — sinkronkan teks trigger-nya.
+  if (typeof syncCustomSelects === 'function') syncCustomSelects()
 
   const filtered = getFilteredData()
 
@@ -264,11 +262,13 @@ function openFormModal(dateKey, existingItem = null) {
   document.getElementById('formLokasi').value = existingItem?.lokasi || ''
   document.getElementById('formPemateri').value = existingItem?.pemateri || ''
   document.getElementById('formPJ').value = existingItem?.pj || ''
+  if (typeof syncCustomSelects === 'function') syncCustomSelects()
   document.getElementById('formPeserta').value = existingItem?.peserta || ''
   document.getElementById('formStatus').value = existingItem?.status || 'Akan Datang'
   document.getElementById('formDeskripsi').value = existingItem?.deskripsi || ''
   document.getElementById('formRepeat').value = existingItem?.repeat || 'Tidak Berulang'
   document.getElementById('formReminder').value = existingItem?.reminder || '30 Menit Sebelum'
+  if (typeof syncCustomSelects === 'function') syncCustomSelects()
 
   document.getElementById('detailModal').classList.remove('show')
   document.getElementById('formModal').classList.add('show')
@@ -289,6 +289,13 @@ document.getElementById('saveFormBtn').addEventListener('click', async () => {
     return
   }
 
+  const jamMulai = document.getElementById('formJamMulai').value
+  const jamSelesai = document.getElementById('formJamSelesai').value
+  if (!jamMulai || !jamSelesai) {
+    showToast('Jam mulai dan selesai wajib diisi.', 'fa-solid fa-triangle-exclamation')
+    return
+  }
+
   const payload = {
     nama,
     kategori: document.getElementById('formKategori').value,
@@ -303,7 +310,6 @@ document.getElementById('saveFormBtn').addEventListener('click', async () => {
     deskripsi: document.getElementById('formDeskripsi').value,
   }
 
-  const csrf = getCsrf()
   const isEdit = !!editingId
   const url = isEdit ? `/kegiatan/agenda/${editingId}` : '/kegiatan/agenda'
   const method = isEdit ? 'PUT' : 'POST'
@@ -311,13 +317,11 @@ document.getElementById('saveFormBtn').addEventListener('click', async () => {
   try {
     const res = await apiRequest(url, {
       method,
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json', 'X-CSRF-TOKEN': csrf },
+      headers: getHeaders(),
       body: JSON.stringify(payload),
     })
     if (!res.ok) {
-      const errData = await res.json()
-      const firstError = Object.values(errData.errors || {})[0]?.[0] || 'Gagal menyimpan agenda.'
-      showToast(firstError, 'fa-solid fa-triangle-exclamation')
+      await showFetchError(res, 'Gagal menyimpan agenda.')
       return
     }
     const saved = await res.json()
@@ -378,11 +382,10 @@ document.getElementById('deleteAgendaBtn').addEventListener('click', () => {
     title: 'Hapus Agenda?',
     message: `Yakin ingin menghapus agenda "${item.nama}"? Tindakan ini tidak bisa dibatalkan.`,
     onConfirm: async () => {
-      const csrf = getCsrf()
       try {
         const res = await apiRequest(`/kegiatan/agenda/${item.id}`, {
           method: 'DELETE',
-          headers: { Accept: 'application/json', 'X-CSRF-TOKEN': csrf },
+          headers: getHeaders(),
         })
         if (!res.ok) throw new Error('gagal hapus')
 
@@ -468,3 +471,9 @@ populateTimePicker('formJamSelesai')
 populateMonthYearSelect()
 renderCalendar()
 renderJadwal()
+
+// Buka form tambah otomatis kalo datang dari dashboard ("Buat Agenda Baru")
+const urlParams = new URLSearchParams(window.location.search)
+if (urlParams.get('tambah') === '1') {
+  openFormModal(toDateKey(new Date()))
+}

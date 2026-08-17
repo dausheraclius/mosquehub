@@ -3,17 +3,20 @@
 @section('title', 'MosqueHub - Surat')
 
 @push('styles-before-components')
-  <link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}">
+  @vite('resources/assets/css/dashboard.css')
 @endpush
 
 @push('styles-after-components')
-  <link rel="stylesheet" href="{{ asset('assets/css/surat.css') }}">
+  @vite('resources/assets/css/surat.css')
 @endpush
 
 @section('content')
 
   <x-page-header crumb="Pengelolaan" active="Surat" title="Surat" subtitle="Arsip surat resmi masjid.">
     <button class="btn btn-primary" id="tambahSuratBtn"><i class="fa-solid fa-plus"></i> Tambah Surat</button>
+    <a href="{{ route('ekspor.surat') }}" class="btn btn-outline" title="Unduh seluruh surat sebagai Excel">
+      <i class="fa-solid fa-file-excel"></i> Ekspor Excel
+    </a>
   </x-page-header>
 
   <div class="filter-bar">
@@ -87,50 +90,50 @@
         <button class="modal-close" id="closeTambahModal"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="modal-body">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
-          <div>
-            <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">Nomor Surat</label>
-            <input type="text" id="inputNomor" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 13px; box-sizing: border-box;" />
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="inputNomor">Nomor Surat</label>
+            <input type="text" class="form-input" id="inputNomor" />
           </div>
-          <div>
-            <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">Tanggal</label>
-            <input type="text" id="inputTanggal" data-datepicker readonly style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 13px; box-sizing: border-box; cursor: pointer;" />
+          <div class="form-group">
+            <label class="form-label" for="inputTanggal">Tanggal</label>
+            <input type="text" class="form-input" id="inputTanggal" data-datepicker readonly />
           </div>
         </div>
-        <div style="margin-bottom: 12px;">
-          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">Subjek</label>
-          <input type="text" id="inputSubjek" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 13px; box-sizing: border-box;" />
+        <div class="form-group">
+          <label class="form-label" for="inputSubjek">Subjek</label>
+          <input type="text" class="form-input" id="inputSubjek" />
         </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
-          <div>
-            <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">Jenis</label>
-            <select id="inputJenis" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 13px; box-sizing: border-box;">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="inputJenis">Jenis</label>
+            <select id="inputJenis" class="form-select">
               <option value="Surat Undangan">Surat Undangan</option>
               <option value="Sertifikat">Sertifikat</option>
               <option value="Surat Keterangan">Surat Keterangan</option>
               <option value="Surat Tugas">Surat Tugas</option>
             </select>
           </div>
-          <div>
-            <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">Status</label>
-            <select id="inputStatus" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 13px; box-sizing: border-box;">
+          <div class="form-group">
+            <label class="form-label" for="inputStatus">Status</label>
+            <select id="inputStatus" class="form-select">
               <option value="Draft">Draf</option>
               <option value="Terkirim">Terkirim</option>
             </select>
           </div>
         </div>
-        <div style="margin-bottom: 12px;">
-          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">Kepada</label>
-          <input type="text" id="inputKepada" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 13px; box-sizing: border-box;" />
+        <div class="form-group">
+          <label class="form-label" for="inputKepada">Kepada</label>
+          <input type="text" class="form-input" id="inputKepada" />
         </div>
-        <div>
-          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">Isi Surat</label>
-          <textarea id="inputIsi" rows="5" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 13px; box-sizing: border-box; resize: vertical; font-family: inherit;"></textarea>
+        <div class="form-group">
+          <label class="form-label" for="inputIsi">Isi Surat</label>
+          <textarea id="inputIsi" class="form-textarea" rows="5"></textarea>
         </div>
-        <div style="margin-top: 12px;">
-          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">File Surat (PDF/DOCX)</label>
-          <input type="file" id="inputFile" accept=".pdf,.docx,.doc,.jpg,.jpeg,.png" style="font-size: 13px;" />
-          <div id="fileInfo" style="font-size: 11px; color: var(--color-teal); margin-top: 4px; display: none;"></div>
+        <div class="form-group">
+          <label class="form-label" for="inputFile">File Surat (PDF/DOCX)</label>
+          <input type="file" id="inputFile" accept=".pdf,.docx,.doc,.jpg,.jpeg,.png" />
+          <div id="fileInfo" style="display:none; font-size:11px; color:var(--color-teal); margin-top:4px;"></div>
         </div>
       </div>
       <div class="modal-footer">
@@ -143,5 +146,8 @@
 @endsection
 
 @push('scripts')
+  <script>
+    window.suratData = @json($suratList)
+  </script>
   <script src="{{ asset('assets/js/surat.js') }}"></script>
 @endpush

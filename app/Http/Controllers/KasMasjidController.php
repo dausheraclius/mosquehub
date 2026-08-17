@@ -6,11 +6,14 @@ use App\Models\KasTransaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
+use App\Support\Concerns\HasMosqueContext;
+
 class KasMasjidController extends Controller
 {
+    use HasMosqueContext;
     public function index()
     {
-        $mosqueId = 1; // TODO: ganti ke mosque_id user login setelah Auth dibikin
+        $mosqueId = $this->mosqueId;
 
         $all = KasTransaction::where('mosque_id', $mosqueId)->orderByDesc('tanggal')->get();
 
@@ -62,24 +65,17 @@ class KasMasjidController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'tanggal' => 'required|date',
-            'jenis' => 'required|string|max:255',
-            'kategori' => 'nullable|string|max:255',
-            'keterangan' => 'nullable|string|max:255',
-            'tipe' => 'required|in:Pemasukan,Pengeluaran',
-            'jumlah' => 'required|numeric|min:0',
-        ]);
+        $validated = $request->validate($this->rules());
 
         $transaksi = KasTransaction::create([
-            'mosque_id' => 1, // TODO: ganti setelah Auth dibikin
+            'mosque_id' => $this->mosqueId,
             'tanggal' => $validated['tanggal'],
             'jenis' => $validated['jenis'],
             'kategori' => $validated['kategori'] ?? null,
             'keterangan' => $validated['keterangan'] ?? null,
             'pemasukan' => $validated['tipe'] === 'Pemasukan' ? $validated['jumlah'] : 0,
             'pengeluaran' => $validated['tipe'] === 'Pengeluaran' ? $validated['jumlah'] : 0,
-            'dibuat_oleh' => 'Ust. Daus Morgan', // TODO: ganti ke nama user login
+            'dibuat_oleh' => auth()->user()->name ?? 'Ketua YMBPK',
         ]);
 
         return response()->json($this->toArrayForFrontend($transaksi));
@@ -87,16 +83,9 @@ class KasMasjidController extends Controller
 
     public function update(Request $request, $id)
     {
-        $validated = $request->validate([
-            'tanggal' => 'required|date',
-            'jenis' => 'required|string|max:255',
-            'kategori' => 'nullable|string|max:255',
-            'keterangan' => 'nullable|string|max:255',
-            'tipe' => 'required|in:Pemasukan,Pengeluaran',
-            'jumlah' => 'required|numeric|min:0',
-        ]);
+        $validated = $request->validate($this->rules());
 
-        $transaksi = KasTransaction::findOrFail($id);
+        $transaksi = KasTransaction::where('mosque_id', $this->mosqueId)->findOrFail($id);
 
         $transaksi->update([
             'tanggal' => $validated['tanggal'],
@@ -112,10 +101,22 @@ class KasMasjidController extends Controller
 
     public function destroy($id)
     {
-        $transaksi = KasTransaction::findOrFail($id);
+        $transaksi = KasTransaction::where('mosque_id', $this->mosqueId)->findOrFail($id);
         $transaksi->delete();
 
         return response()->json(['success' => true]);
+    }
+
+    private function rules(): array
+    {
+        return [
+            'tanggal' => 'required|date',
+            'jenis' => 'required|string|max:255',
+            'kategori' => 'nullable|string|max:255',
+            'keterangan' => 'nullable|string|max:255',
+            'tipe' => 'required|in:Pemasukan,Pengeluaran',
+            'jumlah' => 'required|numeric|min:0',
+        ];
     }
 
     private function toArrayForFrontend(KasTransaction $t): array

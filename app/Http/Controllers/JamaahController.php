@@ -3,14 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Jamaah;
+use App\Support\Concerns\HasMosqueContext;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class JamaahController extends Controller
 {
+    use HasMosqueContext;
+
     public function index()
     {
-        $jamaahList = Jamaah::orderBy('nama')->get()->map(function ($j) {
+        $mosqueId = $this->mosqueId;
+        $jamaahList = Jamaah::where('mosque_id', $mosqueId)->orderBy('nama')->get()->map(function ($j) {
             return $this->toArrayForFrontend($j);
         });
 
@@ -27,12 +31,73 @@ class JamaahController extends Controller
         ]);
     }
 
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:csv,txt|max:2048',
+        ]);
+
+        $mosqueId = $this->mosqueId;
+        $handle = fopen($request->file('file')->getRealPath(), 'r');
+        if ($handle === false) {
+            return response()->json(['message' => 'Gagal membaca file.'], 422);
+        }
+
+        $header = null;
+        $imported = 0;
+        $errors = [];
+
+        while (($row = fgetcsv($handle)) !== false) {
+            $row = array_map('trim', $row);
+            if ($header === null) {
+                $header = array_map('strtolower', $row);
+                if (in_array('nama', $header, true)) {
+                    continue;
+                }
+                $header = null;
+            }
+
+            $data = $header
+                ? array_combine($header, array_pad($row, count($header), null))
+                : ['nama' => $row[0] ?? null, 'jenis_kelamin' => $row[1] ?? null, 'no_hp' => $row[2] ?? null, 'email' => $row[3] ?? null, 'alamat' => $row[4] ?? null, 'status_jamaah' => $row[5] ?? null, 'tanggal_bergabung' => $row[6] ?? null];
+
+            $nama = $data['nama'] ?? null;
+            if (!$nama) {
+                continue;
+            }
+
+            if (Jamaah::where('mosque_id', $mosqueId)->where('nama', $nama)->exists()) {
+                $errors[] = "\"$nama\" sudah ada, dilewati";
+                continue;
+            }
+
+            Jamaah::create([
+                'mosque_id' => $mosqueId,
+                'nama' => $nama,
+                'jenis_kelamin' => in_array($data['jenis_kelamin'] ?? null, ['Laki-laki', 'Perempuan'], true) ? $data['jenis_kelamin'] : 'Laki-laki',
+                'no_hp' => $data['no_hp'] ?? null,
+                'email' => $data['email'] ?? null,
+                'alamat' => $data['alamat'] ?? null,
+                'status_jamaah' => in_array($data['status_jamaah'] ?? null, ['Aktif', 'Tidak Aktif', 'Pindah', 'Wafat'], true) ? $data['status_jamaah'] : 'Aktif',
+                'tanggal_bergabung' => $data['tanggal_bergabung'] ?? now()->toDateString(),
+            ]);
+            $imported++;
+        }
+
+        fclose($handle);
+
+        return response()->json([
+            'success' => true,
+            'imported' => $imported,
+            'skipped' => $errors,
+        ]);
+    }
+
     public function store(Request $request)
     {
         $validated = $this->validateRequest($request);
 
-        // TODO: ganti "1" jadi mosque_id user yang lagi login, setelah fitur Auth dibikin
-        $validated['mosque_id'] = 1;
+        $validated['mosque_id'] = $this->mosqueId;
 
         $jamaah = Jamaah::create($validated);
 
@@ -43,8 +108,9 @@ class JamaahController extends Controller
 
     public function update(Request $request, $id)
     {
-        // TODO: ganti "1" jadi mosque_id user yang lagi login, setelah fitur Auth dibikin
-        $jamaah = Jamaah::where('mosque_id', 1)->findOrFail($id);
+
+        $mosqueId = $this->mosqueId;
+        $jamaah = Jamaah::where('mosque_id', $mosqueId)->findOrFail($id);
 
         $validated = $this->validateRequest($request);
 
@@ -57,8 +123,9 @@ class JamaahController extends Controller
 
     public function destroy($id)
     {
-        // TODO: ganti "1" jadi mosque_id user yang lagi login, setelah fitur Auth dibikin
-        $jamaah = Jamaah::where('mosque_id', 1)->findOrFail($id);
+
+        $mosqueId = $this->mosqueId;
+        $jamaah = Jamaah::where('mosque_id', $mosqueId)->findOrFail($id);
 
         if ($jamaah->foto) {
             Storage::disk('public')->delete($jamaah->foto);

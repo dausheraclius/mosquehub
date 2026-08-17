@@ -3,16 +3,16 @@
 @section('title', 'MosqueHub - User Management')
 
 @push('styles-before-components')
-  <link rel="stylesheet" href="{{ asset('assets/css/user-management.css') }}">
+  @vite('resources/assets/css/user-management.css')
 @endpush
 
 @section('content')
 
-  <x-content-header title="User Management" subtitle="Ketua YMBPK · 20 Juli 2026">
+  <x-page-header crumb="Pengaturan" active="Manajemen Pengguna" title="User Management" subtitle="{{ auth()->user()->role ?? 'Ketua YMBPK' }} · {{ now()->translatedFormat('d F Y') }}">
     <button class="btn btn-primary" id="btnTambahUser">
       <i class="fa-solid fa-user-plus"></i> Tambah User
     </button>
-  </x-content-header>
+  </x-page-header>
 
   <div class="card table-card">
     <div class="card-header">
@@ -26,9 +26,22 @@
           <input type="text" placeholder="Cari nama/email" id="userSearch" />
         </div>
       </div>
-      <div class="filter-actions">
-        <button class="btn-outline"><i class="fa-solid fa-arrow-up-short-wide"></i> Urutkan</button>
-        <button class="btn-outline"><i class="fa-solid fa-filter"></i> Saring</button>
+      <div class="filter-group">
+        <span class="filter-label">Urutkan</span>
+        <select class="filter-select" id="sortFilter">
+          <option value="nama-asc">Nama (A-Z)</option>
+          <option value="nama-desc">Nama (Z-A)</option>
+          <option value="login-baru">Login Terakhir Terbaru</option>
+          <option value="login-lama">Login Terakhir Terlama</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Saring Status</span>
+        <select class="filter-select" id="statusFilter">
+          <option value="">Semua Status</option>
+          <option value="aktif">Aktif</option>
+          <option value="nonaktif">Nonaktif</option>
+        </select>
       </div>
     </div>
 
@@ -46,96 +59,29 @@
         </tr>
       </thead>
       <tbody id="userTableBody">
-        <tr data-role="Ketua YMBPK">
-          <td><input type="checkbox" /></td>
-          <td><div class="table-avatar"><i class="fa-solid fa-user"></i></div></td>
-          <td>Ust. Daus Morgan</td>
-          <td>daus.morgan@baiturrahim.id</td>
-          <td><span class="role-badge role-ketua">Ketua YMBPK</span></td>
-          <td>
-            <label class="switch">
-              <input type="checkbox" checked class="status-toggle" />
-              <span class="switch-track"></span>
-            </label>
-          </td>
-          <td>Hari ini, 08:12</td>
-          <td>
-            <button class="btn-sm btn-edit btn-edit-user">Edit</button>
-            <button class="btn-sm btn-reset-password">Reset Kata Sandi</button>
-          </td>
-        </tr>
-        <tr data-role="Sekretaris">
-          <td><input type="checkbox" /></td>
-          <td><div class="table-avatar"><i class="fa-solid fa-user"></i></div></td>
-          <td>Fatimah</td>
-          <td>fatimah@baiturrahim.id</td>
-          <td><span class="role-badge role-sekretaris">Sekretaris</span></td>
-          <td>
-            <label class="switch">
-              <input type="checkbox" checked class="status-toggle" />
-              <span class="switch-track"></span>
-            </label>
-          </td>
-          <td>Kemarin, 19:40</td>
-          <td>
-            <button class="btn-sm btn-edit btn-edit-user">Edit</button>
-            <button class="btn-sm btn-reset-password">Reset Kata Sandi</button>
-          </td>
-        </tr>
-        <tr data-role="Bendahara">
-          <td><input type="checkbox" /></td>
-          <td><div class="table-avatar"><i class="fa-solid fa-user"></i></div></td>
-          <td>S. Abdullah</td>
-          <td>abdullah@baiturrahim.id</td>
-          <td><span class="role-badge role-bendahara">Bendahara</span></td>
-          <td>
-            <label class="switch">
-              <input type="checkbox" checked class="status-toggle" />
-              <span class="switch-track"></span>
-            </label>
-          </td>
-          <td>2 hari lalu</td>
-          <td>
-            <button class="btn-sm btn-edit btn-edit-user">Edit</button>
-            <button class="btn-sm btn-reset-password">Reset Kata Sandi</button>
-          </td>
-        </tr>
-        <tr data-role="Admin">
-          <td><input type="checkbox" /></td>
-          <td><div class="table-avatar"><i class="fa-solid fa-user"></i></div></td>
-          <td>M. Reza</td>
-          <td>reza@baiturrahim.id</td>
-          <td><span class="role-badge role-admin">Admin</span></td>
-          <td>
-            <label class="switch">
-              <input type="checkbox" checked class="status-toggle" />
-              <span class="switch-track"></span>
-            </label>
-          </td>
-          <td>5 hari lalu</td>
-          <td>
-            <button class="btn-sm btn-edit btn-edit-user">Edit</button>
-            <button class="btn-sm btn-reset-password">Reset Kata Sandi</button>
-          </td>
-        </tr>
-        <tr data-role="Petugas Zakat">
-          <td><input type="checkbox" /></td>
-          <td><div class="table-avatar"><i class="fa-solid fa-user"></i></div></td>
-          <td>Ahmad Zaki</td>
-          <td>ahmad.zaki@baiturrahim.id</td>
-          <td><span class="role-badge role-custom">Petugas Zakat</span></td>
-          <td>
-            <label class="switch">
-              <input type="checkbox" checked class="status-toggle" />
-              <span class="switch-track"></span>
-            </label>
-          </td>
-          <td>Belum pernah login</td>
-          <td>
-            <button class="btn-sm btn-edit btn-edit-user">Edit</button>
-            <button class="btn-sm btn-reset-password">Reset Kata Sandi</button>
-          </td>
-        </tr>
+        @forelse ($userList as $u)
+          <tr data-id="{{ $u['id'] }}" data-role="{{ $u['role'] }}" data-phone="{{ $u['phone'] }}" data-status="{{ $u['status'] }}" data-lastlogin="{{ $u['lastLoginTs'] }}" data-permissions='{{ json_encode($u['permissions']) }}'>
+            <td><input type="checkbox" /></td>
+            <td><div class="table-avatar"><i class="fa-solid fa-user"></i></div></td>
+            <td>{{ $u['name'] }}</td>
+            <td>{{ $u['email'] }}</td>
+            <td><span class="role-badge role-{{ $u['roleSlug'] }}">{{ $u['role'] }}</span></td>
+            <td>
+              <label class="switch">
+                <input type="checkbox" {{ $u['status'] === 'aktif' ? 'checked' : '' }} class="status-toggle" />
+                <span class="switch-track"></span>
+              </label>
+            </td>
+            <td>{{ $u['lastLogin'] }}</td>
+            <td>
+              <button class="btn-sm btn-edit btn-edit-user">Edit</button>
+              <button class="btn-sm btn-reset-password">Reset Kata Sandi</button>
+              <button class="btn-sm btn-hapus btn-hapus-user"><i class="fa-solid fa-trash"></i></button>
+            </td>
+          </tr>
+        @empty
+          <tr><td colspan="8" class="empty-state">Belum ada user.</td></tr>
+        @endforelse
       </tbody>
     </table>
   </div>
@@ -158,8 +104,19 @@
             <input type="text" id="userName" placeholder="cth: Ahmad Zaki" />
           </div>
           <div class="form-field">
-            <label for="userContact">Email / No HP</label>
-            <input type="text" id="userContact" placeholder="cth: ahmad.zaki@baiturrahim.id" />
+            <label for="userEmail">Email</label>
+            <input type="text" id="userEmail" placeholder="cth: ahmad.zaki@baiturrahim.id" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label for="userPhone">No. HP</label>
+            <input type="text" id="userPhone" placeholder="cth: 0812xxxxxxx" />
+          </div>
+          <div class="form-field" id="passwordField">
+            <label for="userPassword">Password</label>
+            <input type="password" id="userPassword" placeholder="Minimal 8 karakter" />
           </div>
         </div>
 
@@ -170,7 +127,6 @@
               <option value="Ketua YMBPK">Ketua YMBPK</option>
               <option value="Sekretaris">Sekretaris</option>
               <option value="Bendahara">Bendahara</option>
-              <option value="Admin">Admin</option>
               <option value="Petugas Zakat" selected>Petugas Zakat</option>
               <option value="__custom__">+ Buat Role Baru...</option>
             </select>
@@ -224,6 +180,8 @@
             <div class="access-children" data-children-of="kegiatan">
               <label class="access-child"><input type="checkbox" class="access-check" /> Jadwal Kegiatan</label>
               <label class="access-child"><input type="checkbox" class="access-check" /> Agenda</label>
+              <label class="access-child"><input type="checkbox" class="access-check" /> Jadwal Petugas Sholat</label>
+              <label class="access-child"><input type="checkbox" class="access-check" /> Galeri</label>
             </div>
           </div>
 
@@ -283,8 +241,31 @@
     </div>
   </div>
 
-  <div class="toast" id="appToast"></div>
-@endsection
+  <!-- MODAL RESET PASSWORD -->
+  <div class="modal-overlay" id="resetPasswordOverlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2>Reset Kata Sandi</h2>
+        <button class="modal-close" id="resetCloseBtn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-field">
+          <label>Pengguna</label>
+          <input type="text" id="resetUserName" disabled />
+        </div>
+        <div class="form-field" style="margin-top: 12px">
+          <label for="resetUserPassword">Password Baru</label>
+          <input type="text" id="resetUserPassword" placeholder="Minimal 8 karakter" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-text" id="resetCancelBtn">Batal</button>
+        <button class="btn btn-primary" id="resetSaveBtn"><i class="fa-solid fa-key"></i> Reset</button>
+      </div>
+    </div>
+  </div>
+
+  @endsection
 
 @push('scripts')
   <script src="{{ asset('assets/js/user-management.js') }}"></script>

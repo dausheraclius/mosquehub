@@ -3,16 +3,20 @@
 @section('title', 'MosqueHub - Agenda')
 
 @push('styles-before-components')
-  <link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}">
+  @vite('resources/assets/css/dashboard.css')
 @endpush
 
 @push('styles-after-components')
-  <link rel="stylesheet" href="{{ asset('assets/css/agenda.css') }}">
+  @vite('resources/assets/css/agenda.css')
 @endpush
 
 @section('content')
 
-  <x-page-header crumb="Kegiatan" active="Agenda" title="Agenda" subtitle="Kelola seluruh kegiatan dan agenda masjid." />
+  <x-page-header crumb="Kegiatan" active="Agenda" title="Agenda" subtitle="Kelola seluruh kegiatan dan agenda masjid.">
+    <a href="{{ route('ekspor.agenda') }}" class="btn btn-outline" title="Unduh seluruh agenda sebagai Excel">
+      <i class="fa-solid fa-file-excel"></i> Ekspor Excel
+    </a>
+  </x-page-header>
 
   <!-- HIGHLIGHT AGENDA HARI INI -->
   @if ($highlight)
@@ -186,18 +190,12 @@
           </div>
           <div class="form-group">
             <label class="form-label">Penanggung Jawab</label>
-            <input
-              type="text"
-              class="form-control"
-              id="formPJ"
-              list="jamaahList"
-              placeholder="Pilih dari jemaah atau ketik sendiri"
-            />
-            <datalist id="jamaahList">
+            <select class="form-control time-select" id="formPJ" aria-label="Penanggung Jawab">
+              <option value="">— Pilih Penanggung Jawab —</option>
               @foreach ($jamaahNames as $nama)
-                <option value="{{ $nama }}"></option>
+                <option value="{{ $nama }}">{{ $nama }}</option>
               @endforeach
-            </datalist>
+            </select>
           </div>
         </div>
         <div class="form-row">
@@ -273,10 +271,7 @@
     </div>
   </div>
 
-  <!-- TOAST NOTIFIKASI -->
-  <div class="toast" id="appToast"></div>
-
-@endsection
+  @endsection
 
 @push('scripts')
   <script>

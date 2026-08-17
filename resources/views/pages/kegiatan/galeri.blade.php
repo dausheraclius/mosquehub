@@ -3,11 +3,11 @@
 @section('title', 'MosqueHub - Galeri')
 
 @push('styles-before-components')
-  <link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}">
+  @vite('resources/assets/css/dashboard.css')
 @endpush
 
 @push('styles-after-components')
-  <link rel="stylesheet" href="{{ asset('assets/css/galeri.css') }}">
+  @vite('resources/assets/css/galeri.css')
 @endpush
 
 @section('content')
@@ -19,6 +19,16 @@
     </x-page-header>
 
     <div class="stat-cards" id="galeriStatCards"></div>
+
+    <div class="filter-bar" style="margin-bottom: 16px">
+      <div class="filter-group filter-search-group">
+        <span class="filter-label">Cari</span>
+        <div class="filter-search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="albumSearch" placeholder="Cari album..." />
+        </div>
+      </div>
+    </div>
 
     <div class="album-grid" id="albumGrid"></div>
   </div>
@@ -123,8 +133,6 @@
       </button>
     </div>
   </div>
-
-  <div class="toast" id="appToast"></div>
 @endsection
 
 @push('scripts')

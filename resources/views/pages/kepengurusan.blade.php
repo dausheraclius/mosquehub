@@ -3,11 +3,11 @@
 @section('title', 'MosqueHub - Kepengurusan')
 
 @push('styles-before-components')
-  <link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}">
+  @vite('resources/assets/css/dashboard.css')
 @endpush
 
 @push('styles-after-components')
-  <link rel="stylesheet" href="{{ asset('assets/css/kepengurusan.css') }}">
+  @vite('resources/assets/css/kepengurusan.css')
 @endpush
 
 @section('content')
@@ -17,6 +17,9 @@
   <!-- ACTION ROW: tombol aksi utama -->
   <div class="kepengurusan-actions">
     <button class="btn btn-primary" id="toggleEditBtn"><i class="fa-solid fa-pen"></i> Edit Kepengurusan</button>
+    <a href="{{ route('ekspor.kepengurusan') }}" class="btn btn-outline" title="Unduh struktur kepengurusan sebagai Excel">
+      <i class="fa-solid fa-file-excel"></i> Ekspor Excel
+    </a>
   </div>
 
   <!-- TOP ROW: 4 CARD RINGKASAN -->
@@ -36,24 +39,24 @@
       </div>
       <div>
         <div class="top-card-label">Jumlah Pengurus</div>
-        <div class="top-card-value">9</div>
+        <div class="top-card-value" id="jumlahPengurusValue">0</div>
       </div>
     </div>
 
     <div class="top-card">
       <div class="top-card-badge-row">
         <span class="top-card-label">Jumlah Jabatan Terisi</span>
-        <span class="stat-badge up">+5 Terisi</span>
+        <span class="stat-badge up" id="jabatanTerisiBadge">0 Terisi</span>
       </div>
-      <div class="top-card-value">6</div>
+      <div class="top-card-value" id="jabatanTerisiValue">0</div>
     </div>
 
     <div class="top-card">
       <div class="top-card-badge-row">
         <span class="top-card-label">Jumlah Jabatan Kosong</span>
-        <span class="stat-badge" style="background: #fdeaea; color: var(--color-red)">+3 Kosong</span>
+        <span class="stat-badge" id="jabatanKosongBadge" style="background: #fdeaea; color: var(--color-red)">0 Kosong</span>
       </div>
-      <div class="top-card-value">3</div>
+      <div class="top-card-value" id="jabatanKosongValue">0</div>
     </div>
   </div>
 
@@ -111,5 +114,11 @@
 @endsection
 
 @push('scripts')
+  <script>
+    window.__JABATAN_LIST__ = @json($namaJabatanList);
+    window.__HIERARKI__ = @json($hierarki);
+    window.__PENEMPATAN__ = @json($penempatan);
+    window.__DAFTAR_JAMAAH__ = @json($daftarJamaah);
+  </script>
   <script src="{{ asset('assets/js/kepengurusan.js') }}"></script>
 @endpush

@@ -12,11 +12,8 @@
 // ---- SUMBER DATA UTAMA (nanti diganti fetch dari backend/API) ----
 const dataDonasi = window.__DONASI_DATA__ || []
 
-// ---- Daftar petugas penerima (dari Data Jemaah) ----
-const PETUGAS_OPTIONS =
-  window.__PETUGAS_OPTIONS__ && window.__PETUGAS_OPTIONS__.length
-    ? window.__PETUGAS_OPTIONS__
-    : ['Ust. Daus Morgan', 'Bpk. Ahmad Fauzi', 'Bpk. Rizki Ramadhan']
+// ---- Daftar petugas penerima (dari Data Jemaah, dikirim server) ----
+const PETUGAS_OPTIONS = window.__PETUGAS_OPTIONS__ || []
 
 function populatePetugasOptions() {
   ;[document.getElementById('inputDonasiPetugas'), document.getElementById('inputSetoranPetugas')].forEach((select) => {
@@ -158,8 +155,8 @@ function renderHeaderAndSummary() {
   const scoped = getScopedData()
   const total = scoped.reduce((sum, d) => sum + d.nominal, 0)
 
-  const headerTitle = document.querySelector('#ziswafStandardView .page-title')
-  const headerSubtitle = document.querySelector('#ziswafStandardView .page-subtitle')
+  const headerTitle = document.getElementById('ziswafPageTitle')
+  const headerSubtitle = document.getElementById('ziswafPageSubtitle')
   if (headerTitle) headerTitle.textContent = meta.title
   if (headerSubtitle) headerSubtitle.textContent = meta.subtitle
   document.getElementById('summaryLabel').textContent = meta.summaryLabel
@@ -174,12 +171,14 @@ function renderHeaderAndSummary() {
   if (thDonatur) thDonatur.textContent = meta.donaturLabel || 'Donatur'
 
   const btn = document.getElementById('btnCatatDonasi')
+  const btnTambah = document.getElementById('btnTambahPeserta')
   if (meta.btnLabel) {
     btn.style.display = ''
     btn.innerHTML = `<i class="fa-solid fa-plus"></i> ${meta.btnLabel}`
   } else {
     btn.style.display = 'none'
   }
+  if (btnTambah) btnTambah.style.display = 'none'
 }
 
 function renderStatCards() {
@@ -490,11 +489,10 @@ function renderTable(allData) {
         title: 'Hapus Transaksi?',
         message: `Yakin ingin menghapus transaksi ${item.donatur} (${formatRupiah(item.nominal)})?`,
         onConfirm: async () => {
-          const csrf = document.querySelector('meta[name="csrf-token"]').content
           try {
             const res = await fetch(`/keuangan/infaq-sodaqoh/donasi/${item.id}`, {
               method: 'DELETE',
-              headers: { Accept: 'application/json', 'X-CSRF-TOKEN': csrf },
+              headers: getHeaders(),
             })
             if (!res.ok) throw new Error('gagal hapus')
 
@@ -524,8 +522,8 @@ function renderPager(total, page, totalPages) {
   pager.innerHTML = `
     <span class="table-pager-info">${total} data &middot; halaman ${page}/${totalPages}</span>
     <div class="table-pager-buttons">
-      <button class="btn-outline btn-sm-outline" id="pagerPrev" ${page <= 1 ? 'disabled' : ''}><i class="fa-solid fa-chevron-left"></i> Sebelumnya</button>
-      <button class="btn-outline btn-sm-outline" id="pagerNext" ${page >= totalPages ? 'disabled' : ''}>Berikutnya <i class="fa-solid fa-chevron-right"></i></button>
+      <button class="pagination-btn" id="pagerPrev" aria-label="Halaman sebelumnya" ${page <= 1 ? 'disabled' : ''}><i class="fa-solid fa-chevron-left"></i></button>
+      <button class="pagination-btn" id="pagerNext" aria-label="Halaman berikutnya" ${page >= totalPages ? 'disabled' : ''}><i class="fa-solid fa-chevron-right"></i></button>
     </div>
   `
   document.getElementById('pagerPrev').addEventListener('click', () => {
@@ -716,12 +714,30 @@ function switchTab(tabKey) {
     btn.classList.toggle('active', btn.dataset.tab === tabKey)
   })
 
+  // Breadcrumb global (di luar kedua view) — label ikut tab aktif.
+  // Pakai id khusus: querySelector('.breadcrumb span') bisa kena divider
+  // yang disisipkan include.js (bukan label).
+  const bcLabel = document.getElementById('ziswafBreadcrumbLabel')
+  if (bcLabel) bcLabel.textContent = tabKey === 'qurban' ? 'Tabungan Qurban' : 'Ziswaf'
+
   const standardView = document.getElementById('ziswafStandardView')
   const qurbanView = document.getElementById('qurbanView')
 
   if (tabKey === 'qurban') {
     standardView.hidden = true
     qurbanView.hidden = false
+
+    // Header global: judul, subtitle & tombol aksi untuk view Qurban
+    const headerTitle = document.getElementById('ziswafPageTitle')
+    const headerSubtitle = document.getElementById('ziswafPageSubtitle')
+    const btn = document.getElementById('btnCatatDonasi')
+    const btnTambah = document.getElementById('btnTambahPeserta')
+    if (headerTitle) headerTitle.textContent = 'Tabungan Qurban'
+    if (headerSubtitle)
+      headerSubtitle.textContent = 'Pantau progres nabung tiap peserta menuju target hewan qurban.'
+    if (btn) btn.style.display = 'none'
+    if (btnTambah) btnTambah.style.display = ''
+
     renderQurbanView()
     return
   }
@@ -941,11 +957,10 @@ function renderPesertaList() {
         title: 'Hapus Setoran?',
         message: `Yakin ingin menghapus setoran ${formatRupiah(setoran.jumlah)} (${formatTanggalIndo(setoran.tanggal)}) dari ${peserta.nama}?`,
         onConfirm: async () => {
-          const csrf = document.querySelector('meta[name="csrf-token"]').content
           try {
             const res = await fetch(`/keuangan/infaq-sodaqoh/setoran/${setoranId}`, {
               method: 'DELETE',
-              headers: { Accept: 'application/json', 'X-CSRF-TOKEN': csrf },
+              headers: getHeaders(),
             })
             if (!res.ok) throw new Error('gagal hapus setoran')
 
@@ -981,11 +996,10 @@ function renderPesertaList() {
         title: 'Hapus Anggota?',
         message: `Yakin ingin menghapus ${member.nama} dari patungan ini?`,
         onConfirm: async () => {
-          const csrf = document.querySelector('meta[name="csrf-token"]').content
           try {
             const res = await fetch(`/keuangan/infaq-sodaqoh/anggota/${memberId}`, {
               method: 'DELETE',
-              headers: { Accept: 'application/json', 'X-CSRF-TOKEN': csrf },
+              headers: getHeaders(),
             })
             if (!res.ok) throw new Error('gagal hapus anggota')
 
@@ -1024,11 +1038,10 @@ function renderPesertaList() {
         title: 'Hapus Peserta?',
         message: `Yakin ingin menghapus ${peserta.nama}? Seluruh setoran & anggota patungannya ikut terhapus.`,
         onConfirm: async () => {
-          const csrf = document.querySelector('meta[name="csrf-token"]').content
           try {
             const res = await fetch(`/keuangan/infaq-sodaqoh/peserta/${id}`, {
               method: 'DELETE',
-              headers: { Accept: 'application/json', 'X-CSRF-TOKEN': csrf },
+              headers: getHeaders(),
             })
             if (!res.ok) throw new Error('gagal hapus peserta')
 
@@ -1229,14 +1242,12 @@ async function savePeserta() {
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
-        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+        'X-CSRF-TOKEN': getCsrf(),
       },
       body: JSON.stringify(payload),
     })
     if (!res.ok) {
-      const errData = await res.json()
-      const firstError = Object.values(errData.errors || {})[0]?.[0] || 'Gagal menyimpan peserta.'
-      showToast(firstError)
+      await showFetchError(res, 'Gagal menyimpan peserta.')
       return
     }
     const newPeserta = await res.json()
@@ -1293,14 +1304,12 @@ async function saveMember() {
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
-        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+        'X-CSRF-TOKEN': getCsrf(),
       },
       body: JSON.stringify(payload),
     })
     if (!res.ok) {
-      const errData = await res.json()
-      const firstError = Object.values(errData.errors || {})[0]?.[0] || 'Gagal menambah anggota.'
-      showToast(firstError)
+      await showFetchError(res, 'Gagal menambah anggota.')
       return
     }
     const updated = await res.json()
@@ -1394,7 +1403,7 @@ async function saveSetoran() {
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
-        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+        'X-CSRF-TOKEN': getCsrf(),
       },
       body: JSON.stringify(payload),
     })
@@ -1499,6 +1508,9 @@ function openDonasiModal(item = null) {
 // ============================================================
 document.addEventListener('DOMContentLoaded', function () {
   populatePetugasOptions()
+  // Opsi petugas diisi setelah initCustomSelects() menjalankan wrap —
+  // sync ulang biar dropdown custom-nya ikut terisi.
+  if (typeof syncCustomSelects === 'function') syncCustomSelects()
 
   document.querySelectorAll('.ziswaf-tab').forEach((btn) => {
     btn.addEventListener('click', () => switchTab(btn.dataset.tab))
@@ -1565,14 +1577,12 @@ document.addEventListener('DOMContentLoaded', function () {
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
-          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+          'X-CSRF-TOKEN': getCsrf(),
         },
         body: JSON.stringify(payload),
       })
       if (!res.ok) {
-        const errData = await res.json()
-        const firstError = Object.values(errData.errors || {})[0]?.[0] || 'Gagal menyimpan donasi.'
-        showToast(firstError)
+        await showFetchError(res, 'Gagal menyimpan donasi.')
         return
       }
       const saved = await res.json()

@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     if (item.status) {
       const tag = document.createElement('span')
-      tag.className = 'tag' + (item.status === 'Aktif' ? ' tag-penting' : '')
+      tag.className = 'status-badge' + (item.status === 'Aktif' ? ' status-aktif' : ' status-arsip')
       tag.textContent = item.status
       tagsEl.appendChild(tag)
     }
@@ -65,6 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('inputTanggal').value = new Date().toISOString().slice(0, 10)
     document.getElementById('inputIsi').value = ''
     document.getElementById('formSubmitBtn').innerHTML = '<i class="fa-solid fa-check"></i> Simpan Pengumuman'
+    if (typeof syncCustomSelects === 'function') syncCustomSelects()
     formModal.classList.add('active')
     document.body.style.overflow = 'hidden'
   }
@@ -83,6 +84,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('inputTanggal').value = item.tanggalRaw || item.tanggal
     document.getElementById('inputIsi').value = item.isi
     document.getElementById('formSubmitBtn').innerHTML = '<i class="fa-solid fa-check"></i> Simpan Perubahan'
+    if (typeof syncCustomSelects === 'function') syncCustomSelects()
     formModal.classList.add('active')
     document.body.style.overflow = 'hidden'
   }
@@ -105,13 +107,12 @@ document.addEventListener('DOMContentLoaded', function () {
       title: 'Hapus Pengumuman?',
       message: `Yakin ingin menghapus pengumuman "${item.judul}"? Tindakan ini tidak bisa dibatalkan.`,
       onConfirm: async () => {
-        const csrf = document.querySelector('meta[name="csrf-token"]').content
         const url = (pengumumanRoutes.destroy || '/pengumuman/__ID__').replace('__ID__', item.id)
 
         try {
           const res = await fetch(url, {
             method: 'DELETE',
-            headers: { Accept: 'application/json', 'X-CSRF-TOKEN': csrf },
+            headers: getHeaders(),
           })
           if (!res.ok) throw new Error('gagal hapus')
 

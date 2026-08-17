@@ -6,10 +6,11 @@ use App\Models\Jamaah;
 use App\Models\Kegiatan;
 use Illuminate\Http\Request;
 
+use App\Support\Concerns\HasMosqueContext;
+
 class AgendaController extends Controller
 {
-    private int $mosqueId = 1; // TODO: ganti setelah Auth dibikin
-
+    use HasMosqueContext;
     public function index()
     {
         $agendaList = Kegiatan::where('mosque_id', $this->mosqueId)
@@ -77,8 +78,8 @@ class AgendaController extends Controller
             'nama' => 'required|string|max:255',
             'kategori' => 'required|string|max:100',
             'tanggal' => 'required|date',
-            'jam_mulai' => 'nullable|date_format:H:i',
-            'jam_selesai' => 'nullable|date_format:H:i',
+            'jam_mulai' => 'required|date_format:H:i',
+            'jam_selesai' => 'required|date_format:H:i',
             'lokasi' => 'nullable|string|max:255',
             'pemateri' => 'nullable|string|max:255',
             'pj' => 'nullable|string|max:255',

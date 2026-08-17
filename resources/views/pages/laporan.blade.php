@@ -3,20 +3,23 @@
 @section('title', 'MosqueHub - Laporan')
 
 @push('styles-before-components')
-  <link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}">
+  @vite('resources/assets/css/dashboard.css')
 @endpush
 
 @push('styles-after-components')
-  <link rel="stylesheet" href="{{ asset('assets/css/laporan.css') }}">
+  @vite('resources/assets/css/laporan.css')
 @endpush
 
 @section('content')
 
   <x-page-header active="Laporan" title="Laporan" subtitle="Semua laporan administrasi masjid tersedia dalam satu halaman.">
     <div class="laporan-header-actions">
-      <button class="date-range-btn"><i class="fa-regular fa-calendar"></i> 20-31 Juli 2026</button>
+      <button class="date-range-btn" id="dateRangeBtn"><i class="fa-regular fa-calendar"></i> <span>{{ now()->startOfMonth()->translatedFormat('d M Y') }} - {{ now()->translatedFormat('d M Y') }}</span></button>
+      <button class="btn btn-outline" id="exportSemuaPdfBtn">
+        <i class="fa-solid fa-file-pdf"></i> Ekspor Semua PDF
+      </button>
       <button class="btn btn-primary" id="exportSemuaBtn">
-        <i class="fa-solid fa-download"></i> Ekspor Semua
+        <i class="fa-solid fa-file-excel"></i> Ekspor Semua Excel
       </button>
     </div>
   </x-page-header>
@@ -52,8 +55,9 @@
       <span class="filter-label">Tahun</span>
       <select class="filter-select" id="tahunFilter">
         <option value="">Tahun</option>
-        <option value="2026">2026</option>
-        <option value="2025">2025</option>
+        @for ($tahun = now()->year; $tahun >= now()->year - 5; $tahun--)
+          <option value="{{ $tahun }}">{{ $tahun }}</option>
+        @endfor
       </select>
     </div>
   </div>
@@ -72,5 +76,8 @@
 @endsection
 
 @push('scripts')
+  <script>
+    window.laporanData = @json($laporanData)
+  </script>
   <script src="{{ asset('assets/js/laporan.js') }}"></script>
 @endpush

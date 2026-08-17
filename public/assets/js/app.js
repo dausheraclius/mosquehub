@@ -27,6 +27,49 @@ function esc(value) {
 }
 
 // ============================================================
+// HTTP HELPERS — CSRF, headers, dan error fetch (dipakai semua halaman)
+// ============================================================
+
+function getCsrf() {
+  return document.querySelector('meta[name="csrf-token"]').content
+}
+
+function getHeaders(extra = {}) {
+  const { multipart = false, ...rest } = extra
+  const headers = { Accept: 'application/json', 'X-CSRF-TOKEN': getCsrf() }
+  if (!multipart) headers['Content-Type'] = 'application/json'
+  return { ...headers, ...rest }
+}
+
+async function apiFetch(url, options = {}) {
+  const method = options.method || 'GET'
+  const headers = { Accept: 'application/json', 'X-CSRF-TOKEN': getCsrf() }
+  let body = options.body
+  if (body && typeof body === 'object' && !(body instanceof FormData)) {
+    headers['Content-Type'] = 'application/json'
+    body = JSON.stringify(body)
+  }
+  return fetch(url, { ...options, method, headers, body })
+}
+
+// Tampilkan pesan error dari response fetch non-ok ke toast.
+// Laravel: validasi → { errors: {...} }, abort/guard → { message: "..." }.
+async function showFetchError(res, fallback = 'Gagal menyimpan data.') {
+  const errData = await res.json().catch(() => ({}))
+  const firstError = Object.values(errData.errors || {})[0]?.[0] || errData.message || fallback
+  showToast(firstError, 'fa-solid fa-triangle-exclamation')
+}
+
+function downloadUrl(url, filename) {
+  const a = document.createElement('a')
+  a.href = url
+  a.download = filename || ''
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
+}
+
+// ============================================================
 // INIT
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
@@ -40,13 +83,19 @@ document.addEventListener('DOMContentLoaded', () => {
 // dropdown modern. Dipakai di semua halaman.
 // ============================================================
 
+// Semua <select> yang diubah jadi dropdown custom. Termasuk dropdown
+// di dalam form (modal & pengaturan) supaya seragam dengan .filter-select.
+const CUSTOM_SELECT_SELECTOR =
+  '.filter-select, .time-select, select.form-select, select.form-control, .form-field select, select.calendar-month-select, select.calendar-year-select'
+
 function initCustomSelects() {
-  document.querySelectorAll('.filter-select, .time-select').forEach((nativeSelect) => {
+  document.querySelectorAll(CUSTOM_SELECT_SELECTOR).forEach((nativeSelect) => {
     // Skip kalo udah di-wrap
     if (nativeSelect.closest('.custom-select-wrapper')) return
 
     const wrapper = document.createElement('div')
     wrapper.className = 'custom-select-wrapper'
+    if (nativeSelect.disabled) wrapper.classList.add('disabled')
 
     const trigger = document.createElement('button')
     trigger.type = 'button'
@@ -72,6 +121,7 @@ function initCustomSelects() {
     // Toggle open/close
     trigger.addEventListener('click', (e) => {
       e.stopPropagation()
+      if (nativeSelect.disabled) return
       // Tutup dropdown lain yang lagi open
       document.querySelectorAll('.custom-select-wrapper.open').forEach((el) => {
         if (el !== wrapper) el.classList.remove('open')
@@ -121,9 +171,12 @@ function buildCustomOptions(nativeSelect, optionsContainer, trigger) {
 }
 
 function syncCustomSelects() {
-  document.querySelectorAll('.filter-select, .time-select').forEach((nativeSelect) => {
+  document.querySelectorAll(CUSTOM_SELECT_SELECTOR).forEach((nativeSelect) => {
     const wrapper = nativeSelect.closest('.custom-select-wrapper')
     if (!wrapper) return
+
+    // Status disabled bisa berubah saat runtime (mis. kategori terkunci per tab)
+    wrapper.classList.toggle('disabled', nativeSelect.disabled)
 
     const trigger = wrapper.querySelector('.custom-select-trigger')
     const optionsContainer = wrapper.querySelector('.custom-select-options')
@@ -217,7 +270,7 @@ function openConfirmDelete(opts) {
 
 function closeConfirmDelete() {
   const overlay = document.getElementById('confirmDeleteOverlay')
-  if (!overlay) return
+  if (!overlay) return``
   overlay.classList.remove('active')
   document.body.style.overflow = ''
   _confirmDeleteCallback = null

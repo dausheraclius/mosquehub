@@ -1,0 +1,1392 @@
+/* ============================
+   LANDING PAGE - MosqueHub Public
+   ============================ */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-base);
+  color: var(--text-dark);
+  background: var(--color-white);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* --- Navbar --- */
+.lp-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--color-white);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.lp-navbar-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.lp-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lp-logo-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--color-teal);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.lp-logo-text {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-dark);
+  line-height: 1.2;
+}
+.lp-logo-sub {
+  font-size: 10.5px;
+  color: var(--text-muted);
+}
+
+.lp-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+}
+
+.lp-nav-links a {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-muted);
+  padding: 6px 2px;
+  border-bottom: 2px solid transparent;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
+}
+
+.lp-nav-links a:hover,
+.lp-nav-links a.active {
+  color: var(--color-teal);
+  border-bottom-color: var(--color-teal);
+}
+
+.btn-lp-masuk {
+  background: var(--color-teal);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 400;
+  padding: 9px 20px;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+  transition: opacity 0.15s;
+}
+
+.btn-lp-masuk:hover {
+  opacity: 0.9;
+}
+
+/* --- Hero --- */
+.lp-hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 56px 24px 60px;
+  background: linear-gradient(135deg, #1c3f3a, #0f766e);
+  overflow: hidden;
+}
+
+/* Placeholder tekstur masjid — ganti dengan foto asli:
+   background-image: url('assets/img/hero-masjid.jpg'); */
+.lp-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.06) 0%, transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.05) 0%, transparent 45%);
+}
+
+.lp-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 30, 27, 0.35);
+}
+
+.lp-hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 24px;
+}
+
+.lp-hero-content h1 {
+  font-size: 40px;
+  font-weight: 400;
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+
+.lp-hero-content p {
+  font-size: 14.5px;
+  color: rgba(255, 255, 255, 0.85);
+  max-width: 480px;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.lp-hero-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-lp-primary {
+  background: var(--color-teal);
+  color: #fff;
+  font-size: 13.5px;
+  font-weight: 400;
+  padding: 12px 22px;
+  border-radius: var(--radius-sm);
+  transition: opacity 0.15s;
+}
+
+.btn-lp-primary:hover {
+  opacity: 0.9;
+}
+
+.btn-lp-outline {
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  font-size: 13.5px;
+  font-weight: 400;
+  padding: 12px 22px;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s;
+}
+
+.btn-lp-outline:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* --- 4 Info Cards (ngambang di bawah hero) --- */
+.lp-info-cards {
+  position: relative;
+  z-index: 3;
+  max-width: 960px;
+  margin: 40px auto 0;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.lp-info-card {
+  background: var(--color-white);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  box-shadow: var(--shadow-md);
+}
+
+.lp-info-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  background: var(--color-green-light);
+  color: var(--color-teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.lp-info-title {
+  font-size: 13.5px;
+  font-weight: 400;
+  color: var(--text-dark);
+  margin-bottom: 6px;
+}
+.lp-info-desc {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 12px;
+  min-height: 34px;
+}
+
+.lp-info-link {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: 400;
+  color: #fff;
+  background: var(--color-teal);
+  padding: 7px 14px;
+  border-radius: var(--radius-sm);
+  transition: opacity 0.15s;
+}
+
+.lp-info-link:hover {
+  opacity: 0.9;
+}
+
+/* --- Section umum --- */
+.lp-section {
+  padding: 100px 24px 60px;
+}
+
+.lp-section-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.lp-section-title {
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--text-dark);
+  margin-bottom: 24px;
+}
+
+/* --- Jadwal Sholat --- */
+.lp-sholat-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+}
+
+.lp-sholat-item {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(165deg, #ffffff 0%, #f0fdfa 100%);
+  border: 1px solid #ccfbf1;
+  border-radius: var(--radius-md);
+  padding: 22px 12px 18px;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.lp-sholat-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-teal), #2dd4bf);
+}
+
+.lp-sholat-item:hover {
+  transform: translateY(-3px);
+  border-color: var(--color-teal);
+  box-shadow: var(--shadow-md);
+}
+
+.lp-sholat-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--color-green-light);
+  color: var(--color-teal);
+  font-size: 15px;
+  margin-bottom: 10px;
+}
+
+.lp-sholat-name {
+  display: block;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.lp-sholat-time {
+  display: block;
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  color: var(--text-dark);
+}
+
+#agenda,
+#jadwal-sholat {
+  scroll-margin-top: 80px;
+}
+
+/* --- Grid Upcoming Activities --- */
+.lp-activity-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+.lp-activity-card {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.15s;
+}
+
+.lp-activity-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.lp-activity-thumb {
+  height: 130px;
+  background: linear-gradient(135deg, #e9ecef, #dfe3e6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #adb2b8;
+  font-size: 26px;
+}
+
+.lp-activity-body {
+  padding: 14px 16px;
+}
+
+.lp-activity-title {
+  font-size: 13.5px;
+  font-weight: 400;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+}
+
+.lp-activity-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-bottom: 10px;
+}
+
+.lp-activity-meta span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lp-activity-desc {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.btn-lp-view-details {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: 400;
+  color: var(--color-teal);
+  border: 1px solid var(--color-teal);
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.btn-lp-view-details:hover {
+  background: var(--color-teal);
+  color: #fff;
+}
+
+.btn-lp-view-details.active {
+  background: var(--color-teal);
+  color: #fff;
+}
+
+/* --- Detail kegiatan (expand di tempat) --- */
+.lp-activity-detail {
+  border-top: 1px dashed var(--border-color);
+  margin-top: 12px;
+  padding-top: 12px;
+}
+
+.lp-detail-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 7px 0;
+  font-size: 12px;
+}
+
+.lp-detail-row + .lp-detail-row {
+  border-top: 1px dashed var(--border-color);
+}
+
+.lp-detail-label {
+  flex-shrink: 0;
+  width: 130px;
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lp-detail-label i {
+  color: var(--color-teal);
+  width: 14px;
+  text-align: center;
+}
+
+.lp-detail-value {
+  color: var(--text-dark);
+  line-height: 1.5;
+  min-width: 0;
+}
+
+/* --- Pagination agenda --- */
+.lp-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 28px;
+}
+
+.lp-page-btn {
+  border: 1px solid var(--border-color);
+  background: var(--color-white);
+  color: var(--text-dark);
+  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+  font-size: 12.5px;
+  font-family: var(--font-base);
+  font-weight: 400;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    background 0.15s,
+    color 0.15s;
+}
+
+.lp-page-btn:hover:not(:disabled):not(.active) {
+  border-color: var(--color-teal);
+  color: var(--color-teal);
+}
+
+.lp-page-btn.active {
+  background: var(--color-teal);
+  border-color: var(--color-teal);
+  color: #fff;
+}
+
+.lp-page-btn.active:hover {
+  background: #0b5f5a;
+  border-color: #0b5f5a;
+}
+
+.lp-page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* --- Responsive --- */
+@media (max-width: 992px) {
+  .lp-info-cards,
+  .lp-activity-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .lp-sholat-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .tentang-intro {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .tentang-fas-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .tentang-pengurus-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .lp-nav-links {
+    display: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .tentang-vm-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .lp-info-cards,
+  .lp-activity-grid {
+    grid-template-columns: 1fr;
+  }
+  .lp-sholat-grid {
+    grid-template-columns: 1fr;
+  }
+  .tentang-fas-grid {
+    grid-template-columns: 1fr;
+  }
+  .tentang-pengurus-grid {
+    grid-template-columns: 1fr;
+  }
+  .tentang-stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .lp-hero-content h1 {
+    font-size: 28px;
+  }
+}
+
+/* ============================
+   PUBLIC PAGES (Agenda, Jadwal, Pengumuman)
+   ============================ */
+
+.lp-page-header {
+  background: linear-gradient(135deg, #1c3f3a, #0f766e);
+  padding: 50px 24px;
+  text-align: center;
+}
+
+.lp-page-header h1 {
+  font-size: 28px;
+  font-weight: 400;
+  color: #fff;
+  margin-bottom: 8px;
+}
+.lp-page-header p {
+  font-size: 13.5px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* --- Tab navigasi halaman publik (Jadwal 7 Hari / Semua Agenda) --- */
+.lp-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 24px 28px;
+  background: linear-gradient(135deg, #1c3f3a, #0f766e);
+}
+
+.lp-tab {
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: var(--font-base);
+  font-size: 13.5px;
+  font-weight: 400;
+  padding: 9px 22px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s,
+    border-color 0.15s;
+}
+
+.lp-tab:hover {
+  border-color: #fff;
+  color: #fff;
+}
+
+.lp-tab.active {
+  background: #fff;
+  color: var(--color-teal);
+  border-color: #fff;
+}
+
+.lp-tab-panel[hidden] {
+  display: none;
+}
+
+.lp-public-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 50px 24px;
+}
+
+.lp-public-section.lp-tab-panel {
+  padding-top: 34px;
+}
+
+.lp-filter-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+
+.lp-filter-bar input,
+.lp-filter-bar select {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 9px 12px;
+  font-size: 13px;
+  font-family: var(--font-base);
+  color: var(--text-dark);
+}
+
+.lp-filter-bar input {
+  flex: 1;
+  min-width: 200px;
+}
+
+.lp-badge {
+  display: inline-block;
+  font-size: 10.5px;
+  font-weight: 400;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: var(--color-green-light);
+  color: var(--color-teal);
+  margin-bottom: 8px;
+}
+
+/* --- Jadwal (grid mingguan) --- */
+.lp-jadwal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 12px;
+}
+
+.lp-jadwal-day {
+  background: var(--color-white);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.lp-jadwal-day-title {
+  background: var(--color-green-light);
+  color: var(--color-teal);
+  font-weight: 400;
+  font-size: 12.5px;
+  padding: 10px 12px;
+  line-height: 1.4;
+}
+
+.lp-jadwal-day-title span {
+  display: block;
+}
+
+.lp-jadwal-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--border-color);
+}
+
+.lp-jadwal-time {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--color-teal);
+  width: 48px;
+  flex-shrink: 0;
+}
+
+.lp-jadwal-info {
+  flex: 1;
+  min-width: 0;
+}
+.lp-jadwal-name {
+  font-size: 12.5px;
+  font-weight: 400;
+  color: var(--text-dark);
+  line-height: 1.4;
+}
+.lp-jadwal-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+@media (max-width: 992px) {
+  .lp-jadwal-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .lp-jadwal-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .lp-jadwal-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- Pengumuman (list card) --- */
+.lp-pengumuman-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.lp-pengumuman-card {
+  display: flex;
+  gap: 18px;
+  background: var(--color-white);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  box-shadow: var(--shadow-sm);
+}
+
+.lp-pengumuman-thumb {
+  width: 100px;
+  height: 90px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, #e9ecef, #dfe3e6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #adb2b8;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.lp-pengumuman-body {
+  flex: 1;
+  min-width: 0;
+}
+.lp-pengumuman-title {
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--text-dark);
+  margin: 4px 0 6px;
+}
+.lp-pengumuman-date {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.lp-pengumuman-excerpt {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+
+/* --- Footer --- */
+.lp-footer {
+  background: #f5f6f8;
+  border-top: 1px solid var(--border-color);
+  padding: 40px 24px 20px;
+}
+.lp-footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.lp-footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 30px;
+  margin-bottom: 24px;
+}
+.lp-footer-title {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-dark);
+  margin-bottom: 12px;
+}
+.lp-footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.lp-footer-links a {
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+.lp-footer-links a:hover {
+  color: var(--color-teal);
+}
+.lp-footer-bottom {
+  border-top: 1px solid var(--border-color);
+  padding-top: 16px;
+  text-align: center;
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+
+@media (max-width: 800px) {
+  .lp-footer-grid {
+    grid-template-columns: 1fr;
+  }
+  .lp-pengumuman-card {
+    flex-direction: column;
+  }
+  .lp-pengumuman-thumb {
+    width: 100%;
+    height: 140px;
+  }
+}
+
+/* ============================
+   GALERI PUBLIK
+   ============================ */
+
+.lp-galeri-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.lp-galeri-card {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.15s;
+  background: var(--color-white);
+}
+
+.lp-galeri-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.lp-galeri-cover {
+  height: 180px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #e9ecef, #dfe3e6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #adb2b8;
+  font-size: 26px;
+}
+
+.lp-galeri-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.lp-galeri-cover-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-size: 24px;
+}
+
+.lp-galeri-cover-placeholder span {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.lp-galeri-body {
+  padding: 14px 16px;
+}
+
+.lp-galeri-title {
+  font-size: 13.5px;
+  font-weight: 400;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+}
+
+.lp-galeri-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-bottom: 10px;
+}
+
+.lp-galeri-meta span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lp-galeri-desc {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+@media (max-width: 992px) {
+  .lp-galeri-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .lp-galeri-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================
+   TENTANG MASJID
+   ============================ */
+
+.tentang-subtitle {
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--text-dark);
+  margin-bottom: 20px;
+}
+
+/* --- Intro: text + stats --- */
+.tentang-intro {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 48px;
+  align-items: center;
+}
+
+.tentang-intro-text p {
+  font-size: 13.5px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 14px;
+}
+.tentang-intro-text p:last-child {
+  margin-bottom: 0;
+}
+
+.tentang-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.tentang-stat-card {
+  background: var(--color-green-light);
+  border-radius: var(--radius-md);
+  padding: 22px 16px;
+  text-align: center;
+}
+
+.tentang-stat-number {
+  display: block;
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--color-teal);
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+
+.tentang-stat-label {
+  display: block;
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+
+/* --- Visi & Misi --- */
+.tentang-vm-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 48px;
+}
+
+.tentang-vm-card {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.tentang-vm-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  background: var(--color-green-light);
+  color: var(--color-teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  margin-bottom: 14px;
+}
+
+.tentang-vm-title {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text-dark);
+  margin-bottom: 10px;
+}
+
+.tentang-vm-desc {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.tentang-vm-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tentang-vm-list li {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  padding-left: 18px;
+  position: relative;
+}
+
+.tentang-vm-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 7px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-teal);
+}
+
+/* --- Fasilitas --- */
+.tentang-fas-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 48px;
+}
+
+.tentang-fas-card {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.15s;
+}
+
+.tentang-fas-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.tentang-fas-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background: var(--color-green-light);
+  color: var(--color-teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.tentang-fas-name {
+  font-size: 13.5px;
+  font-weight: 400;
+  color: var(--text-dark);
+  margin-bottom: 4px;
+}
+
+.tentang-fas-desc {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* --- Struktur Pengurus --- */
+.tentang-pengurus-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.tentang-pengurus-card {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.15s;
+}
+
+.tentang-pengurus-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.tentang-pengurus-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--color-green-light);
+  color: var(--color-teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  margin: 0 auto 10px;
+}
+
+.tentang-pengurus-name {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-dark);
+  margin-bottom: 2px;
+}
+
+.tentang-pengurus-role {
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+
+/* ============================
+   KONTAK
+   ============================ */
+
+.kontak-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 48px;
+}
+
+.kontak-subtitle {
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--text-dark);
+  margin-bottom: 18px;
+}
+
+/* --- Info kontak cards --- */
+.kontak-info-card {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+
+.kontak-info-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  background: var(--color-green-light);
+  color: var(--color-teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.kontak-info-label {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.kontak-info-value {
+  font-size: 13px;
+  color: var(--text-dark);
+}
+
+/* --- Sosial media --- */
+.kontak-sosial-row {
+  display: flex;
+  gap: 10px;
+}
+
+.kontak-sosial-link {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 15px;
+  transition: opacity 0.15s;
+}
+
+.kontak-sosial-link:hover {
+  opacity: 0.85;
+}
+.kontak-sosial-link.ig {
+  background: #d6249f;
+}
+.kontak-sosial-link.fb {
+  background: #1877f2;
+}
+.kontak-sosial-link.yt {
+  background: #ff0000;
+}
+.kontak-sosial-link.tt {
+  background: #101010;
+}
+.kontak-sosial-link.wa {
+  background: #25d366;
+}
+
+/* --- Jam operasional --- */
+.kontak-jam {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.kontak-jam-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12.5px;
+  color: var(--text-dark);
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.kontak-jam-item:last-child {
+  border-bottom: none;
+}
+.kontak-jam-item span:last-child {
+  color: var(--text-muted);
+}
+
+/* --- Form --- */
+.kontak-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.kontak-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.kontak-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.kontak-form-field label {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.kontak-form-field input,
+.kontak-form-field textarea {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-size: 13px;
+  font-family: var(--font-base);
+  color: var(--text-dark);
+  background: var(--color-white);
+  width: 100%;
+}
+
+.kontak-form-field input:focus,
+.kontak-form-field textarea:focus {
+  outline: none;
+  border-color: var(--color-teal);
+}
+
+.kontak-form-field textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.kontak-form .btn-lp-primary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
+}
+
+/* --- Alert sukses / error --- */
+.kontak-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  margin-bottom: 16px;
+}
+.kontak-alert i {
+  margin-top: 1px;
+}
+.kontak-alert-success {
+  background: var(--color-green-light);
+  color: var(--color-teal);
+  border: 1px solid var(--color-teal);
+}
+.kontak-alert-error {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+}
+
+/* --- Map placeholder --- */
+.kontak-map {
+  height: 200px;
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--border-color);
+  background: var(--color-green-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--color-teal);
+}
+
+.kontak-map i {
+  font-size: 18px;
+}
+
+/* --- Responsive kontak --- */
+@media (max-width: 768px) {
+  .kontak-grid {
+    grid-template-columns: 1fr;
+  }
+  .kontak-form-row {
+    grid-template-columns: 1fr;
+  }
+}
