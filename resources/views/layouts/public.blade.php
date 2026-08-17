@@ -22,10 +22,12 @@
       <nav class="lp-nav-links">
         <a href="{{ route('public.beranda') }}" class="{{ request()->routeIs('public.beranda') ? 'active' : '' }}">Beranda</a>
         <a href="{{ route('public.jadwal') }}" class="{{ request()->routeIs('public.jadwal') ? 'active' : '' }}">Jadwal Kegiatan</a>
+        <a href="{{ route('public.petugas') }}" class="{{ request()->routeIs('public.petugas') ? 'active' : '' }}">Petugas Sholat</a>
         <a href="{{ route('public.pengumuman') }}" class="{{ request()->routeIs('public.pengumuman') ? 'active' : '' }}">Pengumuman</a>
         <a href="{{ route('public.galeri') }}" class="{{ request()->routeIs('public.galeri') ? 'active' : '' }}">Galeri</a>
+        <a href="{{ route('public.keuangan') }}" class="{{ request()->routeIs('public.keuangan') ? 'active' : '' }}">Keuangan</a>
+        <a href="{{ route('public.pengurus') }}" class="{{ request()->routeIs('public.pengurus') ? 'active' : '' }}">Pengurus</a>
         <a href="{{ route('public.tentang') }}" class="{{ request()->routeIs('public.tentang') ? 'active' : '' }}">Tentang Masjid</a>
-        <a href="{{ route('public.kontak') }}" class="{{ request()->routeIs('public.kontak') ? 'active' : '' }}">Kontak</a>
       </nav>
     </div>
   </header>
@@ -47,6 +49,8 @@
             <a href="{{ route('public.jadwal') }}">Jadwal Kegiatan</a>
             <a href="{{ route('public.pengumuman') }}">Pengumuman</a>
             <a href="{{ route('public.galeri') }}">Galeri</a>
+            <a href="{{ route('public.keuangan') }}">Keuangan</a>
+            <a href="{{ route('public.pengurus') }}">Struktur Pengurus</a>
           </div>
         </div>
         <div>

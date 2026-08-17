@@ -24,8 +24,11 @@ use App\Http\Controllers\UmumController;
 use App\Http\Controllers\PublicLandingController;
 use App\Http\Controllers\PublicPengumumanController;
 use App\Http\Controllers\PublicJadwalController;
-use App\Http\Controllers\PublicKontakController;
 use App\Http\Controllers\PublicGaleriController;
+use App\Http\Controllers\PublicKeuanganController;
+use App\Http\Controllers\PublicPengurusController;
+use App\Http\Controllers\PublicPetugasSholatController;
+use App\Http\Controllers\PublicDetailController;
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'create'])->name('login');
@@ -46,6 +49,12 @@ Route::post('/logout', [LoginController::class, 'destroy'])
 // WEBSITE PUBLIK — bisa diakses tanpa login
 // ============================================================
 Route::group([], function () {
+    // Pintu depan: pengunjung → website; pengurus yang sudah login → dashboard.
+    Route::get('/', function () {
+        return auth()->check()
+            ? app(\App\Http\Controllers\DashboardController::class)->index(request())
+            : redirect()->route('public.beranda');
+    })->name('dashboard');
     Route::get('/publik', [PublicLandingController::class, 'index'])->name('public.beranda');
     // Agenda digabung ke halaman Jadwal Kegiatan — redirect untuk link lama.
     Route::redirect('/publik/agenda', '/publik/jadwal-kegiatan', 301);
@@ -55,14 +64,17 @@ Route::group([], function () {
         $mosque = \App\Models\Mosque::find(\App\Support\SiteContext::mosqueId());
         return view('pages.public.tentang-masjid', ['mosque' => $mosque]);
     })->name('public.tentang');
-    Route::get('/publik/kontak', [PublicKontakController::class, 'index'])->name('public.kontak');
-    Route::post('/publik/kontak', [PublicKontakController::class, 'store'])->name('public.kontak.store');
     Route::get('/publik/galeri', [PublicGaleriController::class, 'index'])->name('public.galeri');
+    Route::get('/publik/galeri/{album}', [PublicGaleriController::class, 'album'])->name('public.galeri.album');
+    Route::get('/publik/keuangan', [PublicKeuanganController::class, 'index'])->name('public.keuangan');
+    Route::get('/publik/pengurus', [PublicPengurusController::class, 'index'])->name('public.pengurus');
+    Route::get('/publik/jadwal-petugas', [PublicPetugasSholatController::class, 'index'])->name('public.petugas');
+    Route::get('/publik/kegiatan/{id}', [PublicDetailController::class, 'kegiatan'])->name('public.kegiatan.detail');
+    Route::get('/publik/pengumuman/{id}', [PublicDetailController::class, 'pengumuman'])->name('public.pengumuman.detail');
 });
 
 Route::middleware(['auth', 'menu.access'])->group(function () {
 
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/data-jamaah', [JamaahController::class, 'index'])->name('jamaah.index');
     Route::post('/data-jamaah', [JamaahController::class, 'store'])->name('jamaah.store');
     Route::put('/data-jamaah/{id}', [JamaahController::class, 'update'])->name('jamaah.update');

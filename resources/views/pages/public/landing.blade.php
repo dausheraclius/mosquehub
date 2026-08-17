@@ -38,6 +38,42 @@
     </div>
   </section>
 
+  <section class="lp-section lp-section-transparency" id="transparansi">
+    <div class="lp-section-inner">
+      <div class="lp-transparency-head">
+        <h2 class="lp-section-title">Transparansi {{ $siteMosque->name }}</h2>
+        <p class="lp-transparency-sub">Ringkasan keuangan dan layanan masjid yang diperbarui secara berkala oleh pengurus.</p>
+      </div>
+      <div class="lp-transparency-grid">
+        <div class="lp-transparency-card">
+          <div class="lp-transparency-icon"><i class="fa-solid fa-users"></i></div>
+          <div class="lp-transparency-value">{{ number_format($stats['totalJemaah']) }}</div>
+          <div class="lp-transparency-label">Total Jemaah</div>
+        </div>
+        <div class="lp-transparency-card">
+          <div class="lp-transparency-icon"><i class="fa-solid fa-wallet"></i></div>
+          <div class="lp-transparency-value">Rp {{ number_format((int) $stats['saldoKas'], 0, ',', '.') }}</div>
+          <div class="lp-transparency-label">Saldo Kas Masjid</div>
+        </div>
+        <div class="lp-transparency-card">
+          <div class="lp-transparency-icon"><i class="fa-solid fa-hand-holding-heart"></i></div>
+          <div class="lp-transparency-value">Rp {{ number_format((int) $stats['donasiBulanIni'], 0, ',', '.') }}</div>
+          <div class="lp-transparency-label">Infaq &amp; Donasi Bulan Ini</div>
+        </div>
+        <div class="lp-transparency-card">
+          <div class="lp-transparency-icon"><i class="fa-solid fa-handshake-angle"></i></div>
+          <div class="lp-transparency-value">{{ $stats['relawanAktif'] }} <span class="lp-transparency-unit">Orang</span></div>
+          <div class="lp-transparency-label">Relawan Aktif</div>
+        </div>
+      </div>
+      <div class="lp-transparency-cta">
+        <a href="{{ route('public.keuangan') }}" class="btn-lp-view-details" style="display:inline-flex; text-decoration:none;">
+          Lihat Laporan Keuangan
+        </a>
+      </div>
+    </div>
+  </section>
+
   <section class="lp-section lp-section-jadwal" id="jadwal-sholat">
     <div class="lp-section-inner">
       <h2 class="lp-section-title">Jadwal Sholat Hari Ini</h2>
@@ -78,12 +114,61 @@
                 <span><i class="fa-solid fa-location-dot"></i> {{ $a['location'] }}</span>
               </div>
               <div class="lp-activity-desc">{{ \Illuminate\Support\Str::limit($a['desc'], 80) }}</div>
-              <a href="{{ route('public.jadwal') }}" class="btn-lp-view-details">Lihat Detail</a>
+              <a href="{{ route('public.kegiatan.detail', $a['id']) }}" class="btn-lp-view-details">Lihat Detail</a>
             </div>
           </div>
         @empty
           <p style="grid-column:1/-1; text-align:center; color:var(--text-muted);">Belum ada kegiatan mendatang.</p>
         @endforelse
+      </div>
+    </div>
+  </section>
+
+  <section class="lp-section lp-section-kontak" id="kontak-donasi">
+    <div class="lp-section-inner">
+      <h2 class="lp-section-title">Kontak &amp; Donasi</h2>
+      <p class="lp-transparency-sub">Silakan hubungi kami atau salurkan infaq dan donasi Anda untuk kemakmuran {{ $siteMosque->name }}.</p>
+      <div class="lp-kontak-grid">
+        <div class="lp-kontak-card">
+          <div class="lp-kontak-icon"><i class="fa-solid fa-location-dot"></i></div>
+          <div class="lp-kontak-title">Alamat</div>
+          <div class="lp-kontak-desc">
+            @php $alamat = collect([$siteMosque->address, $siteMosque->kelurahan, $siteMosque->district, $siteMosque->city, $siteMosque->province])->filter()->implode(', '); @endphp
+            {{ $alamat ?: 'Belum diisi' }}
+          </div>
+        </div>
+        <div class="lp-kontak-card">
+          <div class="lp-kontak-icon"><i class="fa-solid fa-phone"></i></div>
+          <div class="lp-kontak-title">Telepon / WhatsApp</div>
+          <div class="lp-kontak-desc">
+            @if ($siteMosque->phone)
+              {{ $siteMosque->phone }}
+            @elseif ($siteMosque->whatsapp)
+              {{ $siteMosque->whatsapp }}
+            @else
+              Belum diisi
+            @endif
+          </div>
+        </div>
+        <div class="lp-kontak-card">
+          <div class="lp-kontak-icon"><i class="fa-solid fa-envelope"></i></div>
+          <div class="lp-kontak-title">Email</div>
+          <div class="lp-kontak-desc">{{ $siteMosque->email ?: 'Belum diisi' }}</div>
+        </div>
+        <div class="lp-kontak-card lp-kontak-card-donasi">
+          <div class="lp-kontak-icon"><i class="fa-solid fa-hand-holding-heart"></i></div>
+          <div class="lp-kontak-title">Infaq &amp; Donasi</div>
+          <div class="lp-kontak-desc">
+            @php
+              $donasi = $appPengaturan ? collect([$appPengaturan->bank_nama, $appPengaturan->bank_rekening])->filter()->join(' • ') : '';
+            @endphp
+            @if ($donasi)
+              {{ $donasi }}
+            @else
+              Salurkan langsung ke kas masjid atau hubungi pengurus untuk info lebih lanjut.
+            @endif
+          </div>
+        </div>
       </div>
     </div>
   </section>

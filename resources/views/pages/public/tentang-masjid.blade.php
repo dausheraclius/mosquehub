@@ -152,6 +152,13 @@
                 {{ $mosque->email ?: 'Belum tersedia' }}
               </div>
             </li>
+            <li>
+              <i class="fa-regular fa-clock"></i>
+              <div>
+                <span>Layanan</span>
+                {{ $mosque->category ?: 'Masjid' }} &middot; Melayani jamaah setiap hari
+              </div>
+            </li>
           </ul>
         </div>
       </div>
@@ -160,12 +167,14 @@
         <div class="lp-about-card">
           <h2 class="lp-about-head">Media Sosial</h2>
           @php
-            $sosmed = array_filter([
+            $sosmed = [
                 'Instagram' => $mosque->instagram ?? null,
                 'Facebook' => $mosque->facebook ?? null,
                 'YouTube' => $mosque->youtube ?? null,
                 'TikTok' => $mosque->tiktok ?? null,
-            ]);
+                'WhatsApp' => $mosque->whatsapp ? 'https://wa.me/' . preg_replace('/[^0-9]/', '', $mosque->whatsapp) : null,
+            ];
+            $sosmed = array_filter($sosmed);
           @endphp
           @if (count($sosmed))
             <div class="lp-about-sosmed">

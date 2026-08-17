@@ -121,25 +121,30 @@ function initProfilMasjid() {
 
   // Hapus logo: kembali ke ikon default di kotak logo & header
   const hapusLogoBtn = document.getElementById('btnHapusLogo')
-  hapusLogoBtn?.addEventListener('click', async () => {
-    if (!confirm('Hapus logo masjid? Tampilan akan kembali ke ikon default.')) return
+  hapusLogoBtn?.addEventListener('click', () => {
+    openConfirmDelete({
+      title: 'Hapus Logo?',
+      message: 'Yakin ingin menghapus logo masjid? Tampilan akan kembali ke ikon default.',
+      confirmText: 'Hapus Logo',
+      onConfirm: async () => {
+        try {
+          const res = await fetch('/pengaturan/profil-masjid/logo', {
+            method: 'DELETE',
+            headers: getHeaders(),
+          })
+          if (!res.ok) throw new Error('gagal hapus logo')
 
-    try {
-      const res = await fetch('/pengaturan/profil-masjid/logo', {
-        method: 'DELETE',
-        headers: getHeaders(),
-      })
-      if (!res.ok) throw new Error('gagal hapus logo')
-
-      const logoBox = document.getElementById('logoBox')
-      if (logoBox) logoBox.innerHTML = '<i class="fa-solid fa-mosque"></i>'
-      setHeaderLogoIcon()
-      document.getElementById('logoInput').value = ''
-      hapusLogoBtn.remove()
-      showToast('Logo dihapus, kembali ke ikon default.', 'fa-solid fa-trash')
-    } catch (err) {
-      showToast('Gagal menghapus logo.', 'fa-solid fa-triangle-exclamation')
-    }
+          const logoBox = document.getElementById('logoBox')
+          if (logoBox) logoBox.innerHTML = '<i class="fa-solid fa-mosque"></i>'
+          setHeaderLogoIcon()
+          document.getElementById('logoInput').value = ''
+          hapusLogoBtn.remove()
+          showToast('Logo dihapus, kembali ke ikon default.', 'fa-solid fa-trash')
+        } catch (err) {
+          showToast('Gagal menghapus logo.', 'fa-solid fa-triangle-exclamation')
+        }
+      },
+    })
   })
 
   // ---- upload logo: klik box -> pilih gambar -> preview ----

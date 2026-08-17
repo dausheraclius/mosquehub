@@ -14,7 +14,7 @@
     </div>
     <div class="lp-activity-grid" id="pengumumanGrid">
       @forelse ($list as $p)
-        <div class="lp-activity-card pengumuman-card" data-title="{{ strtolower($p->judul) }}">
+        <a href="{{ route('public.pengumuman.detail', $p->id) }}" class="lp-activity-card pengumuman-card" data-title="{{ strtolower($p->judul) }}">
           <div class="lp-activity-thumb"><i class="fa-solid fa-bullhorn"></i></div>
           <div class="lp-activity-body">
             <span class="lp-badge">{{ $p->kategori ?: 'Umum' }}</span>
@@ -23,8 +23,9 @@
               <span><i class="fa-regular fa-calendar"></i> {{ $p->tanggal->translatedFormat('d M Y') }}</span>
             </div>
             <div class="lp-activity-desc">{{ \Illuminate\Support\Str::limit($p->isi, 100) }}</div>
+            <span class="btn-lp-view-details" style="display:inline-flex;">Baca Selengkapnya</span>
           </div>
-        </div>
+        </a>
       @empty
         <p style="grid-column:1/-1; text-align:center; color:var(--text-muted);">Belum ada pengumuman.</p>
       @endforelse

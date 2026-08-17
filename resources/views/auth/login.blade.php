@@ -23,7 +23,11 @@
         <div>
           <div class="login-brand-top">
             <div class="login-brand-logo">
-              <img src="{{ asset('assets/img/logomasjid.png') }}" alt="Logo Masjid">
+              @if ($siteMosque->getFirstMediaUrl('logo'))
+                <img src="{{ $siteMosque->getFirstMediaUrl('logo') }}" alt="Logo {{ $siteMosque->name }}">
+              @else
+                <i class="fa-solid fa-mosque"></i>
+              @endif
             </div>
             <div>
               <div class="login-brand-name">{{ $siteMosque->name }}</div>

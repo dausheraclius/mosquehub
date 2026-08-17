@@ -26,6 +26,17 @@ class PublicGaleriController extends Controller
         return view('pages.public.galeri', ['albums' => $albums]);
     }
 
+    public function album(GaleriAlbum $album)
+    {
+        $mosqueId = SiteContext::mosqueId();
+        abort_unless($album->mosque_id === $mosqueId && $album->status === 'published', 404);
+
+        return view('pages.public.galeri-album', [
+            'album' => $album,
+            'photos' => collect($album->photosForFrontend()),
+        ]);
+    }
+
     private function coverOf(GaleriAlbum $a): ?string
     {
         $photos = $a->getMedia('photos');

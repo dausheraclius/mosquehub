@@ -14,7 +14,7 @@
     @else
       <div class="lp-galeri-grid">
         @foreach ($albums as $album)
-          <div class="lp-galeri-card">
+          <a href="{{ route('public.galeri.album', $album['id']) }}" class="lp-galeri-card">
             <div class="lp-galeri-cover">
               @if ($album['cover'])
                 <img src="{{ $album['cover'] }}" alt="{{ $album['nama'] }}" loading="lazy" />
@@ -24,6 +24,7 @@
                   <span>{{ $album['photoCount'] }} foto</span>
                 </div>
               @endif
+              <span class="lp-galeri-open"><i class="fa-solid fa-images"></i></span>
             </div>
             <div class="lp-galeri-body">
               <div class="lp-galeri-title">{{ $album['nama'] }}</div>
@@ -37,7 +38,7 @@
                 <div class="lp-galeri-desc">{{ \Illuminate\Support\Str::limit($album['deskripsi'], 90) }}</div>
               @endif
             </div>
-          </div>
+          </a>
         @endforeach
       </div>
     @endif

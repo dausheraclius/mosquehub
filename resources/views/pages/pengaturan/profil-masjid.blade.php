@@ -14,7 +14,7 @@
   <div class="card profile-banner">
     <div class="profile-banner-logo" id="bannerLogo">
       @if ($mosque->getFirstMediaUrl('logo'))
-        <img src="{{ $mosque->getFirstMediaUrl('logo') }}" alt="Logo" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">
+        <img src="{{ $mosque->getFirstMediaUrl('logo') }}" alt="Logo" style="width:100%;height:100%;object-fit:contain;border-radius:10px;">
       @else
         <i class="fa-solid fa-mosque"></i>
       @endif
