@@ -15,55 +15,7 @@
   font-weight: 400;
 }
 
-/* --- Page Header (judul + tombol tambah) --- */
-/* --- Stat Cards versi Data Jemaah (icon di kanan, bukan badge) ---
-   Gaya .page-header/.page-title/.page-subtitle ada di components.css */
-.stat-cards-jamaah {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  margin-bottom: 20px;
-}
-
-.stat-card-jamaah {
-  background: var(--color-white);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  padding: 14px 16px;
-  box-shadow: var(--shadow-sm);
-}
-
-.stat-card-jamaah-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 6px;
-  min-height: 26px;
-}
-
-.stat-icon-circle {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  flex-shrink: 0;
-}
-
-.icon-blue {
-  background: #e8f0fe;
-  color: var(--color-blue);
-}
-.icon-red {
-  background: #fdeaea;
-  color: var(--color-red);
-}
-.icon-green {
-  background: var(--color-green-light);
-  color: var(--color-green);
-}
+/* Stat cards memakai pola global .stat-cards/.stat-card dari dashboard.css. */
 
 /* --- Filter Bar --- */
 /* --- Filter bar: gaya .filter-bar dkk. ada di components.css --- */
@@ -459,10 +411,6 @@ body.dark-mode .avatar-upload-btn:hover {
    RESPONSIVE - Data Jemaah
    ============================ */
 @media (max-width: 1024px) {
-  .stat-cards-jamaah {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
   .filter-actions {
     margin-left: 0;
     width: 100%;

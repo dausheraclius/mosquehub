@@ -157,12 +157,6 @@
 
           <div class="access-group">
             <label class="access-parent">
-              <input type="checkbox" class="access-check" data-group="beranda" /> Beranda
-            </label>
-          </div>
-
-          <div class="access-group">
-            <label class="access-parent">
               <input type="checkbox" class="access-check group-toggle" data-group="keuangan" /> Keuangan
             </label>
             <div class="access-children" data-children-of="keuangan">
@@ -228,7 +222,6 @@
             <div class="access-children" data-children-of="pengaturan">
               <label class="access-child"><input type="checkbox" class="access-check" /> Profile Masjid</label>
               <label class="access-child"><input type="checkbox" class="access-check" /> Umum</label>
-              <label class="access-child"><input type="checkbox" class="access-check" /> User Management</label>
             </div>
           </div>
         </div>

@@ -131,7 +131,21 @@
       </div>
     @endif
 
-    @if ($can('pengaturan') || $can('Profile Masjid') || $can('Umum') || $can('User Management'))
+    @if ($fullAccess)
+      <div class="sidebar-section">
+        <span class="sidebar-section-label">PENGAWASAN</span>
+        <ul class="sidebar-menu">
+          <li class="sidebar-item">
+            <a href="{{ route('activity-log') }}" class="sidebar-link">
+              <i class="fa-solid fa-clipboard-list sidebar-icon"></i>
+              <span>Log Aktivitas</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    @endif
+
+    @if ($can('pengaturan') || $can('Profile Masjid') || $can('Umum') || $fullAccess)
       <div class="sidebar-section">
         <span class="sidebar-section-label">PENGATURAN</span>
         <ul class="sidebar-menu">
@@ -151,7 +165,7 @@
               </a>
             </li>
           @endif
-          @if ($can('User Management') || $can('pengaturan'))
+          @if ($fullAccess)
             <li class="sidebar-item">
               <a href="{{ route('pengaturan.user-management') }}" class="sidebar-link">
                 <i class="fa-solid fa-user-shield sidebar-icon"></i>

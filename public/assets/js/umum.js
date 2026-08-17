@@ -248,11 +248,15 @@ function initUmum() {
     downloadUrl('/pengaturan/umum/backup/ekspor', 'Backup sedang diunduh...')
   })
   document.getElementById('btnExportData')?.addEventListener('click', () => {
-    downloadUrl('/pengaturan/umum/backup/ekspor', 'Data diekspor (JSON).')
+    downloadUrl('/pengaturan/umum/backup/ekspor', 'Backup JSON sedang diunduh...')
   })
 
   const importInput = document.getElementById('importFileInput')
-  document.getElementById('btnImportData')?.addEventListener('click', () => importInput.click())
+  document.getElementById('btnImportData')?.addEventListener('click', () => {
+    if (confirm('Pulihkan backup akan menggantikan seluruh data administrasi masjid saat ini. Lanjutkan?')) {
+      importInput.click()
+    }
+  })
   importInput?.addEventListener('change', async () => {
     const file = importInput.files[0]
     if (!file) {
@@ -271,13 +275,8 @@ function initUmum() {
         showToast(data.message || 'Gagal mengimpor file.', 'fa-solid fa-triangle-exclamation')
         return
       }
-      const skipCount = (data.skipped || []).length
-      showToast(
-        skipCount
-          ? `${data.imported} jamaah diimpor, ${skipCount} dilewati.`
-          : `${data.imported} jamaah berhasil diimpor.`,
-        'fa-solid fa-file-import',
-      )
+      showToast(data.message || 'Backup berhasil dipulihkan.', 'fa-solid fa-file-import')
+      setTimeout(() => location.reload(), 800)
     } catch (err) {
       showToast('Terjadi kesalahan saat impor.', 'fa-solid fa-triangle-exclamation')
     } finally {

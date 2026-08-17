@@ -1,34 +1,37 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\JamaahController;
-use App\Http\Controllers\KasMasjidController;
-use App\Http\Controllers\InfaqSodaqohController;
+use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\AgendaController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ExportDataController;
+use App\Http\Controllers\GaleriController;
+use App\Http\Controllers\InfaqSodaqohController;
+use App\Http\Controllers\InventarisController;
 use App\Http\Controllers\JadwalKegiatanController;
 use App\Http\Controllers\JadwalPetugasController;
-use App\Http\Controllers\GaleriController;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\ProfilController;
-use App\Http\Controllers\ExportDataController;
-use App\Http\Controllers\PengumumanController;
+use App\Http\Controllers\JamaahController;
+use App\Http\Controllers\KasMasjidController;
 use App\Http\Controllers\KepengurusanController;
-use App\Http\Controllers\RelawanController;
-use App\Http\Controllers\SuratController;
-use App\Http\Controllers\InventarisController;
 use App\Http\Controllers\LaporanController;
-use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PengumumanController;
+use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\ProfilMasjidController;
-use App\Http\Controllers\UserManagementController;
-use App\Http\Controllers\UmumController;
+use App\Http\Controllers\PublicDetailController;
+use App\Http\Controllers\PublicGaleriController;
+use App\Http\Controllers\PublicJadwalController;
+use App\Http\Controllers\PublicKeuanganController;
 use App\Http\Controllers\PublicLandingController;
 use App\Http\Controllers\PublicPengumumanController;
-use App\Http\Controllers\PublicJadwalController;
-use App\Http\Controllers\PublicGaleriController;
-use App\Http\Controllers\PublicKeuanganController;
 use App\Http\Controllers\PublicPengurusController;
 use App\Http\Controllers\PublicPetugasSholatController;
-use App\Http\Controllers\PublicDetailController;
+use App\Http\Controllers\RelawanController;
+use App\Http\Controllers\SuratController;
+use App\Http\Controllers\UmumController;
+use App\Http\Controllers\UserManagementController;
+use App\Models\Mosque;
+use App\Support\SiteContext;
+use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'create'])->name('login');
@@ -52,7 +55,7 @@ Route::group([], function () {
     // Pintu depan: pengunjung → website; pengurus yang sudah login → dashboard.
     Route::get('/', function () {
         return auth()->check()
-            ? app(\App\Http\Controllers\DashboardController::class)->index(request())
+            ? app(DashboardController::class)->index(request())
             : redirect()->route('public.beranda');
     })->name('dashboard');
     Route::get('/publik', [PublicLandingController::class, 'index'])->name('public.beranda');
@@ -61,7 +64,8 @@ Route::group([], function () {
     Route::get('/publik/jadwal-kegiatan', [PublicJadwalController::class, 'index'])->name('public.jadwal');
     Route::get('/publik/pengumuman', [PublicPengumumanController::class, 'index'])->name('public.pengumuman');
     Route::get('/publik/tentang-masjid', function () {
-        $mosque = \App\Models\Mosque::find(\App\Support\SiteContext::mosqueId());
+        $mosque = Mosque::find(SiteContext::mosqueId());
+
         return view('pages.public.tentang-masjid', ['mosque' => $mosque]);
     })->name('public.tentang');
     Route::get('/publik/galeri', [PublicGaleriController::class, 'index'])->name('public.galeri');
@@ -73,7 +77,7 @@ Route::group([], function () {
     Route::get('/publik/pengumuman/{id}', [PublicDetailController::class, 'pengumuman'])->name('public.pengumuman.detail');
 });
 
-Route::middleware(['auth', 'menu.access'])->group(function () {
+Route::middleware(['auth', 'active.user', 'menu.access', 'activity.log'])->group(function () {
 
     Route::get('/data-jamaah', [JamaahController::class, 'index'])->name('jamaah.index');
     Route::post('/data-jamaah', [JamaahController::class, 'store'])->name('jamaah.store');
@@ -95,6 +99,7 @@ Route::middleware(['auth', 'menu.access'])->group(function () {
     Route::get('/keuangan/kas-masjid', [KasMasjidController::class, 'index'])->name('keuangan.kas');
     Route::post('/keuangan/kas-masjid', [KasMasjidController::class, 'store'])->name('keuangan.kas.store');
     Route::put('/keuangan/kas-masjid/{id}', [KasMasjidController::class, 'update'])->name('keuangan.kas.update');
+    Route::delete('/keuangan/kas-masjid/{id}', [KasMasjidController::class, 'destroy'])->name('keuangan.kas.destroy');
     Route::get('/kegiatan/agenda', [AgendaController::class, 'index'])->name('kegiatan.agenda');
     Route::post('/kegiatan/agenda', [AgendaController::class, 'store'])->name('kegiatan.agenda.store');
     Route::put('/kegiatan/agenda/{kegiatan}', [AgendaController::class, 'update'])->name('kegiatan.agenda.update');
@@ -157,6 +162,8 @@ Route::middleware(['auth', 'menu.access'])->group(function () {
     Route::delete('/pengaturan/user-management/{id}', [UserManagementController::class, 'destroy'])->name('pengaturan.user-management.destroy');
     Route::patch('/pengaturan/user-management/{id}/status', [UserManagementController::class, 'updateStatus'])->name('pengaturan.user-management.status');
     Route::post('/pengaturan/user-management/{id}/reset-password', [UserManagementController::class, 'resetPassword'])->name('pengaturan.user-management.reset');
+
+    Route::get('/pengawasan/log-aktivitas', [ActivityLogController::class, 'index'])->name('activity-log');
 
     // Profil Saya
     Route::get('/profil', [ProfilController::class, 'index'])->name('profil');

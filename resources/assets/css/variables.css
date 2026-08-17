@@ -41,6 +41,10 @@
   --color-yellow: #d69e2e;
   --color-orange: #e0651a;
   --color-red: #e03131;
+  --color-primary: var(--color-teal);
+  --color-primary-light: var(--color-green-light);
+  --color-success: var(--color-green);
+  --color-success-bg: var(--color-green-light);
 
   /* === CSS variables tambahan (dipakai di berbagai halaman) === */
   --bg-card: #ffffff;

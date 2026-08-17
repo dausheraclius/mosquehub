@@ -1,5 +1,9 @@
 const daftarJamaah = window.__DAFTAR_JAMAAH__ || []
 
+function personMeta(p) {
+  return [p.email, p.hp].filter(Boolean).join(' | ')
+}
+
 function getNamaJabatan() {
   return window.__JABATAN_LIST__ || []
 }
@@ -44,8 +48,8 @@ function bangunJabatanData() {
   const penempatan = getPenempatan()
 
   return namaList.map((nama) => {
-    const email = penempatan[nama] || null
-    const person = email ? daftarJamaah.find((p) => p.email === email) || null : null
+    const id = penempatan[nama] || null
+    const person = id ? daftarJamaah.find((p) => p.id === Number(id)) || null : null
     return { nama, person }
   })
 }
@@ -260,7 +264,7 @@ function renderJabatanList() {
           <div class="jabatan-select-avatar"><i class="fa-solid fa-user"></i></div>
           <div class="jabatan-select-info">
             <span class="jabatan-select-name">${item.person.nama}</span>
-            <span class="jabatan-select-meta">${item.person.email} | ${item.person.hp}</span>
+            <span class="jabatan-select-meta">${personMeta(item.person)}</span>
           </div>
         </div>
       `
@@ -300,13 +304,13 @@ function renderDropdownItems(dropdownEl, namaJabatan, keyword = '') {
   }
 
   itemsContainer.innerHTML = filtered.map((p) => {
-    const isSelected = currentItem.person?.email === p.email
+    const isSelected = currentItem.person?.id === p.id
     return `
-      <div class="jabatan-dropdown-item ${isSelected ? 'selected' : ''}" data-email="${p.email}">
+      <div class="jabatan-dropdown-item ${isSelected ? 'selected' : ''}" data-id="${p.id}">
         <div class="jabatan-dropdown-avatar"><i class="fa-solid fa-user"></i></div>
         <div class="jabatan-dropdown-info">
           <span class="jabatan-dropdown-name">${p.nama}</span>
-          <span class="jabatan-dropdown-meta">${p.email} | ${p.hp}</span>
+          <span class="jabatan-dropdown-meta">${personMeta(p)}</span>
         </div>
         ${isSelected ? '<i class="fa-solid fa-check" style="color:var(--color-green); margin-left:auto;"></i>' : ''}
       </div>
@@ -315,8 +319,8 @@ function renderDropdownItems(dropdownEl, namaJabatan, keyword = '') {
 
   itemsContainer.querySelectorAll('.jabatan-dropdown-item').forEach((el) => {
     el.addEventListener('click', () => {
-      const email = el.dataset.email
-      const person = daftarJamaah.find((p) => p.email === email)
+      const id = el.dataset.id
+      const person = daftarJamaah.find((p) => p.id === Number(id))
       const jabatan = jabatanData.find((j) => j.nama === namaJabatan)
       jabatan.person = person
       dropdownEl.classList.remove('show')
@@ -379,7 +383,7 @@ document.getElementById('resetBtn').addEventListener('click', () => {
 
 document.getElementById('simpanBtn').addEventListener('click', () => {
   const penempatan = {}
-  jabatanData.forEach((j) => { if (j.person) penempatan[j.nama] = j.person.email })
+  jabatanData.forEach((j) => { if (j.person) penempatan[j.nama] = j.person.id })
   simpanPenempatan(penempatan)
   updateRingkasan()
   showToast('Perubahan kepengurusan berhasil disimpan.')

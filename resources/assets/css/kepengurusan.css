@@ -245,6 +245,7 @@ body.dark-mode .jabatan-row {
 .jabatan-select {
   position: relative;
   flex: 1;
+  min-width: 0;
 }
 
 .jabatan-select-trigger {
@@ -257,6 +258,7 @@ body.dark-mode .jabatan-row {
   cursor: pointer;
   gap: 8px;
   background: var(--color-white);
+  min-width: 0;
 }
 
 .jabatan-select-trigger:hover {
@@ -272,6 +274,8 @@ body.dark-mode .jabatan-select-trigger:hover {
   align-items: center;
   gap: 8px;
   overflow: hidden;
+  flex: 1;
+  min-width: 0;
 }
 
 .jabatan-select-avatar {
@@ -291,6 +295,8 @@ body.dark-mode .jabatan-select-trigger:hover {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  flex: 1;
+  min-width: 0;
 }
 .jabatan-select-name {
   font-size: 12px;
@@ -385,11 +391,15 @@ body.dark-mode .jabatan-dropdown-item:hover {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  min-width: 0;
 }
 .jabatan-dropdown-name {
   font-size: 12.5px;
   font-weight: 400;
   color: var(--text-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .jabatan-dropdown-meta {
   font-size: 11px;

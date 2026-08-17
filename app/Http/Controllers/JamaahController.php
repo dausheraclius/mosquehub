@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Jamaah;
 use App\Support\Concerns\HasMosqueContext;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 
 class JamaahController extends Controller
@@ -58,11 +59,20 @@ class JamaahController extends Controller
             }
 
             $data = $header
-                ? array_combine($header, array_pad($row, count($header), null))
+                ? array_combine($header, array_slice(array_pad($row, count($header), null), 0, count($header)))
                 : ['nama' => $row[0] ?? null, 'jenis_kelamin' => $row[1] ?? null, 'no_hp' => $row[2] ?? null, 'email' => $row[3] ?? null, 'alamat' => $row[4] ?? null, 'status_jamaah' => $row[5] ?? null, 'tanggal_bergabung' => $row[6] ?? null];
 
             $nama = $data['nama'] ?? null;
             if (!$nama) {
+                continue;
+            }
+
+            try {
+                $tanggalBergabung = empty($data['tanggal_bergabung'])
+                    ? now()->toDateString()
+                    : Carbon::parse($data['tanggal_bergabung'])->toDateString();
+            } catch (\Throwable) {
+                $errors[] = "\"$nama\" memiliki tanggal bergabung tidak valid, dilewati";
                 continue;
             }
 
@@ -79,7 +89,7 @@ class JamaahController extends Controller
                 'email' => $data['email'] ?? null,
                 'alamat' => $data['alamat'] ?? null,
                 'status_jamaah' => in_array($data['status_jamaah'] ?? null, ['Aktif', 'Tidak Aktif', 'Pindah', 'Wafat'], true) ? $data['status_jamaah'] : 'Aktif',
-                'tanggal_bergabung' => $data['tanggal_bergabung'] ?? now()->toDateString(),
+                'tanggal_bergabung' => $tanggalBergabung,
             ]);
             $imported++;
         }

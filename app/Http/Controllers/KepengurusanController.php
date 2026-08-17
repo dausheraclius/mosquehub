@@ -25,15 +25,15 @@ class KepengurusanController extends Controller
         foreach ($jabatans as $j) {
             $parentNama = $j->parent_id ? optional($jabatans->firstWhere('id', $j->parent_id))->nama : null;
             $hierarki[$j->nama] = $parentNama;
-            $penempatan[$j->nama] = $j->jamaah?->email ?: null;
+            $penempatan[$j->nama] = $j->jamaah?->id ?: null;
         }
 
-        // Pool jemaah yang bisa dipilih jadi pengurus (harus punya email biar bisa dicocokin)
+        // Pool jemaah yang bisa dipilih jadi pengurus (dicocokin pakai ID biar anti dobel nama/email)
         $daftarJamaah = Jamaah::where('mosque_id', $this->mosqueId)
-            ->whereNotNull('email')
             ->orderBy('nama')
             ->get()
             ->map(fn ($j) => [
+                'id' => $j->id,
                 'nama' => $j->nama,
                 'email' => $j->email,
                 'hp' => $j->no_hp,
@@ -93,13 +93,13 @@ class KepengurusanController extends Controller
 
     public function updatePenempatan(Request $request)
     {
-        $penempatan = $request->input('penempatan', []); // { "Nama Jabatan": "email@..." | null }
+        $penempatan = $request->input('penempatan', []); // { "Nama Jabatan": jamaahId | null }
 
-        foreach ($penempatan as $namaJabatan => $email) {
+        foreach ($penempatan as $namaJabatan => $jamaahId) {
             $jabatan = Jabatan::where('mosque_id', $this->mosqueId)->where('nama', $namaJabatan)->first();
             if (!$jabatan) continue;
 
-            $jamaah = $email ? Jamaah::where('mosque_id', $this->mosqueId)->where('email', $email)->first() : null;
+            $jamaah = $jamaahId ? Jamaah::where('mosque_id', $this->mosqueId)->where('id', $jamaahId)->first() : null;
             $jabatan->update(['jamaah_id' => $jamaah?->id]);
         }
 
@@ -107,7 +107,7 @@ class KepengurusanController extends Controller
     }
 
     public function renameJabatan(Request $request)
-{
+    {
     $validated = $request->validate([
         'nama_lama' => 'required|string',
         'nama_baru' => 'required|string|max:255',
@@ -152,5 +152,5 @@ public function resetJabatan()
     }
 
     return response()->json(['success' => true]);
-    }
+}
 }

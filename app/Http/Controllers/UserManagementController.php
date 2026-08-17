@@ -102,7 +102,9 @@ class UserManagementController extends Controller
             return response()->json(['message' => 'Tidak bisa menonaktifkan akun sendiri.'], 422);
         }
 
-        $this->guardLastActiveLeader($user, 'Tidak bisa menonaktifkan ketua YMBPK terakhir yang aktif.');
+        if ($validated['status'] === 'nonaktif' && $user->role === 'Ketua YMBPK') {
+            $this->guardLastActiveLeader($user, 'Tidak bisa menonaktifkan ketua YMBPK terakhir yang aktif.');
+        }
 
         $user->update(['status' => $validated['status']]);
 

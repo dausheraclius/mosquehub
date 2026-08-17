@@ -18,34 +18,31 @@
     </button>
   </x-page-header>
 
-  <div class="stat-cards-jamaah">
-    <div class="stat-card-jamaah">
-      <div class="stat-card-jamaah-top">
+  <div class="stat-cards">
+    <div class="stat-card">
+      <div class="stat-card-top">
         <span class="stat-label">Total Jemaah</span>
       </div>
       <span class="stat-value" id="statTotal">{{ number_format($stats['total']) }}</span>
     </div>
 
-    <div class="stat-card-jamaah">
-      <div class="stat-card-jamaah-top">
+    <div class="stat-card">
+      <div class="stat-card-top">
         <span class="stat-label">Laki-laki / Ikhwan</span>
-        <div class="stat-icon-circle icon-blue"><i class="fa-solid fa-person"></i></div>
       </div>
       <span class="stat-value" id="statLaki">{{ number_format($stats['laki']) }}</span>
     </div>
 
-    <div class="stat-card-jamaah">
-      <div class="stat-card-jamaah-top">
+    <div class="stat-card">
+      <div class="stat-card-top">
         <span class="stat-label">Perempuan / Akhwat</span>
-        <div class="stat-icon-circle icon-red"><i class="fa-solid fa-person-dress"></i></div>
       </div>
       <span class="stat-value" id="statPerempuan">{{ number_format($stats['perempuan']) }}</span>
     </div>
 
-    <div class="stat-card-jamaah">
-      <div class="stat-card-jamaah-top">
+    <div class="stat-card">
+      <div class="stat-card-top">
         <span class="stat-label">Jemaah Aktif</span>
-        <div class="stat-icon-circle icon-green"><i class="fa-solid fa-signal"></i></div>
       </div>
       <span class="stat-value" id="statAktif">{{ number_format($stats['aktif']) }}</span>
     </div>

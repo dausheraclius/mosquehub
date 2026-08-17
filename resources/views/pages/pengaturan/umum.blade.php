@@ -369,12 +369,12 @@
               <i class="fa-solid fa-cloud-arrow-up"></i> Backup Sekarang
             </button>
             <button class="btn btn-outline" id="btnExportData">
-              <i class="fa-solid fa-file-export"></i> Ekspor Data (CSV)
+              <i class="fa-solid fa-file-export"></i> Unduh Backup (JSON)
             </button>
             <button class="btn btn-outline" id="btnImportData">
-              <i class="fa-solid fa-file-import"></i> Impor Data
+              <i class="fa-solid fa-file-import"></i> Pulihkan Backup
             </button>
-            <input type="file" id="importFileInput" accept=".csv" hidden />
+            <input type="file" id="importFileInput" accept=".json,application/json" hidden />
           </div>
 
           <div class="toggle-row" style="margin-top: 20px">

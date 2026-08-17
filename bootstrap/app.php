@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Middleware\EnsureMenuAccess;
+use App\Http\Middleware\EnsureActiveUser;
+use App\Http\Middleware\LogActivity;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -14,7 +17,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         // Batasi akses menu berdasarkan role & permissions user (RBAC)
         $middleware->alias([
-            'menu.access' => \App\Http\Middleware\EnsureMenuAccess::class,
+            'menu.access' => EnsureMenuAccess::class,
+            'activity.log' => LogActivity::class,
+            'active.user' => EnsureActiveUser::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
