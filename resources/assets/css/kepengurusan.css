@@ -2,14 +2,24 @@
    KEPENGURUSAN - Page Specific
    ============================ */
 
-/* --- Page header — samakan dengan halaman lain --- */
-/* --- Page title: gaya .page-title dkk. ada di components.css --- */
-
 /* --- Action row: tombol aksi utama di antara breadcrumb & konten --- */
 .kepengurusan-actions {
   display: flex;
   justify-content: flex-end;
+  gap: 10px;
   margin: 0 0 16px;
+}
+
+/* Tombol aksi dibuat lebih ringkas & seragam ukurannya */
+.kepengurusan-actions .btn {
+  padding: 8px 14px;
+  font-size: 12px;
+}
+
+/* .btn-outline punya border 1px, kurangi padding vertikal biar tingginya sama */
+.kepengurusan-actions .btn-outline {
+  padding: 7px 14px;
+  font-size: 12px;
 }
 
 /* --- Top row: 4 card ringkasan --- */
@@ -55,7 +65,7 @@
   justify-content: space-between;
 }
 
-/* --- Tab Organisasi YMBPK — ganti dropdown lama --- */
+/* --- Tab Organisasi YMBPK --- */
 .org-tabs {
   display: flex;
   gap: 6px;
@@ -98,13 +108,25 @@
   font-weight: 500;
 }
 
-/* --- Org Chart --- */
+/* ============================
+   ORG CHART — CANVAS EDITOR
+   Node diposisikan absolut (left/top) dari data x/y, bukan Flexbox.
+   ============================ */
+
+/* Wrapper: area scroll. Canvas di dalamnya bisa lebih besar dari card. */
 .org-chart-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   padding: 20px 10px 10px;
-  overflow-x: auto;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Canvas: container relative yang menampung node absolut + SVG connector.
+   Ukuran minimum/aktual mengikuti posisi node — node tidak pernah terpotong. */
+.org-chart-canvas {
+  position: relative;
+  margin: 0 auto;
+  min-width: 100%;
+  min-height: 300px;
 }
 
 .org-node {
@@ -117,7 +139,26 @@
   gap: 10px;
   box-shadow: var(--shadow-sm);
   min-width: 170px;
-  position: relative;
+  position: absolute;
+  z-index: 2;
+}
+
+/* Saat edit mode, node boleh di-drag posisinya (gesture touch juga aman) */
+.is-editing .org-node {
+  touch-action: none;
+  cursor: grab;
+}
+
+.is-editing .org-node:active {
+  cursor: grabbing;
+}
+
+/* State drag posisi */
+.org-node.moving {
+  cursor: grabbing;
+  border-color: var(--color-teal);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
+  z-index: 30;
 }
 
 .org-avatar {
@@ -131,6 +172,15 @@
   justify-content: center;
   font-size: 14px;
   flex-shrink: 0;
+}
+
+/* Avatar = handle ubah hierarki (drag ke node lain) saat edit mode */
+.is-editing .org-avatar {
+  cursor: grab;
+}
+
+.is-editing .org-avatar:active {
+  cursor: grabbing;
 }
 
 .org-node-info {
@@ -147,61 +197,22 @@
   color: var(--text-dark);
 }
 
-.org-connector {
-  width: 1px;
-  height: 24px;
-  background: var(--border-color);
-}
-
-.org-children {
-  display: flex;
-  justify-content: center;
-  gap: 28px;
-  border-top: 1px solid var(--border-color);
-  padding-top: 24px;
-  position: relative;
-}
-
-.org-child-col {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-}
-
-.org-child-col::before {
-  content: '';
+/* --- Connector dinamis (SVG) — garis parent → child --- */
+.org-connector-svg {
   position: absolute;
-  top: -24px;
-  left: 50%;
-  width: 1px;
-  height: 24px;
-  background: var(--border-color);
-}
-
-.bidang-section {
-  margin-top: 32px;
+  top: 0;
+  left: 0;
   width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 1;
 }
 
-.bidang-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  max-width: 620px;
-  margin: 0 auto;
-}
-
-.bidang-card {
-  background: var(--color-white);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
-  padding: 10px 12px;
-  text-align: center;
-  font-size: 11.5px;
-  font-weight: 400;
-  color: var(--text-dark);
-  box-shadow: var(--shadow-sm);
+.org-connector-path {
+  fill: none;
+  stroke: var(--border-color);
+  stroke-width: 1.5;
 }
 
 /* --- List Jabatan (kanan) --- */
@@ -426,48 +437,6 @@ body.dark-mode .jabatan-dropdown-item:hover {
   border-top: 1px solid var(--border-color);
 }
 
-/* ============================
-   ORG CHART BUILDER (rekursif)
-   ============================ */
-
-.org-tree-root {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  padding: 10px;
-}
-
-.org-node-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-}
-
-/* Mode edit: pasang jarak bawah biar tombol + bawah gak ketumpuk */
-.is-editing .org-node-wrapper {
-  padding-bottom: 20px;
-}
-
-.org-connector-line { width: 1px; height: 20px; background: var(--border-color); }
-
-.org-children-row {
-  display: flex;
-  gap: 24px;
-  position: relative;
-  padding-top: 20px;
-}
-
-.org-children-row > .org-node-wrapper::before {
-  content: '';
-  position: absolute;
-  top: -20px;
-  left: 50%;
-  width: 1px;
-  height: 20px;
-  background: var(--border-color);
-}
-
 /* --- Panel "Atur Struktur Jabatan" --- */
 .struktur-section {
   padding: 14px;
@@ -509,71 +478,15 @@ body.dark-mode .struktur-select {
 }
 
 /* ============================
-   ORG CHART - Layout Bagan Kompleks
-   ============================ */
-
-.org-arms-row {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 40px;
-  padding-top: 20px;
-  width: 100%;
-}
-
-.org-arms-side { display: flex; gap: 16px; flex-wrap: wrap; }
-.org-arms-spacer { flex: 1; }
-
-.org-pair-box {
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  box-shadow: var(--shadow-sm);
-  background: var(--color-white);
-}
-
-.org-pair-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  border-bottom: 1px solid var(--border-color);
-  min-width: 160px;
-}
-
-.org-pair-row:last-child { border-bottom: none; }
-
-.org-dashed-list-box {
-  border: 1.5px dashed var(--border-color);
-  border-radius: var(--radius-md);
-  padding: 12px 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-width: 170px;
-}
-
-.org-dashed-list-item { display: flex; flex-direction: column; }
-.org-dashed-list-name { font-size: 11.5px; font-weight: 600; color: var(--text-dark); }
-.org-dashed-list-person { font-size: 10.5px; color: var(--text-muted); }
-
-/* ============================
    DRAG & DROP - Org Chart
    ============================ */
-
-.org-node[draggable="true"] {
-  cursor: grab;
-}
 
 .org-node * {
   user-select: none;
   -webkit-user-select: none;
 }
 
-.org-node[draggable="true"]:active {
-  cursor: grabbing;
-}
-
+/* State drag hierarki (HTML5 drag dari avatar) */
 .org-node.dragging {
   opacity: 0.4;
   border-style: dashed;
@@ -643,8 +556,6 @@ body.dark-mode .org-node-add {
   border: 2px dashed var(--color-teal);
   border-radius: var(--radius-md);
 }
-
-
 
 .org-chart-wrapper .org-drop-hint {
   display: none;

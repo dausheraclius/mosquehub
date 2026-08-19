@@ -276,7 +276,9 @@
         <div class="form-grid">
           <div class="form-group form-group-wide" id="formGroupPesertaNama">
             <label class="form-label" for="inputPesertaNama">Nama Peserta</label>
-            <input class="form-input" type="text" id="inputPesertaNama" placeholder="cth: Bpk. Slamet Riyadi" list="datalistJamaah">
+            <select class="form-select" id="inputPesertaNama">
+              <option value="">Pilih jemaah</option>
+            </select>
           </div>
           <div class="form-group">
             <label class="form-label" for="inputPesertaPaket">Paket Qurban</label>
@@ -335,8 +337,6 @@
       </div>
     </div>
   </div>
-
-  <datalist id="datalistJamaah"></datalist>
 
   <!-- MODAL: CATAT SETORAN -->
   <div class="modal-overlay" id="setoranModalOverlay">

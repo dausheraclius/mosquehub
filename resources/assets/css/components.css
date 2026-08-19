@@ -983,12 +983,37 @@ body.dark-mode .form-control {
 .form-select:focus,
 .form-textarea:focus {
   outline: none;
-  border-color: var(--color-green);
+  border-color: var(--color-teal);
+  box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.12);
 }
 
 .form-textarea {
   resize: vertical;
   min-height: 44px;
+}
+
+/* ============================================================
+   NATIVE DATE & NUMBER INPUT — rapikan kontrol bawaan browser
+   - Spinner ▲▼ di input angka disembunyikan (tetap bisa ketik manual).
+   - Ikon kalender di input tanggal dibuat konsisten & tidak mencolok.
+   Catatan: panel popup kalender tetap bawaan browser (tidak bisa
+   diubah via CSS). Tombol × tanggal di Firefox juga bawaan dan
+   tidak bisa dihilangkan.
+   ============================================================ */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0.55;
+  cursor: pointer;
 }
 
 /* ============================================================

@@ -2,6 +2,14 @@ import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 
 export default defineConfig({
+    server: {
+        // Dev server ikut dibuka dari luar (sama seperti `artisan serve --host=0.0.0.0`)
+        // biar perangkat lain bisa memuat CSS/JS saat melihat progress.
+        host: '0.0.0.0',
+        // Alamat yang ditulis ke public/hot → dipakai browser untuk memuat asset.
+        // Harus alamat yang bisa dijangkau perangkat lain (ganti kalau IP berubah).
+        hmr: { host: '192.168.20.224' },
+    },
     plugins: [
         laravel({
             input: [
@@ -13,6 +21,7 @@ export default defineConfig({
                 'resources/assets/css/sidebar.css',
                 'resources/assets/css/content-header.css',
                 'resources/assets/css/components.css',
+                'resources/assets/css/custom-select.css',
                 'resources/assets/css/responsive.css',
                 'resources/assets/css/dashboard.css',
                 'resources/assets/css/data-jamaah.css',
@@ -31,6 +40,7 @@ export default defineConfig({
                 'resources/assets/css/profil-masjid.css',
                 'resources/assets/css/umum.css',
                 'resources/assets/css/user-management.css',
+                'resources/assets/css/activity-log.css',
                 'resources/assets/css/landing.css',
                 'resources/assets/css/login.css',
             ],

@@ -10,21 +10,27 @@ function renumberAndRemove(tr) {
 
 function bindBarisJabatan(tr) {
 
-  tr.querySelector('.icon-action-btn.hapus').addEventListener('click', async () => {
+  tr.querySelector('.icon-action-btn.hapus').addEventListener('click', () => {
     const namaSekarang = tr.querySelector('.jabatan-input').dataset.original
     if (!namaSekarang) {
       renumberAndRemove(tr)
       return
     }
-    if (!confirm(`Hapus jabatan "${namaSekarang}"?`)) return
-
-    await fetch('/kepengurusan/jabatan', {
-      method: 'DELETE',
-      headers: getHeaders(),
-      body: JSON.stringify({ nama: namaSekarang }),
+    // Pakai modal konfirmasi global (app.blade.php) — bukan confirm() browser
+    openConfirmDelete({
+      title: 'Hapus Jabatan?',
+      message: `Yakin ingin menghapus jabatan "${namaSekarang}"?`,
+      confirmText: 'Hapus',
+      onConfirm: async () => {
+        await fetch('/kepengurusan/jabatan', {
+          method: 'DELETE',
+          headers: getHeaders(),
+          body: JSON.stringify({ nama: namaSekarang }),
+        })
+        renumberAndRemove(tr)
+        showToast('Jabatan berhasil dihapus', 'fa-solid fa-trash')
+      },
     })
-    renumberAndRemove(tr)
-    showToast('Jabatan berhasil dihapus', 'fa-solid fa-trash')
   })
 
   tr.querySelector('.icon-action-btn.edit').addEventListener('click', async () => {

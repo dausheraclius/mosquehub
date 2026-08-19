@@ -59,27 +59,33 @@ function renderTable() {
   })
 
   tbody.querySelectorAll('.btn-hapus-surat').forEach((btn) => {
-    btn.addEventListener('click', async () => {
+    btn.addEventListener('click', () => {
       const id = parseInt(btn.dataset.id)
       const item = suratData.find((s) => s.id === id)
-      if (!confirm(`Yakin mau hapus surat "${item.subjek}"?`)) return
+      // Pakai modal konfirmasi global (app.blade.php) — bukan confirm() browser
+      openConfirmDelete({
+        title: 'Hapus Surat?',
+        message: `Yakin mau hapus surat "${item.subjek}"?`,
+        confirmText: 'Hapus',
+        onConfirm: async () => {
+          try {
+            const res = await fetch(`/surat/${id}`, {
+              method: 'DELETE',
+              headers: {
+                'X-CSRF-TOKEN': getCsrf(),
+                Accept: 'application/json',
+              },
+            })
+            if (!res.ok) throw new Error('Gagal hapus surat')
 
-      try {
-        const res = await fetch(`/surat/${id}`, {
-          method: 'DELETE',
-          headers: {
-            'X-CSRF-TOKEN': getCsrf(),
-            Accept: 'application/json',
-          },
-        })
-        if (!res.ok) throw new Error('Gagal hapus surat')
-
-        suratData = suratData.filter((s) => s.id !== id)
-        renderTable()
-      } catch (err) {
-        alert('Gagal menghapus surat. Coba lagi.')
-        console.error(err)
-      }
+            suratData = suratData.filter((s) => s.id !== id)
+            renderTable()
+          } catch (err) {
+            showToast('Gagal menghapus surat. Coba lagi.', 'fa-solid fa-triangle-exclamation')
+            console.error(err)
+          }
+        },
+      })
     })
   })
 }
@@ -229,7 +235,7 @@ document.getElementById('simpanTambahBtn').addEventListener('click', async () =>
     document.getElementById('tambahModal').classList.remove('active')
     renderTable()
   } catch (err) {
-    alert('Gagal menyimpan surat. Coba lagi.')
+    showToast('Gagal menyimpan surat. Coba lagi.', 'fa-solid fa-triangle-exclamation')
     console.error(err)
   } finally {
     btn.disabled = false

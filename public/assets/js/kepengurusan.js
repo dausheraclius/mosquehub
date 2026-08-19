@@ -10,14 +10,16 @@ function getNamaJabatan() {
 
 // ============ HIERARKI (struktur atasan-bawahan) ============
 // Format: { [namaJabatan]: namaAtasan | null }
+// Hierarki menjawab "siapa parent dari jabatan ini?" — terpisah dari posisi visual.
 function getHierarki() {
   return window.__HIERARKI__ || {}
 }
 
-async function simpanHierarki(hierarki) {
+// Snapshot hierarki dari server — dipakai tombol Reset.
+const serverHierarki = JSON.parse(JSON.stringify(getHierarki()))
+
+function simpanHierarki(hierarki) {
   window.__HIERARKI__ = hierarki
-  // Cari 1 pasangan nama+parent yang paling baru berubah dibanding sebelumnya udah susah dilacak di sini,
-  // jadi kita kirim ulang tiap kali dipanggil dari titik yang emang ubah 1 jabatan aja (lihat 8f & drag-drop).
 }
 
 // Cek: apakah `calonAtasan` adalah keturunan dari `nama`? (cegah struktur muter/cycle)
@@ -35,11 +37,12 @@ function getPenempatan() {
 }
 
 async function simpanPenempatan(penempatan) {
-  await fetch('/kepengurusan/penempatan', {
+  const res = await fetch('/kepengurusan/penempatan', {
     method: 'POST',
     headers: getHeaders(),
     body: JSON.stringify({ penempatan }),
   })
+  if (!res.ok) throw new Error('Gagal menyimpan penempatan')
   window.__PENEMPATAN__ = penempatan
 }
 
@@ -57,141 +60,241 @@ function bangunJabatanData() {
 let jabatanData = bangunJabatanData()
 let isEditMode = false
 
-// ============ RENDER ORG CHART ============
-function getChildrenOf(nama) {
+// ============ POSISI VISUAL (x/y) — terpisah dari hierarki ============
+// Format: { [namaJabatan]: { x, y } }
+// Posisi menjawab "di koordinat mana node ditampilkan?" dan hanya berubah
+// lewat drag (edit mode). Disimpan ke server saat tombol Simpan ditekan.
+const serverPositions = JSON.parse(JSON.stringify(window.__POSISI_ORG__ || {}))
+// Muat posisi tersimpan dari server — tanpa ini semua node dihitung ulang
+// pakai layout default dan hasil geseran hilang saat halaman dimuat ulang.
+let positions = JSON.parse(JSON.stringify(serverPositions))
+
+// Dimensi & jarak default (samakan dengan CSS .org-node)
+const NODE_W = 170
+const NODE_H = 56
+const PAD_X = 60
+const PAD_Y = 60
+const H_SPACING = 230
+const V_SPACING = 150
+
+function getPositions() {
+  return positions
+}
+
+// Generate layout default berbasis hierarki: parent di tengah anak-anaknya,
+// tiap level turun satu baris. Hanya dipakai untuk jabatan yang belum punya
+// posisi — posisi yang sudah ada (server / hasil drag) tidak pernah ditimpa.
+function computeDefaultLayout() {
   const hierarki = getHierarki()
-  return Object.keys(hierarki).filter((n) => hierarki[n] === nama)
+  const namaList = getNamaJabatan()
+  const inList = (n) => !!n && namaList.includes(n)
+  const childrenOf = (n) => namaList.filter((c) => hierarki[c] === n)
+  // Root = parent null ATAU parent yang sudah tidak ada di daftar (aman dari node hilang)
+  const roots = namaList.filter((n) => !inList(hierarki[n]))
+
+  // Depth tiap node, cycle-safe
+  const depth = {}
+  const computeDepth = (n, seen = {}) => {
+    if (depth[n] !== undefined) return depth[n]
+    if (seen[n]) return 0
+    seen[n] = true
+    const parent = hierarki[n]
+    depth[n] = inList(parent) ? computeDepth(parent, seen) + 1 : 0
+    return depth[n]
+  }
+  namaList.forEach((n) => computeDepth(n))
+
+  // Slot x: in-order DFS per subtree; parent diposisikan di tengah anak-anaknya
+  const slot = {}
+  const assigned = new Set()
+  let cursor = 0
+  const assign = (n) => {
+    if (assigned.has(n)) return slot[n] !== undefined ? slot[n] : cursor++
+    assigned.add(n)
+    const kids = childrenOf(n)
+    if (kids.length === 0) {
+      slot[n] = cursor++
+    } else {
+      const childSlots = kids.map((k) => assign(k))
+      slot[n] = (Math.min(...childSlots) + Math.max(...childSlots)) / 2
+    }
+    return slot[n]
+  }
+  roots.forEach((r) => assign(r))
+  namaList.forEach((n) => {
+    if (slot[n] === undefined) slot[n] = cursor++
+  })
+
+  const layout = {}
+  namaList.forEach((n) => {
+    layout[n] = {
+      x: Math.round(PAD_X + slot[n] * H_SPACING),
+      y: Math.round(PAD_Y + depth[n] * V_SPACING),
+    }
+  })
+  return layout
 }
 
-function hasChildren(nama) {
-  return getChildrenOf(nama).length > 0
+// Pastikan semua jabatan punya posisi sebelum render.
+function ensureDefaultPositions() {
+  const namaList = getNamaJabatan()
+  const layout = computeDefaultLayout()
+
+  namaList.forEach((nama) => {
+    if (!positions[nama]) positions[nama] = layout[nama]
+  })
+
+  // Buang posisi jabatan yang sudah dihapus dari daftar
+  Object.keys(positions).forEach((nama) => {
+    if (!namaList.includes(nama)) delete positions[nama]
+  })
 }
 
+async function simpanPositionsServer() {
+  const res = await fetch('/kepengurusan/jabatan/positions', {
+    method: 'POST',
+    headers: getHeaders(),
+    body: JSON.stringify({ positions }),
+  })
+  if (!res.ok) throw new Error('Gagal menyimpan posisi')
+}
+
+// ============ RENDER ORG CHART (canvas + posisi absolut) ============
 function personLabel(nama) {
   const item = jabatanData.find((j) => j.nama === nama)
   return item?.person?.nama || 'Belum Diisi'
 }
 
 function nodeBoxHtml(nama) {
+  const p = positions[nama] || { x: PAD_X, y: PAD_Y }
   return `
-    <div class="org-node" data-nama="${nama}">
-      <div class="org-avatar" draggable="false"><i class="fa-solid fa-user"></i></div>
+    <div class="org-node" data-nama="${esc(nama)}" style="left:${p.x}px;top:${p.y}px">
+      <div class="org-avatar" draggable="false" title="Seret ikon ini ke node lain untuk mengubah atasan"><i class="fa-solid fa-user"></i></div>
       <div class="org-node-info" draggable="false">
-        <span class="org-role" draggable="false">${nama}</span>
-        <span class="org-name" draggable="false">${personLabel(nama)}</span>
+        <span class="org-role" draggable="false">${esc(nama)}</span>
+        <span class="org-name" draggable="false">${esc(personLabel(nama))}</span>
       </div>
-      <button class="org-node-add org-node-add--side" data-nama="${nama}" draggable="false" title="Tambah jabatan anak"><i class="fa-solid fa-plus"></i></button>
-      <button class="org-node-add org-node-add--bottom" data-nama="${nama}" draggable="false" title="Tambah jabatan anak"><i class="fa-solid fa-plus"></i></button>
+      <button class="org-node-add org-node-add--side" data-nama="${esc(nama)}" draggable="false" title="Tambah jabatan anak"><i class="fa-solid fa-plus"></i></button>
+      <button class="org-node-add org-node-add--bottom" data-nama="${esc(nama)}" draggable="false" title="Tambah jabatan anak"><i class="fa-solid fa-plus"></i></button>
     </div>
   `
 }
 
-function renderPairBox(members) {
-  if (members.length === 0) return ''
-  return `
-    <div class="org-pair-box">
-      ${members.map((n) => `
-        <div class="org-pair-row">
-          <div class="org-avatar" draggable="false"><i class="fa-solid fa-user"></i></div>
-          <div class="org-node-info" draggable="false">
-            <span class="org-role" draggable="false">${n}</span>
-            <span class="org-name" draggable="false">${personLabel(n)}</span>
-          </div>
-        </div>
-      `).join('')}
-    </div>
-  `
-}
+// Map nama jabatan -> elemen node (buat update posisi tanpa query selector rumit)
+let nodeMap = {}
 
-function renderDashedListBox(leafNames) {
-  return `
-    <div class="org-dashed-list-box">
-      ${leafNames.map((n) => `
-        <div class="org-dashed-list-item">
-          <span class="org-dashed-list-name">${n}</span>
-          <span class="org-dashed-list-person">${personLabel(n)}</span>
-        </div>
-      `).join('')}
-    </div>
-  `
-}
+function renderOrgChart() {
+  const namaList = getNamaJabatan()
+  const wrapper = document.getElementById('orgChartWrapper')
 
-function renderBelowHtml(nama) {
-  const children = getChildrenOf(nama)
-  if (children.length === 0) return ''
-
-  const branchChildren = children.filter(hasChildren)
-  const leafChildren = children.filter((c) => !hasChildren(c))
-
-  // Semua anak leaf (gak punya anak lagi) -> 1 kotak list putus-putus
-  if (branchChildren.length === 0) {
-    return `
-      <div class="org-connector-line"></div>
-      ${renderDashedListBox(children)}
-    `
+  if (namaList.length === 0) {
+    wrapper.innerHTML = `<p style="text-align:center;color:var(--text-muted);font-size:12.5px;padding:30px 0;">Belum ada jabatan — tambah dulu dari menu <strong>Umum → Jabatan</strong>.</p>`
+    nodeMap = {}
+    return
   }
 
-  // Ada campuran leaf + branch -> leaf dibelah 2 jadi lengan kiri-kanan, branch jadi baris di bawah
-  let armsHtml = ''
-  if (leafChildren.length > 0) {
-    const half = Math.ceil(leafChildren.length / 2)
-    const leftMembers = leafChildren.slice(0, half)
-    const rightMembers = leafChildren.slice(half)
-    armsHtml = `
-      <div class="org-connector-line"></div>
-      <div class="org-arms-row">
-        <div class="org-arms-side">${renderPairBox(leftMembers)}</div>
-        <div class="org-arms-spacer"></div>
-        <div class="org-arms-side">${renderPairBox(rightMembers)}</div>
-      </div>
-    `
-  }
+  ensureDefaultPositions()
 
-  const branchHtml = `
-    <div class="org-connector-line"></div>
-    <div class="org-children-row">
-      ${branchChildren.map((c) => `<div class="org-node-wrapper">${nodeBoxHtml(c)}${renderBelowHtml(c)}</div>`).join('')}
+  // Ukuran canvas mengikuti posisi node paling jauh — node tidak pernah terpotong
+  let maxX = PAD_X
+  let maxY = PAD_Y
+  namaList.forEach((nama) => {
+    const p = positions[nama]
+    maxX = Math.max(maxX, p.x + NODE_W)
+    maxY = Math.max(maxY, p.y + NODE_H)
+  })
+  const canvasW = maxX + PAD_X
+  const canvasH = maxY + PAD_Y
+
+  wrapper.innerHTML = `
+    <div class="org-chart-canvas${isEditMode ? ' is-editing' : ''}" id="orgChartCanvas" style="width:${canvasW}px;height:${canvasH}px">
+      ${namaList.map((nama) => nodeBoxHtml(nama)).join('')}
+      <svg class="org-connector-svg" aria-hidden="true"></svg>
+    </div>
+    <div class="org-drop-hint" style="display:${isEditMode ? 'block' : 'none'}">
+      <i class="fa-solid fa-arrows-up-down"></i> Geser node untuk mengatur posisi. Seret <i class="fa-solid fa-user"></i> ke node lain untuk mengubah atasan.
     </div>
   `
 
-  return armsHtml + branchHtml
+  nodeMap = {}
+  wrapper.querySelectorAll('.org-node').forEach((node) => {
+    nodeMap[node.dataset.nama] = node
+  })
+  syncDragAttrs()
+  syncAddButtons()
+  renderConnectors()
+}
+
+// ============ CONNECTOR DINAMIS (SVG parent → child) ============
+// Garis dirender berdasarkan pasangan parent-child dari hierarki, bukan urutan
+// DOM. Setiap node bergeser, connector ikut diperbarui (lihat setNodePosition).
+function renderConnectors() {
+  const canvas = document.getElementById('orgChartCanvas')
+  const svg = canvas?.querySelector('.org-connector-svg')
+  if (!canvas || !svg) return
+
+  const hierarki = getHierarki()
+  const namaList = getNamaJabatan()
+  const paths = []
+
+  namaList.forEach((nama) => {
+    const parent = hierarki[nama]
+    if (!parent || !namaList.includes(parent)) return
+    const child = positions[nama]
+    const par = positions[parent]
+    if (!child || !par) return
+
+    // Titik sambung: tengah-bawah parent → tengah-atas child (bentuk siku)
+    const x1 = par.x + NODE_W / 2
+    const y1 = par.y + NODE_H
+    const x2 = child.x + NODE_W / 2
+    const y2 = child.y
+    const midY = y1 + (y2 - y1) / 2
+
+    paths.push(`<path class="org-connector-path" d="M ${x1} ${y1} L ${x1} ${midY} L ${x2} ${midY} L ${x2} ${y2}"/>`)
+  })
+
+  svg.innerHTML = paths.join('')
+}
+
+let connectorRaf = null
+
+// Throttle render connector saat drag berlangsung (via requestAnimationFrame)
+function updateConnectorsSoon() {
+  if (connectorRaf) return
+  connectorRaf = requestAnimationFrame(() => {
+    connectorRaf = null
+    renderConnectors()
+  })
+}
+
+// Update posisi node + canvas (node jangan sampai terpotong) + connector
+function setNodePosition(nama, x, y) {
+  positions[nama] = { x: Math.max(0, Math.round(x)), y: Math.max(0, Math.round(y)) }
+  const node = nodeMap[nama]
+  if (!node) return
+  node.style.left = positions[nama].x + 'px'
+  node.style.top = positions[nama].y + 'px'
+
+  const canvas = document.getElementById('orgChartCanvas')
+  if (canvas) {
+    const needW = positions[nama].x + NODE_W + PAD_X
+    const needH = positions[nama].y + NODE_H + PAD_Y
+    if (needW > canvas.offsetWidth) canvas.style.width = needW + 'px'
+    if (needH > canvas.offsetHeight) canvas.style.height = needH + 'px'
+  }
+  updateConnectorsSoon()
 }
 
 function syncDragAttrs() {
   document.querySelectorAll('.org-node').forEach((node) => {
-    node.draggable = isEditMode
+    const avatar = node.querySelector('.org-avatar')
+    if (avatar) avatar.draggable = isEditMode
   })
+  const canvas = document.getElementById('orgChartCanvas')
+  if (canvas) canvas.classList.toggle('is-editing', isEditMode)
   const hint = document.querySelector('.org-drop-hint')
   if (hint) hint.style.display = isEditMode ? 'block' : 'none'
-}
-
-function renderOrgChart() {
-  const hierarki = getHierarki()
-  const roots = Object.keys(hierarki).filter((nama) => hierarki[nama] === null)
-  const wrapper = document.getElementById('orgChartWrapper')
-
-  if (roots.length === 0) {
-    // Safety fallback: jangan sampe chart ilang semua. Coba pake jabatan pertama sebagai root.
-    const namaList = getNamaJabatan()
-    if (namaList.length > 0) {
-      hierarki[namaList[0]] = null
-      simpanHierarki(hierarki)
-      // Panggil renderOrgChart lagi — rekursif sekali aja biar aman
-      renderOrgChart()
-    } else {
-      wrapper.innerHTML = `<p style="text-align:center;color:var(--text-muted);font-size:12.5px;padding:30px 0;">Belum ada jabatan — tambah dulu dari menu <strong>Umum → Jabatan</strong>.</p>`
-    }
-    return
-  }
-
-  wrapper.innerHTML = `
-    <div class="org-tree-root${isEditMode ? ' is-editing' : ''}">${roots
-      .map((nama) => `<div class="org-node-wrapper">${nodeBoxHtml(nama)}${renderBelowHtml(nama)}</div>`)
-      .join('<div style="width:20px;"></div>')}</div>
-    <div class="org-drop-hint"><i class="fa-solid fa-arrows-up-down"></i> Seret jabatan ke node lain untuk ubah hierarki</div>
-  `
-  syncDragAttrs()
-  syncAddButtons()
 }
 
 // ============ RENDER STRUKTUR EDITOR (kanan, dropdown atasan) ============
@@ -206,14 +309,14 @@ function renderStrukturList() {
       .map((n) => {
         const disabled = isDescendant(hierarki, nama, n) ? 'disabled' : ''
         const selected = hierarki[nama] === n ? 'selected' : ''
-        return `<option value="${n}" ${selected} ${disabled}>${n}</option>`
+        return `<option value="${esc(n)}" ${selected} ${disabled}>${esc(n)}</option>`
       })
       .join('')
 
     return `
       <div class="struktur-row">
-        <span class="struktur-row-name">${nama}</span>
-        <select class="struktur-select" data-nama="${nama}">
+        <span class="struktur-row-name">${esc(nama)}</span>
+        <select class="struktur-select" data-nama="${esc(nama)}">
           <option value="" ${hierarki[nama] === null ? 'selected' : ''}>— Level Teratas —</option>
           ${options}
         </select>
@@ -223,9 +326,17 @@ function renderStrukturList() {
 
   container.querySelectorAll('.struktur-select').forEach((sel) => {
     sel.addEventListener('change', async (e) => {
-      const nama = e.target.dataset.nama
-      const newParent = e.target.value === '' ? null : e.target.value
+      const nama = sel.dataset.nama
+      const newParent = sel.value === '' ? null : sel.value
       const hierarki = getHierarki()
+
+      // Validasi ulang: tolak kalau bakal bikin hierarki muter (mis. lewat custom select)
+      if (newParent && isDescendant(hierarki, nama, newParent)) {
+        showToast('Gak bisa: bakal bikin hierarki muter.', 'fa-solid fa-triangle-exclamation')
+        renderStrukturList()
+        return
+      }
+
       hierarki[nama] = newParent
       simpanHierarki(hierarki)
       renderOrgChart()
@@ -251,8 +362,8 @@ function renderJabatanList() {
       const isEmpty = !item.person
       container.insertAdjacentHTML('beforeend', `
         <div class="jabatan-row">
-          <span class="jabatan-name">${item.nama}</span>
-          <span class="status-badge ${isEmpty ? 'status-empty' : 'status-filled'}">${namaOrang}</span>
+          <span class="jabatan-name">${esc(item.nama)}</span>
+          <span class="status-badge ${isEmpty ? 'status-empty' : 'status-filled'}">${esc(namaOrang)}</span>
         </div>
       `)
       return
@@ -263,8 +374,8 @@ function renderJabatanList() {
         <div class="jabatan-select-person">
           <div class="jabatan-select-avatar"><i class="fa-solid fa-user"></i></div>
           <div class="jabatan-select-info">
-            <span class="jabatan-select-name">${item.person.nama}</span>
-            <span class="jabatan-select-meta">${personMeta(item.person)}</span>
+            <span class="jabatan-select-name">${esc(item.person.nama)}</span>
+            <span class="jabatan-select-meta">${esc(personMeta(item.person))}</span>
           </div>
         </div>
       `
@@ -272,8 +383,8 @@ function renderJabatanList() {
 
     container.insertAdjacentHTML('beforeend', `
       <div class="jabatan-row">
-        <span class="jabatan-name">${item.nama}</span>
-        <div class="jabatan-select" data-nama="${item.nama}">
+        <span class="jabatan-name">${esc(item.nama)}</span>
+        <div class="jabatan-select" data-nama="${esc(item.nama)}">
           <div class="jabatan-select-trigger">
             ${triggerContent}
             <i class="fa-solid fa-chevron-down" style="font-size:10px; color:var(--text-muted); flex-shrink:0;"></i>
@@ -309,8 +420,8 @@ function renderDropdownItems(dropdownEl, namaJabatan, keyword = '') {
       <div class="jabatan-dropdown-item ${isSelected ? 'selected' : ''}" data-id="${p.id}">
         <div class="jabatan-dropdown-avatar"><i class="fa-solid fa-user"></i></div>
         <div class="jabatan-dropdown-info">
-          <span class="jabatan-dropdown-name">${p.nama}</span>
-          <span class="jabatan-dropdown-meta">${personMeta(p)}</span>
+          <span class="jabatan-dropdown-name">${esc(p.nama)}</span>
+          <span class="jabatan-dropdown-meta">${esc(personMeta(p))}</span>
         </div>
         ${isSelected ? '<i class="fa-solid fa-check" style="color:var(--color-green); margin-left:auto;"></i>' : ''}
       </div>
@@ -367,26 +478,44 @@ document.getElementById('toggleEditBtn').addEventListener('click', () => {
 
   document.getElementById('strukturSection').style.display = isEditMode ? 'block' : 'none'
   if (isEditMode) renderStrukturList()
-  syncDragAttrs()
-  syncAddButtons()
+  renderOrgChart()
   renderJabatanList()
 })
 
+// Reset = kembalikan semua perubahan yang BELUM disimpan ke data terakhir dari server.
+// Tidak pernah menghapus data database.
 document.getElementById('resetBtn').addEventListener('click', () => {
   if (confirm('Reset semua perubahan yang belum disimpan?')) {
     jabatanData = bangunJabatanData()
+    window.__HIERARKI__ = JSON.parse(JSON.stringify(serverHierarki))
+    positions = {}
+    Object.assign(positions, JSON.parse(JSON.stringify(serverPositions)))
     renderJabatanList()
     renderOrgChart()
     renderStrukturList()
   }
 })
 
-document.getElementById('simpanBtn').addEventListener('click', () => {
+// Simpan = penempatan jamaah + posisi node (hierarki sudah tersimpan saat diubah)
+document.getElementById('simpanBtn').addEventListener('click', async () => {
   const penempatan = {}
   jabatanData.forEach((j) => { if (j.person) penempatan[j.nama] = j.person.id })
-  simpanPenempatan(penempatan)
-  updateRingkasan()
-  showToast('Perubahan kepengurusan berhasil disimpan.')
+
+  const btn = document.getElementById('simpanBtn')
+  btn.disabled = true
+  try {
+    await simpanPenempatan(penempatan)
+    await simpanPositionsServer()
+    // Snapshot terbaru dari server — jadi Reset berikutnya kembali ke data ini
+    Object.keys(serverPositions).forEach((k) => delete serverPositions[k])
+    Object.assign(serverPositions, JSON.parse(JSON.stringify(positions)))
+    updateRingkasan()
+    showToast('Perubahan kepengurusan berhasil disimpan.')
+  } catch (err) {
+    showToast('Gagal menyimpan perubahan. Coba lagi.', 'fa-solid fa-triangle-exclamation')
+  } finally {
+    btn.disabled = false
+  }
 })
 
 // ============ TOMBOL + TAMBAH JABATAN ANAK ============
@@ -396,9 +525,6 @@ function syncAddButtons() {
   document.querySelectorAll('.org-node-add').forEach((btn) => {
     btn.classList.toggle('visible', isEditMode)
   })
-  // Toggle class is-editing di tree root
-  const root = document.querySelector('.org-tree-root')
-  if (root) root.classList.toggle('is-editing', isEditMode)
 }
 
 // ============ MODAL TAMBAH JABATAN ============
@@ -474,6 +600,12 @@ async function confirmAddJabatan() {
   // Refresh data jabatanData
   jabatanData = bangunJabatanData()
 
+  // Posisi default di dekat parent — jangan sampai node baru numpuk di pojok (0,0)
+  const parentPos = positions[parentNama]
+  positions[trimmed] = parentPos
+    ? { x: parentPos.x + 90, y: parentPos.y + V_SPACING }
+    : computeDefaultLayout()[trimmed] || { x: PAD_X, y: PAD_Y }
+
   // Re-render semua
   renderOrgChart()
   renderJabatanList()
@@ -548,7 +680,58 @@ renderOrgChart()
 renderJabatanList()
 updateRingkasan()
 
-// ============ DRAG & DROP — atur hierarki via seret node di bagan ============
+// ============ DRAG POSISI VISUAL (edit mode) ============
+// Drag biasa (body node) = mengubah posisi x/y saja — TIDAK mengubah parent.
+// Drag hierarki tetap ada: seret ikon avatar ke node lain (lihat bagian bawah).
+let dragState = null
+
+dndWrapper.addEventListener('pointerdown', (e) => {
+  if (!isEditMode) return
+  if (e.pointerType === 'mouse' && e.button !== 0) return
+  // Avatar = handle ubah hierarki (HTML5 drag), tombol + = tambah jabatan
+  if (e.target.closest('.org-avatar')) return
+  if (e.target.closest('.org-node-add')) return
+
+  const node = e.target.closest('.org-node')
+  if (!node) return
+  const nama = node.dataset.nama
+  const p = positions[nama]
+  if (!p) return
+
+  dragState = {
+    nama,
+    pointerId: e.pointerId,
+    startX: e.clientX,
+    startY: e.clientY,
+    origX: p.x,
+    origY: p.y,
+    moved: false,
+  }
+  node.classList.add('moving')
+})
+
+// Listener global (dipasang sekali) — drag tidak pernah terduplikasi walau
+// chart dirender ulang berkali-kali.
+document.addEventListener('pointermove', (e) => {
+  if (!dragState || e.pointerId !== dragState.pointerId) return
+  const dx = e.clientX - dragState.startX
+  const dy = e.clientY - dragState.startY
+  if (!dragState.moved && Math.abs(dx) + Math.abs(dy) < 4) return
+  dragState.moved = true
+  setNodePosition(dragState.nama, dragState.origX + dx, dragState.origY + dy)
+})
+
+function endPositionDrag(e) {
+  if (!dragState || (e && e.pointerId !== dragState.pointerId)) return
+  const node = dragState.moved ? nodeMap[dragState.nama] : null
+  if (node) node.classList.remove('moving')
+  dragState = null
+}
+
+document.addEventListener('pointerup', endPositionDrag)
+document.addEventListener('pointercancel', endPositionDrag)
+
+// ============ DRAG & DROP — atur hierarki via seret AVATAR node di bagan ============
 
 // Hapus class drag dari semua node
 function clearDragState() {

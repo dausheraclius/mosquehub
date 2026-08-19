@@ -89,6 +89,82 @@ a {
   border-bottom-color: var(--color-teal);
 }
 
+/* --- Dropdown navigasi --- */
+.lp-nav-drop {
+  position: relative;
+}
+
+.lp-nav-drop-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.lp-nav-drop-toggle i {
+  font-size: 10px;
+  transition: transform 0.15s;
+}
+
+.lp-nav-drop.active > .lp-nav-drop-toggle,
+.lp-nav-drop-toggle:hover {
+  color: var(--color-teal);
+  border-bottom-color: var(--color-teal);
+}
+
+.lp-nav-drop.open .lp-nav-drop-toggle i {
+  transform: rotate(180deg);
+}
+
+.lp-nav-drop-menu {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%, 8px);
+  min-width: 180px;
+  background: var(--color-white);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.15s,
+    transform 0.15s,
+    visibility 0.15s;
+  z-index: 200;
+}
+
+.lp-nav-drop:hover .lp-nav-drop-menu,
+.lp-nav-drop.open .lp-nav-drop-menu,
+.lp-nav-drop:focus-within .lp-nav-drop-menu {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translate(-50%, 0);
+}
+
+.lp-nav-drop-menu a {
+  display: block;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  border-bottom: none;
+  font-size: 13px;
+  color: var(--text-dark);
+}
+
+.lp-nav-drop-menu a:hover,
+.lp-nav-drop-menu a.active {
+  background: var(--color-green-light, #e6f4ef);
+  color: var(--color-teal);
+  border-bottom: none;
+}
+
 .btn-lp-masuk {
   background: var(--color-teal);
   color: #fff;

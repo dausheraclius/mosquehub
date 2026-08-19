@@ -126,6 +126,7 @@ Route::middleware(['auth', 'active.user', 'menu.access', 'activity.log'])->group
     Route::post('/kepengurusan/jabatan/parent', [KepengurusanController::class, 'updateParent'])->name('kepengurusan.jabatan.parent');
     Route::post('/kepengurusan/penempatan', [KepengurusanController::class, 'updatePenempatan'])->name('kepengurusan.penempatan');
     Route::post('/kepengurusan/jabatan/rename', [KepengurusanController::class, 'renameJabatan'])->name('kepengurusan.jabatan.rename');
+    Route::post('/kepengurusan/jabatan/positions', [KepengurusanController::class, 'updatePositions'])->name('kepengurusan.jabatan.positions');
     Route::delete('/kepengurusan/jabatan', [KepengurusanController::class, 'destroyJabatan'])->name('kepengurusan.jabatan.destroy');
     Route::post('/kepengurusan/jabatan/reset', [KepengurusanController::class, 'resetJabatan'])->name('kepengurusan.jabatan.reset');
     Route::get('/relawan', [RelawanController::class, 'index'])->name('relawan');

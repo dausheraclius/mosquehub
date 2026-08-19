@@ -765,10 +765,34 @@ function switchTab(tabKey) {
 //    progres per peserta + riwayat cicilan, bukan transaksi flat)
 // ============================================================================
 const dataTabunganQurban = window.__QURBAN_DATA__ || []
-const dataJamaahQurban = window.__JAMAAH_OPTIONS__ || []
+// Mendukung data lama berupa array nama dan data baru berupa { id, nama }.
+// Ini mencegah teks "undefined" masuk sebagai opsi dan memastikan daftar
+// jemaah yang sudah ada tetap tampil.
+const dataJamaahQurban = (window.__JAMAAH_OPTIONS__ || [])
+  .map((jamaah) => {
+    if (typeof jamaah === 'string') return { id: null, nama: jamaah.trim() }
+    return { id: jamaah?.id ?? null, nama: String(jamaah?.nama || '').trim() }
+  })
+  .filter((jamaah) => jamaah.nama)
 
 let activeSetoranPesertaId = null
 let expandedPesertaId = null
+
+function jamaahOptionsHtml(selectedName = '', placeholder = 'Pilih jemaah') {
+  const selected = String(selectedName || '')
+  const options = dataJamaahQurban
+    .map((jamaah) => {
+      const nama = String(jamaah.nama).trim()
+      return `<option value="${esc(nama)}" ${nama === selected ? 'selected' : ''}>${esc(nama)}</option>`
+    })
+    .join('')
+
+  const unknownOption = selected && !dataJamaahQurban.some((jamaah) => jamaah.nama === selected)
+    ? `<option value="${esc(selected)}" selected>${esc(selected)}</option>`
+    : ''
+
+  return `<option value="">${placeholder}</option>${unknownOption}${options}`
+}
 
 let pesertaMemberRows = []
 let memberModalPesertaId = null
@@ -1132,23 +1156,18 @@ function renderMemberList() {
     .map(
       (row, i) => `
       <div class="qurban-member-row">
-        <input
-          class="form-input"
-          type="text"
-          list="datalistJamaah"
-          placeholder="Nama anggota (ketik / pilih dari Data Jemaah)"
-          data-row="${i}"
-          value="${esc(row.nama)}"
-        >
+        <select class="form-select" data-row="${i}" aria-label="Anggota patungan ke-${i + 1}">
+          ${jamaahOptionsHtml(row.nama, 'Pilih anggota patungan')}
+        </select>
         <button type="button" class="qurban-member-remove" data-row="${i}" title="Hapus baris"><i class="fa-solid fa-xmark"></i></button>
       </div>
     `,
     )
     .join('')
 
-  list.querySelectorAll('input[data-row]').forEach((input) => {
-    input.addEventListener('input', () => {
-      pesertaMemberRows[Number(input.dataset.row)].nama = input.value
+  list.querySelectorAll('select[data-row]').forEach((select) => {
+    select.addEventListener('change', () => {
+      pesertaMemberRows[Number(select.dataset.row)].nama = select.value
       updateMemberCount()
     })
   })
@@ -1158,6 +1177,8 @@ function renderMemberList() {
       renderMemberList()
     })
   })
+
+  if (typeof initCustomSelects === 'function') initCustomSelects()
 }
 
 function updateMemberCount() {
@@ -1193,10 +1214,13 @@ function openPesertaModal(item = null) {
   pesertaMemberRows = item?.is_patungan
     ? item.members.map((m) => ({ nama: m.nama, jamaah_id: m.jamaah_id }))
     : [{ nama: '' }]
+  const namaSelect = document.getElementById('inputPesertaNama')
+  namaSelect.innerHTML = jamaahOptionsHtml(item && !item.is_patungan ? item.nama : '')
   renderMemberList()
   syncPesertaFormMode()
   document.getElementById('pesertaModalOverlay').classList.add('active')
-  syncCustomSelects()
+  if (typeof initCustomSelects === 'function') initCustomSelects()
+  if (typeof syncCustomSelects === 'function') syncCustomSelects()
 }
 function closePesertaModal() {
   editingPesertaId = null
@@ -1605,11 +1629,6 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('btnExport').addEventListener('click', exportCSV)
 
   // Qurban: tombol & modal
-  const datalistJamaah = document.getElementById('datalistJamaah')
-  if (datalistJamaah) {
-    datalistJamaah.innerHTML = dataJamaahQurban.map((j) => `<option value="${esc(j.nama)}">`).join('')
-  }
-
   document.getElementById('btnTambahPeserta').addEventListener('click', openPesertaModal)
   document.getElementById('inputPesertaPaket').addEventListener('change', syncPesertaFormMode)
   document.getElementById('btnTambahMember').addEventListener('click', () => {

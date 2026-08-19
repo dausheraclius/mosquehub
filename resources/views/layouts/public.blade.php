@@ -8,6 +8,7 @@
   @vite('resources/assets/css/variables.css')
   @vite('resources/assets/css/reset.css')
   @vite('resources/assets/css/landing.css')
+  @vite('resources/assets/css/custom-select.css')
 </head>
 <body>
   <header class="lp-navbar">
@@ -21,13 +22,31 @@
       </div>
       <nav class="lp-nav-links">
         <a href="{{ route('public.beranda') }}" class="{{ request()->routeIs('public.beranda') ? 'active' : '' }}">Beranda</a>
-        <a href="{{ route('public.jadwal') }}" class="{{ request()->routeIs('public.jadwal') ? 'active' : '' }}">Jadwal Kegiatan</a>
-        <a href="{{ route('public.petugas') }}" class="{{ request()->routeIs('public.petugas') ? 'active' : '' }}">Petugas Sholat</a>
-        <a href="{{ route('public.pengumuman') }}" class="{{ request()->routeIs('public.pengumuman') ? 'active' : '' }}">Pengumuman</a>
-        <a href="{{ route('public.galeri') }}" class="{{ request()->routeIs('public.galeri') ? 'active' : '' }}">Galeri</a>
-        <a href="{{ route('public.keuangan') }}" class="{{ request()->routeIs('public.keuangan') ? 'active' : '' }}">Keuangan</a>
-        <a href="{{ route('public.pengurus') }}" class="{{ request()->routeIs('public.pengurus') ? 'active' : '' }}">Pengurus</a>
-        <a href="{{ route('public.tentang') }}" class="{{ request()->routeIs('public.tentang') ? 'active' : '' }}">Tentang Masjid</a>
+
+        <div class="lp-nav-drop {{ request()->routeIs('public.jadwal') || request()->routeIs('public.petugas') ? 'active' : '' }}">
+          <a href="#" class="lp-nav-drop-toggle">Jadwal <i class="fa-solid fa-chevron-down"></i></a>
+          <div class="lp-nav-drop-menu">
+            <a href="{{ route('public.jadwal') }}">Jadwal Kegiatan</a>
+            <a href="{{ route('public.petugas') }}">Petugas Sholat</a>
+          </div>
+        </div>
+
+        <div class="lp-nav-drop {{ request()->routeIs('public.pengumuman') || request()->routeIs('public.galeri') ? 'active' : '' }}">
+          <a href="#" class="lp-nav-drop-toggle">Informasi <i class="fa-solid fa-chevron-down"></i></a>
+          <div class="lp-nav-drop-menu">
+            <a href="{{ route('public.pengumuman') }}">Pengumuman</a>
+            <a href="{{ route('public.galeri') }}">Galeri</a>
+          </div>
+        </div>
+
+        <div class="lp-nav-drop {{ request()->routeIs('public.tentang') || request()->routeIs('public.pengurus') || request()->routeIs('public.keuangan') ? 'active' : '' }}">
+          <a href="#" class="lp-nav-drop-toggle">Tentang <i class="fa-solid fa-chevron-down"></i></a>
+          <div class="lp-nav-drop-menu">
+            <a href="{{ route('public.tentang') }}">Tentang Masjid</a>
+            <a href="{{ route('public.pengurus') }}">Pengurus</a>
+            <a href="{{ route('public.keuangan') }}">Keuangan</a>
+          </div>
+        </div>
       </nav>
     </div>
   </header>
@@ -73,6 +92,26 @@
     </div>
   </footer>
 
+  <script src="{{ asset('assets/js/app.js') }}"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const drops = document.querySelectorAll('.lp-nav-drop')
+      drops.forEach((drop) => {
+        const toggle = drop.querySelector('.lp-nav-drop-toggle')
+        if (!toggle) return
+        toggle.addEventListener('click', (e) => {
+          e.preventDefault()
+          drops.forEach((d) => d !== drop && d.classList.remove('open'))
+          drop.classList.toggle('open')
+        })
+      })
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.lp-nav-drop')) {
+          drops.forEach((d) => d.classList.remove('open'))
+        }
+      })
+    })
+  </script>
   @yield('scripts')
 </body>
 </html>

@@ -22,10 +22,16 @@ class KepengurusanController extends Controller
 
         $hierarki = [];
         $penempatan = [];
+        $posisi = [];
         foreach ($jabatans as $j) {
             $parentNama = $j->parent_id ? optional($jabatans->firstWhere('id', $j->parent_id))->nama : null;
             $hierarki[$j->nama] = $parentNama;
             $penempatan[$j->nama] = $j->jamaah?->id ?: null;
+
+            // Posisi visual (x/y) — terpisah dari hierarki. Null = belum diatur.
+            if ($j->posisi_x !== null && $j->posisi_y !== null) {
+                $posisi[$j->nama] = ['x' => (int) $j->posisi_x, 'y' => (int) $j->posisi_y];
+            }
         }
 
         // Pool jemaah yang bisa dipilih jadi pengurus (dicocokin pakai ID biar anti dobel nama/email)
@@ -43,6 +49,7 @@ class KepengurusanController extends Controller
             'namaJabatanList' => $namaList,
             'hierarki' => $hierarki,
             'penempatan' => $penempatan,
+            'posisiOrg' => $posisi,
             'daftarJamaah' => $daftarJamaah,
         ]);
     }
@@ -87,6 +94,29 @@ class KepengurusanController extends Controller
             : null;
 
         $jabatan->update(['parent_id' => $parent?->id]);
+
+        return response()->json(['success' => true]);
+    }
+
+    public function updatePositions(Request $request)
+    {
+        $validated = $request->validate([
+            'positions' => 'required|array',
+            'positions.*.x' => 'required|integer|min:0|max:100000',
+            'positions.*.y' => 'required|integer|min:0|max:100000',
+        ]);
+
+        $jabatans = Jabatan::where('mosque_id', $this->mosqueId)->get()->keyBy('nama');
+
+        foreach ($validated['positions'] as $nama => $pos) {
+            $jabatan = $jabatans->get($nama);
+            if (!$jabatan) continue;
+
+            $jabatan->update([
+                'posisi_x' => $pos['x'],
+                'posisi_y' => $pos['y'],
+            ]);
+        }
 
         return response()->json(['success' => true]);
     }

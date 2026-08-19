@@ -26,7 +26,8 @@ class InfaqSodaqohController extends Controller
             ->get()
             ->map(fn ($p) => $this->pesertaToArray($p));
 
-        $petugasList = Jamaah::where('status_jamaah', '!=', 'Wafat')
+        $petugasList = Jamaah::where('mosque_id', $this->mosqueId)
+            ->where('status_jamaah', '!=', 'Wafat')
             ->whereNotNull('nama')
             ->orderBy('nama')
             ->pluck('nama')
@@ -34,7 +35,8 @@ class InfaqSodaqohController extends Controller
             ->values()
             ->all();
 
-        $jamaahList = Jamaah::where('status_jamaah', '!=', 'Wafat')
+        $jamaahList = Jamaah::where('mosque_id', $this->mosqueId)
+            ->where('status_jamaah', '!=', 'Wafat')
             ->whereNotNull('nama')
             ->orderBy('nama')
             ->get(['id', 'nama'])

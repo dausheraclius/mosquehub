@@ -118,6 +118,7 @@
     window.__JABATAN_LIST__ = @json($namaJabatanList);
     window.__HIERARKI__ = @json($hierarki);
     window.__PENEMPATAN__ = @json($penempatan);
+    window.__POSISI_ORG__ = @json($posisiOrg);
     window.__DAFTAR_JAMAAH__ = @json($daftarJamaah);
   </script>
   <script src="{{ asset('assets/js/kepengurusan.js') }}"></script>

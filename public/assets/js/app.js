@@ -83,10 +83,10 @@ document.addEventListener('DOMContentLoaded', () => {
 // dropdown modern. Dipakai di semua halaman.
 // ============================================================
 
-// Semua <select> yang diubah jadi dropdown custom. Termasuk dropdown
-// di dalam form (modal & pengaturan) supaya seragam dengan .filter-select.
-const CUSTOM_SELECT_SELECTOR =
-  '.filter-select, .time-select, select.form-select, select.form-control, .form-field select, select.calendar-month-select, select.calendar-year-select'
+// Semua dropdown single-choice memakai komponen custom. Dengan begitu select
+// tanpa class khusus (mis. di halaman pengaturan dan halaman publik) tidak
+// lagi jatuh ke tampilan bawaan browser.
+const CUSTOM_SELECT_SELECTOR = 'select:not([multiple])'
 
 function initCustomSelects() {
   document.querySelectorAll(CUSTOM_SELECT_SELECTOR).forEach((nativeSelect) => {
@@ -145,7 +145,10 @@ function initCustomSelects() {
   })
 
   // Satu listener global buat nutup semua dropdown
-  document.addEventListener('click', closeAllCustomSelects)
+  if (!initCustomSelects.hasDocumentClickListener) {
+    document.addEventListener('click', closeAllCustomSelects)
+    initCustomSelects.hasDocumentClickListener = true
+  }
 }
 
 function closeAllCustomSelects() {
@@ -188,6 +191,33 @@ function syncCustomSelects() {
     trigger.querySelector('.custom-select-text').textContent = getSelectedText(nativeSelect)
   })
 }
+
+// Select pada modal atau daftar yang dirender setelah halaman siap tetap
+// otomatis memakai komponen yang sama. Perubahan opsi juga langsung disinkronkan.
+document.addEventListener('DOMContentLoaded', () => {
+  const observer = new MutationObserver((mutations) => {
+    const changedSelects = new Set()
+
+    mutations.forEach((mutation) => {
+      if (mutation.target instanceof HTMLSelectElement) changedSelects.add(mutation.target)
+      mutation.addedNodes.forEach((node) => {
+        if (!(node instanceof Element)) return
+        if (node.matches(CUSTOM_SELECT_SELECTOR)) changedSelects.add(node)
+        node.querySelectorAll?.(CUSTOM_SELECT_SELECTOR).forEach((select) => changedSelects.add(select))
+      })
+    })
+
+    changedSelects.forEach((select) => {
+      if (select.closest('.custom-select-wrapper')) {
+        syncCustomSelects()
+      } else {
+        initCustomSelects()
+      }
+    })
+  })
+
+  observer.observe(document.body, { childList: true, subtree: true })
+})
 
 // ============================================================
 // LOGOUT MODAL — shared component
