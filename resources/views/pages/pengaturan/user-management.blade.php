@@ -8,37 +8,37 @@
 
 @section('content')
 
-  <x-page-header crumb="Pengaturan" active="Manajemen Pengguna" title="User Management" subtitle="{{ auth()->user()->role ?? 'Ketua YMBPK' }} · {{ now()->translatedFormat('d F Y') }}">
+  <x-page-header crumb="{{ __('menu.pengaturan') }}" active="{{ __('menu.manajemen_pengguna') }}" title="{{ __('pages.user_mgmt_title') }}" subtitle="{{ auth()->user()->role ?? 'Ketua YMBPK' }} · {{ now()->translatedFormat('d F Y') }}">
     <button class="btn btn-primary" id="btnTambahUser">
-      <i class="fa-solid fa-user-plus"></i> Tambah User
+      <i class="fa-solid fa-user-plus"></i> {{ __('general.tambah_user') }}
     </button>
   </x-page-header>
 
   <div class="card table-card">
     <div class="card-header">
-      <h2 class="card-title">Daftar Akun</h2>
+      <h2 class="card-title">{{ __('general.daftar_akun') }}</h2>
     </div>
     <div class="filter-bar" style="padding: 0 20px 16px">
       <div class="filter-group filter-search-group">
-        <span class="filter-label">Cari</span>
+        <span class="filter-label">{{ __('general.cari') }}</span>
         <div class="filter-search">
           <i class="fa-solid fa-magnifying-glass"></i>
-          <input type="text" placeholder="Cari nama/email" id="userSearch" />
+          <input type="text" placeholder="{{ __('general.cari_nama_email') }}" id="userSearch" />
         </div>
       </div>
       <div class="filter-group">
-        <span class="filter-label">Urutkan</span>
+        <span class="filter-label">{{ __('general.urutkan') }}</span>
         <select class="filter-select" id="sortFilter">
           <option value="nama-asc">Nama (A-Z)</option>
           <option value="nama-desc">Nama (Z-A)</option>
-          <option value="login-baru">Login Terakhir Terbaru</option>
-          <option value="login-lama">Login Terakhir Terlama</option>
+          <option value="login-baru">{{ __('general.login_terbaru') }}</option>
+          <option value="login-lama">{{ __('general.login_terlama') }}</option>
         </select>
       </div>
       <div class="filter-group">
-        <span class="filter-label">Saring Status</span>
+        <span class="filter-label">{{ __('general.saring_status') }}</span>
         <select class="filter-select" id="statusFilter">
-          <option value="">Semua Status</option>
+          <option value="">{{ __('general.semua_status') }}</option>
           <option value="aktif">Aktif</option>
           <option value="nonaktif">Nonaktif</option>
         </select>
@@ -74,13 +74,13 @@
             </td>
             <td>{{ $u['lastLogin'] }}</td>
             <td>
-              <button class="btn-sm btn-edit btn-edit-user">Edit</button>
-              <button class="btn-sm btn-reset-password">Reset Kata Sandi</button>
+              <button class="btn-sm btn-edit btn-edit-user">{{ __('general.edit') }}</button>
+              <button class="btn-sm btn-reset-password">{{ __('general.reset_kata_sandi') }}</button>
               <button class="btn-sm btn-hapus btn-hapus-user"><i class="fa-solid fa-trash"></i></button>
             </td>
           </tr>
         @empty
-          <tr><td colspan="8" class="empty-state">Belum ada user.</td></tr>
+          <tr><td colspan="8" class="empty-state">{{ __('general.belum_ada_user') }}</td></tr>
         @endforelse
       </tbody>
     </table>
@@ -228,8 +228,8 @@
       </div>
 
       <div class="modal-footer">
-        <button class="btn btn-text" id="modalCancelBtn">Batal</button>
-        <button class="btn btn-primary" id="modalSaveBtn"><i class="fa-solid fa-check"></i> Simpan User</button>
+        <button class="btn btn-text" id="modalCancelBtn">{{ __('general.batal') }}</button>
+        <button class="btn btn-primary" id="modalSaveBtn"><i class="fa-solid fa-check"></i> {{ __('general.simpan_user') }}</button>
       </div>
     </div>
   </div>
@@ -252,8 +252,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-text" id="resetCancelBtn">Batal</button>
-        <button class="btn btn-primary" id="resetSaveBtn"><i class="fa-solid fa-key"></i> Reset</button>
+        <button class="btn btn-text" id="resetCancelBtn">{{ __('general.batal') }}</button>
+        <button class="btn btn-primary" id="resetSaveBtn"><i class="fa-solid fa-key"></i> {{ __('general.reset') }}</button>
       </div>
     </div>
   </div>

@@ -12,72 +12,67 @@
 
 @section('content')
 
-  <x-page-header crumb="Kegiatan" active="Jadwal Kegiatan" title="Jadwal Kegiatan" subtitle="Pantau seluruh agenda masjid lengkap dengan tanggal, waktu, dan detailnya.">
-    <a href="{{ route('ekspor.jadwal') }}" class="btn btn-outline" title="Unduh jadwal hari ini sebagai Excel">
-      <i class="fa-solid fa-file-excel"></i> Ekspor Excel
+  <x-page-header crumb="{{ __('menu.kegiatan') }}" active="{{ __('menu.jadwal_kegiatan') }}" title="{{ __('pages.kegiatan.jadwal_title') }}" subtitle="{{ __('pages.kegiatan.jadwal_subtitle') }}">
+    <a href="{{ route('ekspor.jadwal', ['locale' => App::getLocale()]) }}" class="btn btn-outline" title="{{ __('general.unduh') }}">
+      <i class="fa-solid fa-file-excel"></i> {{ __('general.ekspor_excel') }}
     </a>
   </x-page-header>
 
   <div class="stat-cards" id="jkStatCards">
     <div class="stat-card jk-stat-card active" data-status-filter="">
-      <div class="stat-card-top"><span class="stat-label">Total Agenda</span></div>
+      <div class="stat-card-top"><span class="stat-label">{{ __('general.total') }} {{ __('menu.agenda') }}</span></div>
       <span class="stat-value">{{ $stats['total'] }}</span>
     </div>
     <div class="stat-card jk-stat-card" data-status-filter="berlangsung">
-      <div class="stat-card-top"><span class="stat-label">Sedang Berlangsung</span></div>
+      <div class="stat-card-top"><span class="stat-label">{{ __('general.berlangsung') }}</span></div>
       <span class="stat-value">{{ $stats['berlangsung'] }}</span>
     </div>
     <div class="stat-card jk-stat-card" data-status-filter="akan-datang">
-      <div class="stat-card-top"><span class="stat-label">Akan Datang</span></div>
+      <div class="stat-card-top"><span class="stat-label">{{ __('general.akan_datang') }}</span></div>
       <span class="stat-value">{{ $stats['akanDatang'] }}</span>
     </div>
     <div class="stat-card jk-stat-card" data-status-filter="selesai">
-      <div class="stat-card-top"><span class="stat-label">Selesai</span></div>
+      <div class="stat-card-top"><span class="stat-label">{{ __('general.selesai') }}</span></div>
       <span class="stat-value">{{ $stats['selesai'] }}</span>
     </div>
   </div>
 
   <div class="filter-bar">
-    <div class="filter-group filter-search-group">
-      <span class="filter-label">Cari</span>
+    <div class="filter-group filter-search-group">        <span class="filter-label">{{ __('general.cari') }}</span>
       <div class="filter-search">
         <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" id="jkSearch" placeholder="Cari nama / kategori / lokasi..." />
+        <input type="text" id="jkSearch" placeholder="{{ __('general.cari_nama_kategori_lokasi') }}" />
       </div>
     </div>
-    <div class="filter-group">
-      <span class="filter-label">Tanggal</span>
+    <div class="filter-group">        <span class="filter-label">{{ __('general.tanggal') }}</span>
       <input type="date" id="jkDate" value="" />
     </div>
-    <div class="filter-group">
-      <span class="filter-label">Kategori</span>
+    <div class="filter-group">        <span class="filter-label">{{ __('general.kategori') }}</span>
       <select class="filter-select" id="jkKategori">
-        <option value="">Semua Kategori</option>
+        <option value="">{{ __('general.semua') }} {{ __('general.kategori') }}</option>
         @foreach ($kategoriOptions as $opt)
           <option value="{{ $opt }}" @selected($filters['kategori'] === $opt)>{{ $opt }}</option>
         @endforeach
       </select>
     </div>
-    <div class="filter-group">
-      <span class="filter-label">Lokasi</span>
+    <div class="filter-group">        <span class="filter-label">{{ __('general.lokasi') }}</span>
       <select class="filter-select" id="jkLokasi">
-        <option value="">Semua Lokasi</option>
+        <option value="">{{ __('general.semua') }} {{ __('general.lokasi') }}</option>
         @foreach ($lokasiOptions as $opt)
           <option value="{{ $opt }}" @selected($filters['lokasi'] === $opt)>{{ $opt }}</option>
         @endforeach
       </select>
     </div>
-    <div class="filter-group">
-      <span class="filter-label">Status</span>
+    <div class="filter-group">        <span class="filter-label">{{ __('general.status') }}</span>
       <select class="filter-select" id="jkStatus">
-        <option value="">Semua Status</option>
+        <option value="">{{ __('general.semua_status') }}</option>
         <option value="berlangsung">Sedang Berlangsung</option>
         <option value="akan-datang">Akan Datang</option>
         <option value="selesai">Selesai</option>
       </select>
     </div>
     <div class="filter-actions">
-      <button class="btn-outline" id="jkReset"><i class="fa-solid fa-rotate-left"></i> Reset Filter</button>
+      <button class="btn-outline" id="jkReset"><i class="fa-solid fa-rotate-left"></i> {{ __('general.reset') }} Filter</button>
     </div>
   </div>
 
@@ -94,7 +89,7 @@
 
     <aside class="jk-rail">
       <div class="card jk-side-card">
-        <div class="card-header"><span class="card-title">Kegiatan Berikutnya</span></div>
+        <div class="card-header"><span class="card-title">{{ __('general.kegiatan_berikutnya') }}</span></div>
         @if ($kegiatanBerikutnya)
           <div class="jk-next-activity">
             <div class="jk-next-time">{{ $kegiatanBerikutnya->jam_mulai ? str_replace(':', '.', substr($kegiatanBerikutnya->jam_mulai, 0, 5)) : '-' }}</div>
@@ -109,7 +104,7 @@
       </div>
 
       <div class="card jk-side-card">
-        <div class="card-header"><span class="card-title">Jadwal Besok</span></div>
+        <div class="card-header"><span class="card-title">{{ __('general.jadwal_besok') }}</span></div>
         <div class="jk-mini-list">
           @forelse ($jadwalBesok as $jb)
             <div class="jk-mini-item">
@@ -124,15 +119,15 @@
       </div>
 
       <div class="card jk-side-card">
-        <div class="card-header"><span class="card-title">Kegiatan Minggu Ini</span></div>
+        <div class="card-header"><span class="card-title">{{ __('general.kegiatan_minggu_ini') }}</span></div>
         <div class="jk-week-count">{{ $mingguIni }}</div>
-        <div class="jk-week-label">kegiatan terjadwal minggu ini</div>
+        <div class="jk-week-label">{{ __('general.kegiatan_terjadwal_minggu_ini') }}</div>
       </div>
     </aside>
   </div>
 
   <div class="card jk-history">
-    <div class="card-header"><span class="card-title">Riwayat Kegiatan Selesai</span></div>
+    <div class="card-header"><span class="card-title">{{ __('general.riwayat_kegiatan_selesai') }}</span></div>
     <div class="jk-history-list">
       @forelse ($riwayatSelesai as $r)
         <div class="jk-history-item">

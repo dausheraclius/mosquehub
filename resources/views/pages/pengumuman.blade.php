@@ -12,12 +12,12 @@
 
 @section('content')
 
-  <x-page-header active="Pengumuman" title="Pengumuman" subtitle="Kelola seluruh informasi dan pengumuman yang akan disampaikan kepada jamaah.">
+  <x-page-header active="{{ __('menu.pengumuman') }}" title="{{ __('pages.pengumuman_title') }}" subtitle="{{ __('pages.pengumuman_subtitle') }}">
     <button class="btn btn-primary" id="btnBuatPengumuman">
-      <i class="fa-solid fa-plus"></i> Buat Pengumuman
+      <i class="fa-solid fa-plus"></i> {{ __('general.buat_pengumuman') }}
     </button>
-    <a href="{{ route('ekspor.pengumuman') }}" class="btn btn-outline" title="Unduh seluruh pengumuman sebagai Excel">
-      <i class="fa-solid fa-file-excel"></i> Ekspor Excel
+    <a href="{{ route('ekspor.pengumuman', ['locale' => App::getLocale()]) }}" class="btn btn-outline" title="{{ __('general.unduh') }}">
+      <i class="fa-solid fa-file-excel"></i> {{ __('general.ekspor_excel') }}
     </a>
   </x-page-header>
 
@@ -25,7 +25,7 @@
   <div class="stat-cards">
     <div class="stat-card custom-stat-card clickable" onclick="filterPengumuman('semua')">
       <div class="stat-card-top">
-        <span class="stat-label">Total Pengumuman</span>
+        <span class="stat-label">{{ __('general.total') }} {{ __('menu.pengumuman') }}</span>
       </div>
       <div class="stat-value-row">
         <i class="fa-regular fa-file-lines stat-icon-sm"></i>
@@ -35,7 +35,7 @@
 
     <div class="stat-card custom-stat-card clickable" onclick="filterPengumuman('aktif')">
       <div class="stat-card-top">
-        <span class="stat-label">Pengumuman Aktif</span>
+        <span class="stat-label">{{ __('menu.pengumuman') }} {{ __('general.aktif') }}</span>
       </div>
       <div class="stat-value-row">
         <i class="fa-regular fa-circle-check stat-icon-sm"></i>
@@ -45,7 +45,7 @@
 
     <div class="stat-card custom-stat-card clickable" onclick="filterPengumuman('terjadwal')">
       <div class="stat-card-top">
-        <span class="stat-label">Terjadwal</span>
+        <span class="stat-label">{{ __('general.terjadwal') }}</span>
       </div>
       <div class="stat-value-row">
         <i class="fa-regular fa-calendar-days stat-icon-sm"></i>
@@ -55,7 +55,7 @@
 
     <div class="stat-card custom-stat-card clickable" onclick="filterPengumuman('arsip')">
       <div class="stat-card-top">
-        <span class="stat-label">Arsip</span>
+        <span class="stat-label">{{ __('general.arsip') }}</span>
       </div>
       <div class="stat-value-row">
         <i class="fa-solid fa-box-archive stat-icon-sm"></i>
@@ -87,7 +87,7 @@
             <span class="status-badge status-aktif">{{ $featured->status }}</span>
           @endif
         </div>
-        <button class="btn btn-primary btn-featured">Lihat Detail</button>
+        <button class="btn btn-primary btn-featured">{{ __('general.detail') }}</button>
       </div>
     </div>
   @endif
@@ -119,8 +119,7 @@
         <option value="arsip">Arsip</option>
       </select>
     </div>
-    <div class="filter-actions">
-      <button class="btn-outline" id="btnResetFilter"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+    <div class="filter-actions">        <button class="btn-outline" id="btnResetFilter"><i class="fa-solid fa-rotate-left"></i> {{ __('general.reset') }}</button>
     </div>
   </div>
 
@@ -204,7 +203,7 @@
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
-      <form method="POST" action="{{ route('pengumuman.store') }}" id="pengumumanForm">
+      <form method="POST" action="{{ route('pengumuman.store', ['locale' => App::getLocale()]) }}" id="pengumumanForm">
         @csrf
         <input type="hidden" name="_method" id="formMethod" value="POST" />
         <div class="modal-body">
@@ -243,8 +242,8 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn-outline" onclick="closeFormModal()">Batal</button>
-          <button type="submit" class="btn btn-primary" id="formSubmitBtn"><i class="fa-solid fa-check"></i> Simpan Pengumuman</button>
+          <button type="button" class="btn-outline" onclick="closeFormModal()">{{ __('general.batal') }}</button>
+          <button type="submit" class="btn btn-primary" id="formSubmitBtn"><i class="fa-solid fa-check"></i> {{ __('general.simpan') }} {{ __('menu.pengumuman') }}</button>
         </div>
       </form>
     </div>
@@ -259,9 +258,9 @@
 
     window.__PENGUMUMAN_DATA__ = @json($pengumumanList);
     window.__PENGUMUMAN_ROUTES__ = {
-      store: '{{ route('pengumuman.store') }}',
-      update: '{{ route('pengumuman.update', '__ID__') }}',
-      destroy: '{{ route('pengumuman.destroy', '__ID__') }}',
+      store: '{{ route('pengumuman.store', ['locale' => App::getLocale()]) }}',
+      update: '{{ route('pengumuman.update', ['__ID__', 'locale' => App::getLocale()]) }}',
+      destroy: '{{ route('pengumuman.destroy', ['__ID__', 'locale' => App::getLocale()]) }}',
     };
   </script>
   <script src="{{ asset('assets/js/pengumuman.js') }}"></script>

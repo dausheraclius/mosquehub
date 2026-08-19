@@ -4,14 +4,17 @@ namespace App\Http\Controllers\Auth;
 
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
 use App\Http\Controllers\Controller;
 
 class LoginController extends Controller
 {
-    public function create()
+    public function create(Request $request)
     {
+        $locale = session('locale', 'id');
+        App::setLocale($locale);
         return view('auth.login');
     }
 
@@ -45,7 +48,8 @@ class LoginController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard'));
+        $locale = session('locale', 'id');
+        return redirect()->intended(route('dashboard', ['locale' => $locale]));
     }
 
     public function destroy(Request $request)
@@ -64,6 +68,7 @@ class LoginController extends Controller
 
     public function forgotPassword()
     {
+        App::setLocale(session('locale', 'id'));
         return view('auth.forgot-password');
     }
 
@@ -80,6 +85,7 @@ class LoginController extends Controller
 
     public function showResetForm(string $token, Request $request)
     {
+        App::setLocale(session('locale', 'id'));
         return view('auth.reset-password', [
             'token' => $token,
             'email' => $request->query('email'),
@@ -103,7 +109,7 @@ class LoginController extends Controller
         );
 
         return $status === Password::PASSWORD_RESET
-            ? redirect()->route('login')->with('status', 'Kata sandi berhasil diubah. Silakan masuk dengan kata sandi baru.')
+            ? redirect()->route('login')->with('status', __('messages.password_reset_berhasil'))
             : back()->withErrors(['email' => [__($status)]])->onlyInput('email');
     }
 }

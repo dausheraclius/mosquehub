@@ -15,21 +15,19 @@
   <!-- BREADCRUMB GLOBAL (di luar kedua view) — tombol collapse sidebar dari include.js
        disisipkan ke sini, jadi tetap terlihat di tab manapun (tidak ikut tersembunyi
        saat view standar di-hide ketika tab Qurban aktif). -->
-  <div class="breadcrumb">Keuangan / <span id="ziswafBreadcrumbLabel">Ziswaf</span></div>
+  <div class="breadcrumb">{{ __('menu.keuangan') }} / <span id="ziswafBreadcrumbLabel">{{ __('menu.ziswaf') }}</span></div>
 
   <!-- PAGE HEADER GLOBAL (judul & tombol aksi berubah sesuai tab aktif via JS) -->
-  <x-page-header crumb="Keuangan" active="Infaq & Sodaqoh" title="Ringkasan Ziswaf" subtitle="Kelola seluruh penerimaan Zakat, Infaq, Sodaqoh, Waqaf dan Donasi jemaah." titleId="ziswafPageTitle" subtitleId="ziswafPageSubtitle">
-    <button class="btn btn-primary" id="btnCatatDonasi"><i class="fa-solid fa-plus"></i> Catat Donasi</button>
-    <button class="btn btn-primary" id="btnTambahPeserta" style="display:none"><i class="fa-solid fa-user-plus"></i> Tambah Peserta</button>
+  <x-page-header crumb="{{ __('menu.keuangan') }}" active="{{ __('menu.ziswaf') }}" title="{{ __('pages.keuangan.ziswaf_title') }}" subtitle="{{ __('pages.keuangan.ziswaf_subtitle') }}" titleId="ziswafPageTitle" subtitleId="ziswafPageSubtitle">
+    <button class="btn btn-primary" id="btnCatatDonasi"><i class="fa-solid fa-plus"></i> {{ __('general.catat_infaq') }}</button>
+    <button class="btn btn-primary" id="btnTambahPeserta" style="display:none"><i class="fa-solid fa-user-plus"></i> {{ __('general.tambah') }} Peserta</button>
   </x-page-header>
 
   <!-- TAB KATEGORI: Ringkasan / Zakat / Infaq / Sodaqoh / Waqaf / Donasi / Qurban -->
   <!-- Diletakkan DI LUAR #ziswafStandardView supaya tidak ikut tersembunyi saat tab Qurban aktif -->
-  <div class="ziswaf-tabs" id="ziswafTabs">
-    <button type="button" class="ziswaf-tab active" data-tab="ringkasan">
-      <i class="fa-solid fa-chart-pie"></i> Ringkasan
-    </button>
-    <button type="button" class="ziswaf-tab" data-tab="zakat">
+  <div class="ziswaf-tabs" id="ziswafTabs">      <button type="button" class="ziswaf-tab active" data-tab="ringkasan">
+      <i class="fa-solid fa-chart-pie"></i> {{ __('general.ringkasan') }}
+    </button>      <button type="button" class="ziswaf-tab" data-tab="zakat">
       <i class="fa-solid fa-hand-holding-dollar"></i> Zakat
     </button>
     <button type="button" class="ziswaf-tab" data-tab="infaq">
@@ -118,26 +116,26 @@
         <div class="filter-group">
           <span class="filter-label" id="jenisFilterLabel">Jenis Donasi</span>
           <select class="filter-select" id="jenisFilter">
-            <option value="">Semua Jenis</option>
+            <option value="">{{ __('general.semua') }} {{ __('general.jenis') }}</option>
           </select>
         </div>
         <div class="filter-group">
-          <span class="filter-label">Periode</span>
+          <span class="filter-label">{{ __('general.periode') }}</span>
           <select class="filter-select" id="periodeFilter">
-            <option value="">Semua Periode</option>
+            <option value="">{{ __('general.semua') }} {{ __('general.periode') }}</option>
           </select>
         </div>
         <div class="filter-group">
-          <span class="filter-label">Metode</span>
+          <span class="filter-label">{{ __('general.metode') }}</span>
           <select class="filter-select" id="metodeFilter">
-            <option value="">Semua Metode</option>
+            <option value="">{{ __('general.semua') }} {{ __('general.metode') }}</option>
             <option value="Tunai">Tunai</option>
             <option value="Transfer">Transfer</option>
             <option value="QRIS">QRIS</option>
           </select>
         </div>
         <div class="filter-actions">
-          <button class="btn-outline" id="btnExport"><i class="fa-solid fa-download"></i> Ekspor</button>
+          <button class="btn-outline" id="btnExport"><i class="fa-solid fa-download"></i> {{ __('general.ekspor_excel') }}</button>
         </div>
       </div>
 
@@ -259,8 +257,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn-outline" id="donasiModalCancelBtn">Batal</button>
-        <button class="btn btn-primary" id="donasiModalSaveBtn"><i class="fa-solid fa-check"></i> Simpan Donasi</button>
+        <button class="btn-outline" id="donasiModalCancelBtn">{{ __('general.batal') }}</button>
+        <button class="btn btn-primary" id="donasiModalSaveBtn"><i class="fa-solid fa-check"></i> {{ __('general.simpan') }} Donasi</button>
       </div>
     </div>
   </div>
@@ -310,8 +308,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn-outline" id="pesertaModalCancelBtn">Batal</button>
-        <button class="btn btn-primary" id="pesertaModalSaveBtn"><i class="fa-solid fa-check"></i> Simpan Peserta</button>
+        <button class="btn-outline" id="pesertaModalCancelBtn">{{ __('general.batal') }}</button>
+        <button class="btn btn-primary" id="pesertaModalSaveBtn"><i class="fa-solid fa-check"></i> {{ __('general.simpan') }} Peserta</button>
       </div>
     </div>
   </div>
@@ -332,8 +330,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn-outline" id="memberModalCancelBtn">Batal</button>
-        <button class="btn btn-primary" id="memberModalSaveBtn"><i class="fa-solid fa-check"></i> Simpan</button>
+        <button class="btn-outline" id="memberModalCancelBtn">{{ __('general.batal') }}</button>
+        <button class="btn btn-primary" id="memberModalSaveBtn"><i class="fa-solid fa-check"></i> {{ __('general.simpan') }}</button>
       </div>
     </div>
   </div>
@@ -376,8 +374,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn-outline" id="setoranModalCancelBtn">Batal</button>
-        <button class="btn btn-primary" id="setoranModalSaveBtn"><i class="fa-solid fa-check"></i> Simpan Setoran</button>
+        <button class="btn-outline" id="setoranModalCancelBtn">{{ __('general.batal') }}</button>
+        <button class="btn btn-primary" id="setoranModalSaveBtn"><i class="fa-solid fa-check"></i> {{ __('general.simpan') }} Setoran</button>
       </div>
     </div>
   </div>
@@ -434,7 +432,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn-outline" id="detailTransaksiCloseBtn2">Tutup</button>
+        <button class="btn-outline" id="detailTransaksiCloseBtn2">{{ __('general.tutup') }}</button>
       </div>
     </div>
   </div>

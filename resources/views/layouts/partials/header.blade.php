@@ -5,7 +5,7 @@
       </button>
 
       <!-- 🖼️ GANTI: foto profil user asli. Ganti <div class="header-avatar"> jadi <img src="assets/img/avatar-user.png" class="header-avatar"> -->
-      <a href="{{ route('profil') }}" class="header-user-link" title="Profil Saya">
+      <a href="{{ route('profil', ['locale' => App::getLocale()]) }}" class="header-user-link" title="{{ __('menu.profil_saya') }}">
         <div class="header-avatar">
           <i class="fa-solid fa-user"></i>
         </div>
@@ -31,8 +31,8 @@
 
   <div class="header-right">
     <div class="header-app-info">
-      <span class="header-app-label">Aplikasi</span>
-      <span class="header-app-name">Sistem Informasi Masjid</span>
+      <span class="header-app-label">{{ __('general.aplikasi') }}</span>
+      <span class="header-app-name">{{ __('general.sistem_informasi') }}</span>
     </div>
     <div class="header-divider"></div>
     <div class="header-vendor-logo">

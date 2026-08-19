@@ -71,7 +71,7 @@ class ProfilController extends Controller
             $user->forceFill(['email_verified_at' => now()])->save();
         }
 
-        return redirect()->route('profil')->with('status', 'Email berhasil diverifikasi.');
+        return redirect()->route('profil', ['locale' => $request->route('locale')])->with('status', 'Email berhasil diverifikasi.');
     }
 
     public function resendVerification(Request $request)

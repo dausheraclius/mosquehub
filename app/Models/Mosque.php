@@ -17,6 +17,11 @@ class Mosque extends Model implements HasMedia
         'whatsapp', 'status',
     ];
 
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+
     public function registerMediaCollections(): void
     {
     $this->addMediaCollection('logo')->singleFile();

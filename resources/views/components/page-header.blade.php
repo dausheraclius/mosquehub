@@ -1,6 +1,6 @@
-@props(['crumb' => 'Halaman', 'active', 'title', 'subtitle' => null, 'titleId' => null, 'subtitleId' => null])
+@props(['crumb' => null, 'active', 'title', 'subtitle' => null, 'titleId' => null, 'subtitleId' => null])
 
-<div class="breadcrumb">{{ $crumb }} / <span>{{ $active }}</span></div>
+<div class="breadcrumb">{{ $crumb ?? __('general.halaman') }} / <span>{{ $active }}</span></div>
 
 <div class="page-header">
   <div>

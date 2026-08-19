@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PublicDetailController;
 use App\Http\Controllers\PublicGaleriController;
 use App\Http\Controllers\PublicJadwalController;
@@ -12,12 +11,6 @@ use App\Http\Controllers\PublicPetugasSholatController;
 use App\Models\Mosque;
 use App\Support\SiteContext;
 use Illuminate\Support\Facades\Route;
-
-Route::get('/', function () {
-    return auth()->check()
-        ? app(DashboardController::class)->index(request())
-        : redirect()->route('public.beranda');
-})->name('dashboard');
 
 Route::get('/publik', [PublicLandingController::class, 'index'])->name('public.beranda');
 Route::redirect('/publik/agenda', '/publik/jadwal-kegiatan', 301);

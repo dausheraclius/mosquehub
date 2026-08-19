@@ -104,6 +104,29 @@
             </tbody>
           </table>
         </div>
+        @if ($transaksiTerbaru->hasPages())
+          <nav class="lp-pagination" aria-label="Halaman transaksi kas">
+            @if ($transaksiTerbaru->onFirstPage())
+              <span class="lp-page-btn" aria-disabled="true">&laquo; Sebelumnya</span>
+            @else
+              <a href="{{ $transaksiTerbaru->previousPageUrl() }}" class="lp-page-btn" rel="prev">&laquo; Sebelumnya</a>
+            @endif
+
+            @foreach ($transaksiTerbaru->getUrlRange(1, $transaksiTerbaru->lastPage()) as $page => $url)
+              @if ($page === $transaksiTerbaru->currentPage())
+                <span class="lp-page-btn active" aria-current="page">{{ $page }}</span>
+              @else
+                <a href="{{ $url }}" class="lp-page-btn">{{ $page }}</a>
+              @endif
+            @endforeach
+
+            @if ($transaksiTerbaru->hasMorePages())
+              <a href="{{ $transaksiTerbaru->nextPageUrl() }}" class="lp-page-btn" rel="next">Berikutnya &raquo;</a>
+            @else
+              <span class="lp-page-btn" aria-disabled="true">Berikutnya &raquo;</span>
+            @endif
+          </nav>
+        @endif
       @endif
     </div>
   </div>

@@ -34,6 +34,11 @@ function getCsrf() {
   return document.querySelector('meta[name="csrf-token"]').content
 }
 
+function adminUrl(path) {
+  const base = window.__ADMIN_BASE || ''
+  return path.startsWith('/') ? `${base}${path}` : `${base}/${path}`
+}
+
 function getHeaders(extra = {}) {
   const { multipart = false, ...rest } = extra
   const headers = { Accept: 'application/json', 'X-CSRF-TOKEN': getCsrf() }

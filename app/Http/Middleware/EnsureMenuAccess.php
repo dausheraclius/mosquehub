@@ -11,7 +11,7 @@ class EnsureMenuAccess
     /**
      * Role yang otomatis punya akses penuh ke semua menu.
      */
-    private const FULL_ACCESS_ROLES = ['Ketua YMBPK'];
+    private const FULL_ACCESS_ROLES = ['Ketua YMBPK', 'Super Admin'];
 
     /**
      * Handle an incoming request.

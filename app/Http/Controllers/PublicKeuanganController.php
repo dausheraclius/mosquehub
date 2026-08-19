@@ -25,9 +25,9 @@ class PublicKeuanganController extends Controller
         // Transaksi kas terbaru
         $transaksiTerbaru = KasTransaction::forMosque($mosqueId)
             ->orderByDesc('tanggal')
-            ->take(20)
-            ->get()
-            ->map(fn ($t) => [
+            ->paginate(10, ['*'], 'transaksi_page')
+            ->withQueryString()
+            ->through(fn ($t) => [
                 'tanggal' => $t->tanggal?->translatedFormat('d M Y') ?? '-',
                 'keterangan' => $t->keterangan ?: $t->jenis,
                 'tipe' => $t->tipe,

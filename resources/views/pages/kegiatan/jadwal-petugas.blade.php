@@ -13,12 +13,12 @@
 
 @section('content')
 
-  <x-page-header crumb="Kegiatan" active="Jadwal Petugas Sholat" title="Jadwal Petugas Sholat" subtitle="Kelola jadwal Khatib, Imam, dan Muadzin untuk sholat Jumat dan sholat harian.">
+  <x-page-header crumb="{{ __('menu.kegiatan') }}" active="{{ __('menu.jadwal_petugas_sholat') }}" title="{{ __('pages.kegiatan.petugas_title') }}" subtitle="{{ __('pages.kegiatan.petugas_subtitle') }}">
     <button class="btn btn-primary" id="tambahBtn">
-      <i class="fa-solid fa-plus"></i> Tambah Jadwal
+      <i class="fa-solid fa-plus"></i> {{ __('general.tambah') }} {{ __('general.jadwal') }}
     </button>
-    <a href="{{ route('ekspor.jadwal-petugas') }}" class="btn btn-outline" title="Unduh seluruh jadwal petugas sebagai Excel">
-      <i class="fa-solid fa-file-excel"></i> Ekspor Excel
+    <a href="{{ route('ekspor.jadwal-petugas', ['locale' => App::getLocale()]) }}" class="btn btn-outline" title="{{ __('general.unduh') }}">
+      <i class="fa-solid fa-file-excel"></i> {{ __('general.ekspor_excel') }}
     </a>
   </x-page-header>
 
@@ -26,7 +26,7 @@
   <div class="stat-cards">
     <div class="stat-card">
       <div class="stat-card-top">
-        <span class="stat-label">Total Jadwal</span>
+        <span class="stat-label">{{ __('general.total') }} {{ __('general.jadwal') }}</span>
       </div>
       <span class="stat-value" id="statTotal">{{ $stats['total'] }}</span>
     </div>
@@ -38,7 +38,7 @@
     </div>
     <div class="stat-card">
       <div class="stat-card-top">
-        <span class="stat-label">Bulan Ini</span>
+        <span class="stat-label">{{ __('general.bulan_ini') }}</span>
       </div>
       <span class="stat-value" id="statBulan">{{ $stats['bulanIni'] }}</span>
     </div>
@@ -56,13 +56,12 @@
       <span class="filter-label">Cari</span>
       <div class="filter-search">
         <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" id="searchInput" placeholder="Cari nama khatib / imam / muadzin..." />
+        <input type="text" id="searchInput" placeholder="{{ __('general.cari_petugas') }}" />
       </div>
     </div>
-    <div class="filter-group">
-      <span class="filter-label">Sholat</span>
+    <div class="filter-group">        <span class="filter-label">{{ __('general.sholat') }}</span>
       <select class="filter-select" id="sholatFilter">
-        <option value="">Semua Sholat</option>
+        <option value="">{{ __('general.semua') }} {{ __('general.sholat') }}</option>
         <option value="Jumat">Jumat</option>
         <option value="Subuh">Subuh</option>
         <option value="Dzuhur">Dzuhur</option>
@@ -182,8 +181,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-outline" id="cancelBtn">Batal</button>
-        <button class="btn btn-primary" id="saveBtn">Simpan</button>
+        <button class="btn btn-outline" id="cancelBtn">{{ __('general.batal') }}</button>
+        <button class="btn btn-primary" id="saveBtn">{{ __('general.simpan') }}</button>
       </div>
     </div>
   </div>

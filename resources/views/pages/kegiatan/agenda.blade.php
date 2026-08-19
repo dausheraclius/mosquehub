@@ -12,9 +12,9 @@
 
 @section('content')
 
-  <x-page-header crumb="Kegiatan" active="Agenda" title="Agenda" subtitle="Kelola seluruh kegiatan dan agenda masjid.">
-    <a href="{{ route('ekspor.agenda') }}" class="btn btn-outline" title="Unduh seluruh agenda sebagai Excel">
-      <i class="fa-solid fa-file-excel"></i> Ekspor Excel
+  <x-page-header crumb="{{ __('menu.kegiatan') }}" active="{{ __('menu.agenda') }}" title="{{ __('pages.kegiatan.agenda_title') }}" subtitle="{{ __('pages.kegiatan.agenda_subtitle') }}">
+    <a href="{{ route('ekspor.agenda', ['locale' => App::getLocale()]) }}" class="btn btn-outline" title="{{ __('general.unduh') }}">
+      <i class="fa-solid fa-file-excel"></i> {{ __('general.ekspor_excel') }}
     </a>
   </x-page-header>
 
@@ -22,7 +22,7 @@
   @if ($highlight)
     <div class="agenda-highlight-card">
       <div>
-        <div class="agenda-highlight-label">Agenda Hari Ini</div>
+        <div class="agenda-highlight-label">{{ __('general.agenda_hari_ini') }}</div>
         <div class="agenda-highlight-title">{{ $highlight['nama'] }}</div>
       </div>
       <div class="agenda-highlight-meta">
@@ -38,25 +38,25 @@
   <div class="stat-cards">
     <div class="stat-card">
       <div class="stat-card-top">
-        <span class="stat-label">Agenda Hari Ini</span>
+        <span class="stat-label">{{ __('general.agenda_hari_ini') }}</span>
       </div>
       <span class="stat-value">{{ $stats['hariIni'] }}</span>
     </div>
     <div class="stat-card">
       <div class="stat-card-top">
-        <span class="stat-label">Agenda Minggu Ini</span>
+        <span class="stat-label">{{ __('general.agenda_minggu_ini') }}</span>
       </div>
       <span class="stat-value">{{ $stats['mingguIni'] }}</span>
     </div>
     <div class="stat-card">
       <div class="stat-card-top">
-        <span class="stat-label">Agenda Bulan Ini</span>
+        <span class="stat-label">{{ __('general.agenda_bulan_ini') }}</span>
       </div>
       <span class="stat-value">{{ $stats['bulanIni'] }}</span>
     </div>
     <div class="stat-card">
       <div class="stat-card-top">
-        <span class="stat-label">Agenda Selesai</span>
+        <span class="stat-label">{{ __('general.agenda_selesai') }}</span>
       </div>
       <span class="stat-value">{{ $stats['selesai'] }}</span>
     </div>
@@ -64,26 +64,21 @@
 
   <!-- SEARCH + FILTER -->
   <div class="filter-bar">
-    <div class="filter-group filter-search-group">
-      <span class="filter-label">Cari</span>
+    <div class="filter-group filter-search-group">        <span class="filter-label">{{ __('general.cari') }}</span>
       <div class="filter-search">
         <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" id="searchInput" placeholder="Cari agenda..." />
+        <input type="text" id="searchInput" placeholder="{{ __('general.cari_agenda') }}" />
       </div>
     </div>
-    <div class="filter-group">
-      <span class="filter-label">Kategori</span>
-      <select class="filter-select" id="kategoriFilter">
-        <option value="">Semua Kategori</option>
+    <div class="filter-group">        <span class="filter-label">{{ __('general.kategori') }}</span>
+      <select class="filter-select" id="kategoriFilter">          <option value="">{{ __('general.semua') }} {{ __('general.kategori') }}</option>
         <option value="Kajian">Kajian</option>
         <option value="Rapat">Rapat</option>
         <option value="Sosial">Sosial</option>
       </select>
     </div>
-    <div class="filter-group">
-      <span class="filter-label">Status</span>
-      <select class="filter-select" id="statusFilter">
-        <option value="">Semua Status</option>
+    <div class="filter-group">        <span class="filter-label">{{ __('general.status') }}</span>
+      <select class="filter-select" id="statusFilter">          <option value="">{{ __('general.semua_status') }}</option>
         <option value="Akan Datang">Akan Datang</option>
         <option value="Berlangsung">Berlangsung</option>
         <option value="Selesai">Selesai</option>
@@ -102,7 +97,7 @@
           <select class="calendar-year-select" id="yearSelect"></select>
           <button class="calendar-nav-btn" id="nextMonthBtn"><i class="fa-solid fa-chevron-right"></i></button>
         </div>
-        <button class="btn btn-outline" id="todayBtn" style="font-size: 11.5px">Hari Ini</button>
+        <button class="btn btn-outline" id="todayBtn" style="font-size: 11.5px">{{ __('general.hari_ini') }}</button>
       </div>
       <div class="calendar-days-header">
         <span>Min</span><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span
@@ -113,12 +108,12 @@
 
     <div class="card agenda-card">
       <div class="card-header">
-        <h2 class="card-title">Aktivitas</h2>
+        <h2 class="card-title">{{ __('general.aktivitas') }}</h2>
       </div>
       <div class="timeline-tabs">
-        <div class="timeline-tab active" data-tab="hari-ini">Hari Ini</div>
-        <div class="timeline-tab" data-tab="besok">Besok</div>
-        <div class="timeline-tab" data-tab="minggu-ini">Minggu Ini</div>
+        <div class="timeline-tab active" data-tab="hari-ini">{{ __('general.hari_ini') }}</div>
+        <div class="timeline-tab" data-tab="besok">{{ __('general.besok') }}</div>
+        <div class="timeline-tab" data-tab="minggu-ini">{{ __('general.minggu_ini') }}</div>
       </div>
       <ul class="jadwal-list" id="jadwalList"></ul>
     </div>
@@ -206,10 +201,10 @@
           <div class="form-group">
             <label class="form-label">Status Agenda</label>
             <select class="form-control" id="formStatus">
-              <option value="Akan Datang">Akan Datang</option>
-              <option value="Berlangsung">Berlangsung</option>
-              <option value="Selesai">Selesai</option>
-              <option value="Dibatalkan">Dibatalkan</option>
+          <option value="Akan Datang">{{ __('general.akan_datang') }}</option>
+          <option value="Berlangsung">{{ __('general.berlangsung') }}</option>
+          <option value="Selesai">{{ __('general.selesai') }}</option>
+          <option value="Dibatalkan">{{ __('general.dibatalkan') }}</option>
             </select>
           </div>
         </div>
@@ -246,8 +241,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-outline" id="cancelFormBtn">Batal</button>
-        <button class="btn btn-primary" id="saveFormBtn">Simpan</button>
+        <button class="btn btn-outline" id="cancelFormBtn">{{ __('general.batal') }}</button>
+        <button class="btn btn-primary" id="saveFormBtn">{{ __('general.simpan') }}</button>
       </div>
     </div>
   </div>
@@ -264,9 +259,9 @@
       </div>
       <div class="modal-footer">
         <button class="btn btn-danger-outline" id="deleteAgendaBtn">
-          <i class="fa-solid fa-trash"></i> Hapus
+          <i class="fa-solid fa-trash"></i> {{ __('general.hapus') }}
         </button>
-        <button class="btn btn-primary" id="editAgendaBtn"><i class="fa-solid fa-pen"></i> Edit</button>
+        <button class="btn btn-primary" id="editAgendaBtn"><i class="fa-solid fa-pen"></i> {{ __('general.edit') }}</button>
       </div>
     </div>
   </div>

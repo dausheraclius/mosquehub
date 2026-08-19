@@ -12,8 +12,8 @@
 
 @section('content')
 
-  <x-page-header crumb="Keuangan" active="Kas Masjid" title="Kas Masjid" subtitle="Kelola seluruh pemasukan dan pengeluaran kas operasional masjid.">
-      <button class="btn btn-primary" id="btnTransaksiBaru"><i class="fa-solid fa-plus"></i> Transaksi Baru</button>
+  <x-page-header crumb="{{ __('menu.keuangan') }}" active="{{ __('menu.kas_masjid') }}" title="{{ __('pages.keuangan.kas_title') }}" subtitle="{{ __('pages.keuangan.kas_subtitle') }}">
+      <button class="btn btn-primary" id="btnTransaksiBaru"><i class="fa-solid fa-plus"></i> {{ __('general.transaksi_baru') }}</button>
   </x-page-header>
 
   <!-- KARTU SALDO UTAMA -->
@@ -94,32 +94,32 @@
   <div class="card table-card">
     <div class="filter-bar">
       <div class="filter-group filter-search-group">
-        <span class="filter-label">Cari</span>
+        <span class="filter-label">{{ __('general.cari') }}</span>
         <div class="filter-search">
           <i class="fa-solid fa-magnifying-glass"></i>
           <input type="text" id="searchInput" placeholder="Cari" />
         </div>
       </div>
       <div class="filter-group">
-        <span class="filter-label">Bulan</span>
+        <span class="filter-label">{{ __('general.bulan') }}</span>
         <select class="filter-select" id="bulanFilter">
-          <option value="">Semua Bulan</option>
+          <option value="">{{ __('general.semua') }} {{ __('general.bulan') }}</option>
           @foreach($dataBulan as $bulan)
             <option value="{{ $bulan['value'] }}">{{ $bulan['label'] }}</option>
           @endforeach
         </select>
       </div>
       <div class="filter-group">
-        <span class="filter-label">Kategori</span>
+        <span class="filter-label">{{ __('general.kategori') }}</span>
         <select class="filter-select" id="kategoriFilter">
-          <option value="">Semua Kategori</option>
+          <option value="">{{ __('general.semua') }} {{ __('general.kategori') }}</option>
           @foreach($dataKategori as $kategori)
             <option value="{{ $kategori }}">{{ $kategori }}</option>
           @endforeach
         </select>
       </div>
       <div class="filter-actions">
-        <button class="btn-outline" id="btnExport"><i class="fa-solid fa-download"></i> Ekspor</button>
+        <button class="btn-outline" id="btnExport"><i class="fa-solid fa-download"></i> {{ __('general.ekspor_excel') }}</button>
       </div>
     </div>
 
@@ -143,7 +143,7 @@
   <div class="modal-overlay" id="transaksiModalOverlay">
     <div class="modal-box">
       <div class="modal-header">
-        <h2 id="transaksiModalTitle">Transaksi Baru</h2>
+        <h2 id="transaksiModalTitle">{{ __('general.transaksi_baru') }}</h2>
         <button class="modal-close" id="closeTransaksiModal" type="button"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <form id="transaksiForm">
@@ -179,8 +179,8 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button class="btn-outline" type="button" id="cancelTransaksiModal">Batal</button>
-          <button class="btn btn-primary" type="submit" id="transaksiSubmitBtn"><i class="fa-solid fa-check"></i> Simpan Transaksi</button>
+          <button class="btn-outline" type="button" id="cancelTransaksiModal">{{ __('general.batal') }}</button>
+          <button class="btn btn-primary" type="submit" id="transaksiSubmitBtn"><i class="fa-solid fa-check"></i> {{ __('general.simpan') }} {{ __('general.transaksi') }}</button>
         </div>
       </form>
     </div>
@@ -190,7 +190,7 @@
   <div class="modal-overlay" id="detailModalOverlay">
     <div class="modal-box">
       <div class="modal-header">
-        <h2>Detail Transaksi</h2>
+        <h2>{{ __('general.detail_transaksi') }}</h2>
         <button class="modal-close" id="closeDetailModal" type="button"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="modal-body">
@@ -226,8 +226,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn-outline" id="closeDetailModalBtn" type="button">Tutup</button>
-        <button class="btn btn-primary" id="editFromDetailBtn" type="button"><i class="fa-solid fa-pen"></i> Edit Transaksi</button>
+        <button class="btn-outline" id="closeDetailModalBtn" type="button">{{ __('general.tutup') }}</button>
+        <button class="btn btn-primary" id="editFromDetailBtn" type="button"><i class="fa-solid fa-pen"></i> {{ __('general.edit') }} {{ __('general.transaksi') }}</button>
       </div>
     </div>
   </div>

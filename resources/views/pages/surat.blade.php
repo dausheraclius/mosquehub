@@ -12,10 +12,10 @@
 
 @section('content')
 
-  <x-page-header crumb="Pengelolaan" active="Surat" title="Surat" subtitle="Arsip surat resmi masjid.">
-    <button class="btn btn-primary" id="tambahSuratBtn"><i class="fa-solid fa-plus"></i> Tambah Surat</button>
-    <a href="{{ route('ekspor.surat') }}" class="btn btn-outline" title="Unduh seluruh surat sebagai Excel">
-      <i class="fa-solid fa-file-excel"></i> Ekspor Excel
+  <x-page-header crumb="{{ __('menu.pengelolaan') }}" active="{{ __('menu.surat') }}" title="{{ __('pages.surat_title') }}" subtitle="{{ __('pages.surat_subtitle') }}">
+    <button class="btn btn-primary" id="tambahSuratBtn"><i class="fa-solid fa-plus"></i> {{ __('general.tambah') }} {{ __('menu.surat') }}</button>
+    <a href="{{ route('ekspor.surat', ['locale' => App::getLocale()]) }}" class="btn btn-outline" title="{{ __('general.unduh') }}">
+      <i class="fa-solid fa-file-excel"></i> {{ __('general.ekspor_excel') }}
     </a>
   </x-page-header>
 
@@ -24,29 +24,24 @@
       <span class="filter-label">Cari</span>
       <div class="filter-search">
         <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" id="searchInput" placeholder="Cari surat..." />
+        <input type="text" id="searchInput" placeholder="{{ __('general.cari_surat') }}" />
       </div>
     </div>
-    <div class="filter-group">
-      <span class="filter-label">Jenis</span>
-      <select class="filter-select" id="jenisFilter">
-        <option value="">Semua Jenis</option>
+    <div class="filter-group">        <span class="filter-label">{{ __('general.jenis') }}</span>
+      <select class="filter-select" id="jenisFilter">          <option value="">{{ __('general.semua') }} {{ __('general.jenis') }}</option>
         <option value="Surat Undangan">Surat Undangan</option>
         <option value="Sertifikat">Sertifikat</option>
         <option value="Surat Keterangan">Surat Keterangan</option>
         <option value="Surat Tugas">Surat Tugas</option>
       </select>
     </div>
-    <div class="filter-group">
-      <span class="filter-label">Status</span>
-      <select class="filter-select" id="statusFilter">
-        <option value="">Semua Status</option>
+    <div class="filter-group">        <span class="filter-label">{{ __('general.status') }}</span>
+      <select class="filter-select" id="statusFilter">          <option value="">{{ __('general.semua_status') }}</option>
         <option value="Terkirim">Terkirim</option>
         <option value="Draft">Draf</option>
       </select>
     </div>
-    <div class="filter-group">
-      <span class="filter-label">Tanggal</span>
+    <div class="filter-group">        <span class="filter-label">{{ __('general.tanggal') }}</span>
       <input type="text" class="filter-select datepicker-input" id="dateFilter" data-datepicker placeholder="Semua Tanggal" readonly />
     </div>
   </div>
@@ -77,7 +72,7 @@
       </div>
       <div class="modal-body" id="detailModalBody"></div>
       <div class="modal-footer">
-        <button class="btn btn-outline" id="closeDetailBtn">Tutup</button>
+        <button class="btn btn-outline" id="closeDetailBtn">{{ __('general.tutup') }}</button>
       </div>
     </div>
   </div>
@@ -135,13 +130,13 @@
           <div class="file-pick-wrap">
             <input type="file" id="inputFile" accept=".pdf,.docx,.doc,.jpg,.jpeg,.png" />
             <span class="file-pick-btn"><i class="fa-solid fa-paperclip"></i> Pilih File</span>
-            <span class="file-pick-name" id="fileInfo">Belum ada file</span>
+            <span class="file-pick-name" id="fileInfo">{{ __('general.belum_ada_file') }}</span>
           </div>
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-outline" id="batalTambahBtn">Batal</button>
-        <button class="btn btn-primary" id="simpanTambahBtn"><i class="fa-solid fa-check"></i> Simpan</button>
+        <button class="btn btn-outline" id="batalTambahBtn">{{ __('general.batal') }}</button>
+        <button class="btn btn-primary" id="simpanTambahBtn"><i class="fa-solid fa-check"></i> {{ __('general.simpan') }}</button>
       </div>
     </div>
   </div>

@@ -8,7 +8,7 @@
 
 @section('content')
 
-  <x-page-header crumb="Akun" active="Profil Saya" title="Profil Saya" subtitle="{{ auth()->user()->role ?? 'Ketua YMBPK' }} · {{ now()->translatedFormat('d F Y') }}" />
+  <x-page-header crumb="{{ __('menu.akun_saya') }}" active="{{ __('menu.profil_saya') }}" title="{{ __('pages.profil_saya_title') }}" subtitle="{{ auth()->user()->role ?? 'Ketua YMBPK' }} · {{ now()->translatedFormat('d F Y') }}" />
 
   @if (session('status'))
     <div class="login-alert" style="background: var(--color-green-light); color: var(--color-green); margin-bottom: 16px;">
@@ -23,11 +23,11 @@
       <nav class="settings-nav" id="settingsNav">
         <button class="settings-nav-item active" data-target="panelData">
           <i class="fa-solid fa-user"></i>
-          <span>Data Akun</span>
+          <span>{{ __('general.data_akun') }}</span>
         </button>
         <button class="settings-nav-item" data-target="panelKeamanan">
           <i class="fa-solid fa-shield-halved"></i>
-          <span>Keamanan</span>
+          <span>{{ __('general.keamanan') }}</span>
         </button>
       </nav>
 
@@ -35,7 +35,7 @@
       <div class="settings-content">
         <!-- PANEL: DATA AKUN -->
         <section class="settings-panel active" id="panelData">
-          <h2 class="settings-panel-title">Data Akun</h2>
+          <h2 class="settings-panel-title">{{ __('general.data_akun') }}</h2>
           <p class="settings-panel-desc">Nama, email, dan nomor HP yang dipakai untuk login dan identitas di sistem.</p>
 
           <div class="form-row">
@@ -56,7 +56,7 @@
           </div>
 
           <button class="btn btn-primary" id="btnSaveProfil">
-            <i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan
+            <i class="fa-solid fa-floppy-disk"></i> {{ __('general.simpan_perubahan') }}
           </button>
         </section>
 
@@ -105,7 +105,7 @@
             </div>
           </div>
           <button class="btn btn-outline" id="btnChangePassword">
-            <i class="fa-solid fa-key"></i> Ganti Password
+            <i class="fa-solid fa-key"></i> {{ __('general.ganti_password') }}
           </button>
         </section>
       </div>

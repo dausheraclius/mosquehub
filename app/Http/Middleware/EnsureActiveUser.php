@@ -28,7 +28,7 @@ class EnsureActiveUser
             ], 403);
         }
 
-        return redirect()->route('login')->withErrors([
+        return redirect()->route('login', ['locale' => $request->route('locale') ?? session('locale', 'id')])->withErrors([
             'email' => 'Akun Anda telah dinonaktifkan. Hubungi pengurus aplikasi masjid.',
         ]);
     }

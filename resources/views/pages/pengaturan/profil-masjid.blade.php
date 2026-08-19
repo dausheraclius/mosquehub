@@ -8,7 +8,7 @@
 
 @section('content')
 
-  <x-page-header crumb="Pengaturan" active="Profil Masjid" title="Profil Masjid" subtitle="{{ auth()->user()->role ?? 'Ketua YMBPK' }} · {{ now()->translatedFormat('d F Y') }}" />
+  <x-page-header crumb="{{ __('menu.pengaturan') }}" active="{{ __('menu.profil_masjid') }}" title="{{ __('pages.profil_masjid_title') }}" subtitle="{{ auth()->user()->role ?? 'Ketua YMBPK' }} · {{ now()->translatedFormat('d F Y') }}" />
 
   <!-- BANNER PROFIL -->
   <div class="card profile-banner">
@@ -33,7 +33,7 @@
       </div>
     </div>
     <div class="profile-banner-actions">
-      <button type="button" class="btn btn-outline" id="btnEditProfile"><i class="fa-solid fa-pen"></i> Edit Profil</button>
+      <button type="button" class="btn btn-outline" id="btnEditProfile"><i class="fa-solid fa-pen"></i> {{ __('general.edit') }} {{ __('menu.profil_masjid') }}</button>
     </div>
   </div>
 
@@ -42,7 +42,7 @@
       <!-- KOLOM KIRI -->
       <div class="profile-col">
         <div class="card">
-          <div class="card-header"><h2 class="card-title">Informasi Dasar</h2></div>
+          <div class="card-header"><h2 class="card-title">{{ __('general.informasi_dasar') }}</h2></div>
           <div class="form-row">
             <div class="form-field">
               <label for="mosqueName">Nama Masjid</label>
@@ -86,7 +86,7 @@
         </div>
 
         <div class="card">
-          <div class="card-header"><h2 class="card-title">Lokasi</h2></div>
+          <div class="card-header"><h2 class="card-title">{{ __('general.lokasi') }}</h2></div>
           <div class="form-row">
             <div class="form-field">
               <label for="province">Provinsi</label>
@@ -136,7 +136,7 @@
         </div>
 
         <div class="card">
-          <div class="card-header"><h2 class="card-title">Media Sosial</h2></div>
+          <div class="card-header"><h2 class="card-title">{{ __('general.media_sosial') }}</h2></div>
           <div class="social-row">
             <div class="social-icon ig">
               <svg width="14" height="16" viewBox="0 0 448 512" fill="none" stroke="currentColor" stroke-width="44" stroke-linecap="round" aria-hidden="true">
@@ -169,7 +169,7 @@
       <!-- KOLOM KANAN -->
       <div class="profile-col">
         <div class="card">
-          <div class="card-header"><h2 class="card-title">Logo Masjid</h2></div>
+          <div class="card-header"><h2 class="card-title">{{ __('general.logo_masjid') }}</h2></div>
           <button
             type="button"
             class="btn btn-outline"
@@ -177,7 +177,7 @@
             style="width: 100%; justify-content: center"
             onclick="document.getElementById('logoInput').click()"
           >
-            <i class="fa-solid fa-upload"></i> Unggah Logo
+            <i class="fa-solid fa-upload"></i> {{ __('general.unggah_logo') }}
           </button>
           <input type="file" id="logoInput" name="logo" accept="image/*" hidden />
           <div class="logo-upload-box" id="logoBox">
@@ -195,7 +195,7 @@
         </div>
 
         <div class="card">
-          <div class="card-header"><h2 class="card-title">Identitas Resmi</h2></div>
+          <div class="card-header"><h2 class="card-title">{{ __('general.identitas_resmi') }}</h2></div>
           <div class="identity-grid">
             <div class="identity-box" data-upload>
               @if ($mosque->getFirstMediaUrl('stempel'))
@@ -225,7 +225,7 @@
         </div>
 
         <div class="card">
-          <div class="card-header"><h2 class="card-title">Informasi Pengurus</h2></div>
+          <div class="card-header"><h2 class="card-title">{{ __('general.informasi_pengurus') }}</h2></div>
           <div class="mgmt-field">
             <label>Ketua YMBPK</label>
             <div class="mgmt-select-wrap highlight">
@@ -271,10 +271,10 @@
     </div>
 
     <div class="profile-actions-bar">
-      <button type="button" class="btn btn-text" id="btnCancel">Batal</button>
-      <button type="button" class="btn btn-outline" id="btnReset">Atur Ulang</button>
+      <button type="button" class="btn btn-text" id="btnCancel">{{ __('general.batal') }}</button>
+      <button type="button" class="btn btn-outline" id="btnReset">{{ __('general.atur_ulang') }}</button>
       <button type="button" class="btn btn-primary" id="btnSaveChanges">
-        <i class="fa-solid fa-check"></i> Simpan Perubahan
+        <i class="fa-solid fa-check"></i> {{ __('general.simpan_perubahan') }}
       </button>
     </div>
   </form>

@@ -12,49 +12,45 @@
 
 @section('content')
 
-  <x-page-header active="Laporan" title="Laporan" subtitle="Semua laporan administrasi masjid tersedia dalam satu halaman.">
+  <x-page-header active="{{ __('menu.laporan_page') }}" title="{{ __('pages.laporan_title') }}" subtitle="{{ __('pages.laporan_subtitle') }}">
     <div class="laporan-header-actions">
       <button class="date-range-btn" id="dateRangeBtn"><i class="fa-regular fa-calendar"></i> <span>{{ now()->startOfMonth()->translatedFormat('d M Y') }} - {{ now()->translatedFormat('d M Y') }}</span></button>
       <button class="btn btn-outline" id="exportSemuaPdfBtn">
-        <i class="fa-solid fa-file-pdf"></i> Ekspor Semua PDF
+        <i class="fa-solid fa-file-pdf"></i> {{ __('pages.unduh_pdf') }}
       </button>
       <button class="btn btn-primary" id="exportSemuaBtn">
-        <i class="fa-solid fa-file-excel"></i> Ekspor Semua Excel
+        <i class="fa-solid fa-file-excel"></i> {{ __('pages.unduh_excel') }}
       </button>
     </div>
   </x-page-header>
 
   <div class="filter-bar">
-    <div class="filter-group filter-search-group">
-      <span class="filter-label">Cari</span>
+    <div class="filter-group filter-search-group">        <span class="filter-label">{{ __('general.cari') }}</span>
       <div class="filter-search">
         <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" id="searchInput" placeholder="Cari laporan..." />
+        <input type="text" id="searchInput" placeholder="{{ __('general.cari_laporan') }}" />
       </div>
     </div>
-    <div class="filter-group">
-      <span class="filter-label">Kategori</span>
+    <div class="filter-group">        <span class="filter-label">{{ __('general.kategori') }}</span>
       <select class="filter-select" id="kategoriFilter">
-        <option value="">Kategori Laporan</option>
+        <option value="">{{ __('general.kategori_laporan') }}</option>
         <option value="Jemaah">Jemaah</option>
         <option value="Keuangan">Keuangan</option>
         <option value="Kegiatan">Kegiatan</option>
         <option value="Aset">Aset</option>
       </select>
     </div>
-    <div class="filter-group">
-      <span class="filter-label">Periode</span>
+    <div class="filter-group">        <span class="filter-label">{{ __('general.periode') }}</span>
       <select class="filter-select" id="periodeFilter">
-        <option value="">Periode</option>
-        <option value="Harian">Harian</option>
-        <option value="Mingguan">Mingguan</option>
-        <option value="Bulanan">Bulanan</option>
+        <option value="">{{ __('general.periode') }}</option>
+        <option value="Harian">{{ __('general.harian') }}</option>
+        <option value="Mingguan">{{ __('general.mingguan') }}</option>
+        <option value="Bulanan">{{ __('general.bulanan') }}</option>
       </select>
     </div>
-    <div class="filter-group">
-      <span class="filter-label">Tahun</span>
+    <div class="filter-group">        <span class="filter-label">{{ __('general.tahun') }}</span>
       <select class="filter-select" id="tahunFilter">
-        <option value="">Tahun</option>
+        <option value="">{{ __('general.tahun') }}</option>
         @for ($tahun = now()->year; $tahun >= now()->year - 5; $tahun--)
           <option value="{{ $tahun }}">{{ $tahun }}</option>
         @endfor

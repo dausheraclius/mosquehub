@@ -7,7 +7,7 @@
 @endpush
 
 @section('content')
-  <x-page-header crumb="Pengawasan" active="Log Aktivitas" title="Log Aktivitas" subtitle="Riwayat perubahan dan ekspor data oleh pengurus." />
+  <x-page-header crumb="{{ __('menu.pengawasan') }}" active="{{ __('menu.log_aktivitas') }}" title="{{ __('pages.log_title') }}" subtitle="{{ __('pages.log_subtitle') }}" />
 
   <section class="activity-card">
     <div class="activity-card-header">

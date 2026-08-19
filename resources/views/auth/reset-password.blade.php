@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="{{ session('locale', 'id') }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>Reset Kata Sandi - MosqueHub</title>
+  <title>{{ __('auth.reset_password_title') }} - MosqueHub</title>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
@@ -27,27 +27,44 @@
             </div>
             <div>
               <div class="login-brand-name">{{ $siteMosque->name }}</div>
-              <div class="login-brand-sub">Sistem Informasi Masjid</div>
+              <div class="login-brand-sub">{{ __('general.sistem_informasi') }}</div>
             </div>
           </div>
 
           <div class="login-brand-mid">
-            <h1>Buat kata sandi baru</h1>
-            <p>Isi kata sandi baru untuk akun Anda.</p>
+            <h1>{{ __('auth.password_baru') }}</h1>
+            <p>{{ __('auth.reset_password_desc') }}</p>
           </div>
         </div>
 
         <div class="login-brand-footer">
-          &copy; {{ date('Y') }} MosqueHub. Semua hak dilindungi.
+          &copy; {{ date('Y') }} MosqueHub. {{ __('auth.hak_cipta') }}
         </div>
       </div>
 
       {{-- Panel kanan: form reset --}}
       <div class="login-form-panel">
         <div class="login-form-header">
-          <h2>Kata Sandi Baru</h2>
-          <p>Minimal 8 karakter. Pastikan tidak sama dengan kata sandi lama Anda.</p>
+          <h2>{{ __('auth.password_baru') }}</h2>
+          <p>{{ __('auth.minimal_8_karakter') }}. {{ __('auth.reset_password_desc') }}</p>
         </div>
+
+        {{-- LANGUAGE TOGGLE --}}
+        <form method="POST" action="{{ route('set-locale') }}" style="display:inline; margin-bottom: 16px;">
+          @csrf
+          <div style="display:flex; gap:4px; justify-content:flex-end;">
+            <button type="submit" name="locale" value="id"
+              class="btn btn-sm {{ session('locale', 'id') === 'id' ? 'btn-primary' : 'btn-outline' }}"
+              style="font-size:11px; padding:4px 10px; border-radius:6px; min-width:auto;">
+              ID
+            </button>
+            <button type="submit" name="locale" value="en"
+              class="btn btn-sm {{ session('locale', 'id') === 'en' ? 'btn-primary' : 'btn-outline' }}"
+              style="font-size:11px; padding:4px 10px; border-radius:6px; min-width:auto;">
+              EN
+            </button>
+          </div>
+        </form>
 
         @if ($errors->any())
           <div class="login-alert">
@@ -63,7 +80,7 @@
           <input type="hidden" name="email" value="{{ $email }}">
 
           <div class="form-group">
-            <label for="email" class="form-label">Email</label>
+            <label for="email" class="form-label">{{ __('general.email') }}</label>
             <div class="login-input-wrap">
               <i class="fa-solid fa-envelope login-input-icon"></i>
               <input
@@ -77,7 +94,7 @@
           </div>
 
           <div class="form-group">
-            <label for="password" class="form-label">Kata Sandi Baru</label>
+            <label for="password" class="form-label">{{ __('auth.password_baru') }}</label>
             <div class="login-input-wrap">
               <i class="fa-solid fa-lock login-input-icon"></i>
               <input
@@ -85,7 +102,7 @@
                 name="password"
                 id="password"
                 class="form-control @error('password') input-error @enderror"
-                placeholder="Minimal 8 karakter"
+                placeholder="{{ __('auth.minimal_8_karakter') }}"
                 required
                 autofocus
               >
@@ -93,7 +110,7 @@
           </div>
 
           <div class="form-group">
-            <label for="password_confirmation" class="form-label">Ulangi Kata Sandi</label>
+            <label for="password_confirmation" class="form-label">{{ __('auth.konfirmasi_password') }}</label>
             <div class="login-input-wrap">
               <i class="fa-solid fa-lock login-input-icon"></i>
               <input
@@ -101,20 +118,20 @@
                 name="password_confirmation"
                 id="password_confirmation"
                 class="form-control"
-                placeholder="Ketik ulang kata sandi"
+                placeholder="{{ __('auth.ulangi_sandi_baru') }}"
                 required
               >
             </div>
           </div>
 
           <button type="submit" class="btn btn-primary login-submit-btn">
-            <i class="fa-solid fa-check"></i> Simpan Kata Sandi
+            <i class="fa-solid fa-check"></i> {{ __('auth.reset_password') }}
           </button>
         </form>
 
         <div class="login-footer-note">
           <a href="{{ route('login') }}" class="login-public-link" style="display: inline-flex;">
-            <i class="fa-solid fa-arrow-left"></i> Kembali ke halaman masuk
+            <i class="fa-solid fa-arrow-left"></i> {{ __('auth.kembali_ke_login') }}
           </a>
         </div>
       </div>

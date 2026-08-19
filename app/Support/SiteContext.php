@@ -15,8 +15,21 @@ class SiteContext
      */
     public static function mosqueId(): int
     {
-        return (int) (auth()->user()->mosque_id
+    $user = auth()->user();
+
+    if ($user && $user->role === 'Super Admin') {
+        return (int) (session('active_mosque_id')
             ?? Mosque::orderBy('id')->value('id')
             ?? 1);
+    }
+
+    return (int) ($user->mosque_id
+        ?? Mosque::orderBy('id')->value('id')
+        ?? 1);
+    }
+
+    public static function setActiveMosque(int $mosqueId): void
+    {
+    session(['active_mosque_id' => $mosqueId]);
     }
 }

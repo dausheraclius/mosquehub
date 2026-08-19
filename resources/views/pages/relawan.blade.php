@@ -12,27 +12,25 @@
 
 @section('content')
 
-  <x-page-header crumb="Pengelolaan" active="Relawan" title="Relawan" subtitle="Halaman untuk mengelola relawan masjid dari kegiatan yang telah dijadwalkan.">
-    <a href="{{ route('ekspor.relawan') }}" class="btn btn-outline" title="Unduh data relawan sebagai Excel">
-      <i class="fa-solid fa-file-excel"></i> Ekspor Excel
+  <x-page-header crumb="{{ __('menu.pengelolaan') }}" active="{{ __('menu.relawan') }}" title="{{ __('pages.relawan_title') }}" subtitle="{{ __('pages.relawan_subtitle') }}">
+    <a href="{{ route('ekspor.relawan', ['locale' => App::getLocale()]) }}" class="btn btn-outline" title="{{ __('general.unduh') }}">
+      <i class="fa-solid fa-file-excel"></i> {{ __('general.ekspor_excel') }}
     </a>
   </x-page-header>
 
   <div class="filter-bar">
-    <div class="filter-group filter-search-group">
-      <span class="filter-label">Cari</span>
+    <div class="filter-group filter-search-group">        <span class="filter-label">{{ __('general.cari') }}</span>
       <div class="filter-search">
         <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" id="searchInput" placeholder="Cari kegiatan relawan..." />
+        <input type="text" id="searchInput" placeholder="{{ __('general.cari_relawan') }}" />
       </div>
     </div>
-    <div class="filter-group">
-      <span class="filter-label">Status</span>
+    <div class="filter-group">        <span class="filter-label">{{ __('general.status') }}</span>
       <select class="filter-select" id="statusFilter">
-        <option value="">Semua Status</option>
-        <option value="Akan Datang">Akan Datang</option>
-        <option value="Berlangsung">Sedang Berlangsung</option>
-        <option value="Selesai">Selesai</option>
+        <option value="">{{ __('general.semua_status') }}</option>
+        <option value="Akan Datang">{{ __('general.akan_datang') }}</option>
+        <option value="Berlangsung">{{ __('general.berlangsung') }}</option>
+        <option value="Selesai">{{ __('general.selesai') }}</option>
       </select>
     </div>
   </div>
@@ -61,21 +59,21 @@
           <input type="text" id="jamaahSearchInput" placeholder="Cari nama jamaah..." />
         </div>
         <button class="btn btn-outline" id="tambahRelawanBtn" style="margin-bottom: 10px; width: 100%;">
-          <i class="fa-solid fa-plus"></i> Tambah Relawan Baru
+          <i class="fa-solid fa-plus"></i> {{ __('general.tambah_relawan_baru') }}
         </button>
         <div class="relawan-tambah-form" id="relawanTambahForm">
           <input type="text" id="relawanNamaInput" placeholder="Nama lengkap" />
           <input type="tel" id="relawanTeleponInput" placeholder="No. Telepon" />
           <div class="relawan-tambah-actions">
-            <button class="btn btn-primary" id="simpanRelawanBaruBtn"><i class="fa-solid fa-check"></i> Tambah</button>
-            <button class="btn btn-outline" id="batalTambahRelawanBtn">Batal</button>
+            <button class="btn btn-primary" id="simpanRelawanBaruBtn"><i class="fa-solid fa-check"></i> {{ __('general.tambah') }}</button>
+            <button class="btn btn-outline" id="batalTambahRelawanBtn">{{ __('general.batal') }}</button>
           </div>
         </div>
         <div class="relawan-jamaah-list" id="relawanJamaahList"></div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-outline" id="cancelRelawanBtn">Batal</button>
-        <button class="btn btn-primary" id="saveRelawanBtn">Simpan</button>
+        <button class="btn btn-outline" id="cancelRelawanBtn">{{ __('general.batal') }}</button>
+        <button class="btn btn-primary" id="saveRelawanBtn">{{ __('general.simpan') }}</button>
       </div>
     </div>
   </div>

@@ -14,18 +14,18 @@
 
   <!-- ============ VIEW: DAFTAR ALBUM ============ -->
   <div id="albumListView">
-    <x-page-header crumb="Kegiatan" active="Galeri" title="Galeri Kegiatan" subtitle="Kelola dokumentasi kegiatan masjid yang ditampilin ke website jemaah.">
-      <button class="btn btn-primary" id="btnBuatAlbum"><i class="fa-solid fa-plus"></i> Buat Album Baru</button>
+    <x-page-header crumb="{{ __('menu.kegiatan') }}" active="{{ __('menu.galeri') }}" title="{{ __('pages.kegiatan.galeri_title') }}" subtitle="{{ __('pages.kegiatan.galeri_subtitle') }}">
+      <button class="btn btn-primary" id="btnBuatAlbum"><i class="fa-solid fa-plus"></i> {{ __('general.buat_album_baru') }}</button>
     </x-page-header>
 
     <div class="stat-cards" id="galeriStatCards"></div>
 
     <div class="filter-bar" style="margin-bottom: 16px">
       <div class="filter-group filter-search-group">
-        <span class="filter-label">Cari</span>
+        <span class="filter-label">{{ __('general.cari') }}</span>
         <div class="filter-search">
           <i class="fa-solid fa-magnifying-glass"></i>
-          <input type="text" id="albumSearch" placeholder="Cari album..." />
+          <input type="text" id="albumSearch" placeholder="{{ __('general.cari_album') }}" />
         </div>
       </div>
     </div>
@@ -36,7 +36,7 @@
   <!-- ============ VIEW: DETAIL ALBUM ============ -->
   <div id="albumDetailView" hidden>
     <button class="album-back-btn" id="btnBackToAlbums">
-      <i class="fa-solid fa-arrow-left"></i> Kembali ke Semua Album
+      <i class="fa-solid fa-arrow-left"></i> {{ __('general.kembali_ke_semua_album') }}
     </button>
 
     <div class="album-detail-header">
@@ -52,9 +52,9 @@
           </label>
           <span>Tampilkan di Website</span>
         </div>
-        <button class="btn-sm btn-edit" id="btnEditAlbum"><i class="fa-solid fa-pen"></i> Edit Album</button>
+        <button class="btn-sm btn-edit" id="btnEditAlbum"><i class="fa-solid fa-pen"></i> {{ __('general.edit') }} {{ __('general.album') }}</button>
         <button class="btn-sm btn-hapus" id="btnHapusAlbum">
-          <i class="fa-solid fa-trash"></i> Hapus Album
+          <i class="fa-solid fa-trash"></i> {{ __('general.hapus') }} {{ __('general.album') }}
         </button>
       </div>
     </div>
@@ -112,8 +112,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn-outline" id="albumModalCancelBtn">Batal</button>
-        <button class="btn btn-primary" id="albumModalSaveBtn"><i class="fa-solid fa-check"></i> Simpan Album</button>
+        <button class="btn-outline" id="albumModalCancelBtn">{{ __('general.batal') }}</button>
+        <button class="btn btn-primary" id="albumModalSaveBtn"><i class="fa-solid fa-check"></i> {{ __('general.simpan') }} {{ __('general.album') }}</button>
       </div>
     </div>
   </div>
@@ -126,10 +126,10 @@
     <button class="lightbox-nav lightbox-next" id="lightboxNextBtn"><i class="fa-solid fa-chevron-right"></i></button>
     <div class="lightbox-toolbar">
       <button class="lightbox-toolbar-btn" id="lightboxSetCoverBtn">
-        <i class="fa-solid fa-star"></i> Jadikan Cover
+        <i class="fa-solid fa-star"></i> {{ __('general.jadikan_cover') }}
       </button>
       <button class="lightbox-toolbar-btn lightbox-toolbar-danger" id="lightboxDeleteBtn">
-        <i class="fa-solid fa-trash"></i> Hapus Foto
+        <i class="fa-solid fa-trash"></i> {{ __('general.hapus') }} {{ __('general.foto') }}
       </button>
     </div>
   </div>

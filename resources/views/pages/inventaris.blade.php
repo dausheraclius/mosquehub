@@ -13,12 +13,12 @@
 
 @section('content')
 
-  <x-page-header crumb="Pengelolaan" active="Inventaris" title="Inventaris" subtitle="Kelola seluruh aset dan perlengkapan masjid dengan rapi dan mudah.">
+  <x-page-header crumb="{{ __('menu.pengelolaan') }}" active="{{ __('menu.inventaris') }}" title="{{ __('pages.inventaris_title') }}" subtitle="{{ __('pages.inventaris_subtitle') }}">
     <button class="btn btn-primary" id="tambahInventarisBtn">
-      <i class="fa-solid fa-plus"></i> Tambah Inventaris
+      <i class="fa-solid fa-plus"></i> {{ __('general.tambah') }} {{ __('menu.inventaris') }}
     </button>
-    <a href="{{ route('ekspor.inventaris') }}" class="btn btn-outline" title="Unduh seluruh inventaris sebagai Excel">
-      <i class="fa-solid fa-file-excel"></i> Ekspor Excel
+    <a href="{{ route('ekspor.inventaris', ['locale' => App::getLocale()]) }}" class="btn btn-outline" title="{{ __('general.unduh') }}">
+      <i class="fa-solid fa-file-excel"></i> {{ __('general.ekspor_excel') }}
     </a>
   </x-page-header>
 
@@ -55,7 +55,7 @@
       <span class="filter-label">Cari</span>
       <div class="filter-search">
         <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" id="searchInput" placeholder="Cari item..." />
+        <input type="text" id="searchInput" placeholder="{{ __('general.cari_item') }}" />
       </div>
     </div>
     <div class="filter-group">
@@ -64,8 +64,7 @@
         <option value="">Kategori</option>
       </select>
     </div>
-    <div class="filter-group">
-      <span class="filter-label">Kondisi</span>
+    <div class="filter-group">        <span class="filter-label">{{ __('general.kondisi') }}</span>
       <select class="filter-select" id="kondisiFilter">
         <option value="">Kondisi</option>
         <option value="Baik">Baik</option>
@@ -74,8 +73,7 @@
         <option value="Nonaktif">Nonaktif</option>
       </select>
     </div>
-    <div class="filter-group">
-      <span class="filter-label">Lokasi</span>
+    <div class="filter-group">        <span class="filter-label">{{ __('general.lokasi') }}</span>
       <select class="filter-select" id="lokasiFilter">
         <option value="">Lokasi</option>
       </select>
@@ -127,7 +125,7 @@
           <label class="form-label">Gambar</label>
           <div class="file-upload-wrapper">
             <input type="file" class="form-control-file" id="formGambar" accept="image/*">
-            <div class="file-upload-preview" id="gambarPreview"><i class="fa-regular fa-image"></i><span>Pilih gambar</span></div>
+            <div class="file-upload-preview" id="gambarPreview"><i class="fa-regular fa-image"></i><span>{{ __('general.pilih_gambar') }}</span></div>
           </div>
         </div>
         <div class="form-row">
@@ -178,8 +176,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-outline" id="cancelTambahBtn">Batal</button>
-        <button class="btn btn-primary" id="simpanTambahBtn">Simpan</button>
+        <button class="btn btn-outline" id="cancelTambahBtn">{{ __('general.batal') }}</button>
+        <button class="btn btn-primary" id="simpanTambahBtn">{{ __('general.simpan') }}</button>
       </div>
     </div>
   </div>

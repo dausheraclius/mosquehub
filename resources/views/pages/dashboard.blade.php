@@ -8,46 +8,46 @@
 
 @section('content')
 
-  <x-content-header title="Assalamu'alaikum, Ust. {{ auth()->user()->name }}" subtitle="{{ $siteMosque->name }} · {{ now()->translatedFormat('d F Y') }}">
-    <a href="{{ route('jamaah.index') }}" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Tambah Jemaah</a>
-    <a href="{{ route('keuangan.infaq') }}" class="btn btn-outline"><i class="fa-regular fa-note-sticky"></i> Catat Infaq</a>
-    <a href="{{ route('kegiatan.agenda') }}" class="btn btn-outline"><i class="fa-regular fa-calendar-plus"></i> Buat Agenda</a>
+  <x-content-header title="{{ __('dashboard.assalam', ['name' => auth()->user()->name]) }}" subtitle="{{ $siteMosque->name }} · {{ now()->translatedFormat('d F Y') }}">
+    <a href="{{ route('jamaah.index', ['locale' => App::getLocale()]) }}" class="btn btn-primary"><i class="fa-solid fa-plus"></i> {{ __('general.tambah_jemaah') }}</a>
+    <a href="{{ route('keuangan.infaq', ['locale' => App::getLocale()]) }}" class="btn btn-outline"><i class="fa-regular fa-note-sticky"></i> {{ __('general.catat_infaq') }}</a>
+    <a href="{{ route('kegiatan.agenda', ['locale' => App::getLocale()]) }}" class="btn btn-outline"><i class="fa-regular fa-calendar-plus"></i> {{ __('general.buat_agenda') }}</a>
   </x-content-header>
 
   <div class="stat-cards">
     <div class="stat-card">
       <div class="stat-card-top">
-        <span class="stat-label">Total Jemaah</span>
+        <span class="stat-label">{{ __('dashboard.total_jemaah') }}</span>
       </div>
       <span class="stat-value">{{ number_format($stats['totalJemaah']) }}</span>
     </div>
     <div class="stat-card">
       <div class="stat-card-top">
-        <span class="stat-label">Saldo Kas</span>
+        <span class="stat-label">{{ __('dashboard.saldo_kas') }}</span>
       </div>
       <span class="stat-value">Rp {{ number_format((int) $stats['saldoKas'], 0, ',', '.') }}</span>
     </div>
     <div class="stat-card">
       <div class="stat-card-top">
-        <span class="stat-label">Infaq Bulan Ini</span>
+        <span class="stat-label">{{ __('dashboard.infaq_bulan_ini') }}</span>
       </div>
       <span class="stat-value">Rp {{ number_format((int) $stats['infaqBulanIni'], 0, ',', '.') }}</span>
     </div>
     <div class="stat-card">
       <div class="stat-card-top">
-        <span class="stat-label">Relawan Aktif</span>
+        <span class="stat-label">{{ __('dashboard.relawan_aktif') }}</span>
       </div>
-      <span class="stat-value">{{ $stats['relawanAktif'] }} Orang</span>
+      <span class="stat-value">{{ $stats['relawanAktif'] }} {{ __('general.orang') }}</span>
     </div>
   </div>
 
   <div class="dashboard-grid">
     <div class="card chart-card">
       <div class="card-header">
-        <h2 class="card-title">Arus Kas {{ $siteMosque->name }}</h2>
+        <h2 class="card-title">{{ __('dashboard.arus_kas', ['name' => $siteMosque->name]) }}</h2>
         <div class="chart-legend">
-          <span class="legend-item"><span class="legend-dot dot-green"></span>Pemasukan</span>
-          <span class="legend-item"><span class="legend-dot dot-gray"></span>Pengeluaran</span>
+          <span class="legend-item"><span class="legend-dot dot-green"></span>{{ __('dashboard.pemasukan') }}</span>
+          <span class="legend-item"><span class="legend-dot dot-gray"></span>{{ __('dashboard.pengeluaran') }}</span>
         </div>
       </div>
       <div class="chart-wrapper">
@@ -57,17 +57,17 @@
 
     <div class="card agenda-card">
       <div class="card-header">
-        <h2 class="card-title">Agenda Terdekat</h2>
+        <h2 class="card-title">{{ __('dashboard.agenda_terdekat') }}</h2>
         <div class="card-menu-wrap">
           <button class="icon-btn-plain" id="agendaCardMenuBtn" aria-label="Opsi agenda">
             <i class="fa-solid fa-ellipsis"></i>
           </button>
           <div class="card-menu" id="agendaCardMenu">
-            <a href="{{ route('kegiatan.agenda') }}" class="card-menu-item">
-              <i class="fa-solid fa-calendar-days"></i> Lihat Semua Agenda
+            <a href="{{ route('kegiatan.agenda', ['locale' => App::getLocale()]) }}" class="card-menu-item">
+              <i class="fa-solid fa-calendar-days"></i> {{ __('general.lihat_semua_agenda') }}
             </a>
-            <a href="{{ route('kegiatan.agenda') }}?tambah=1" class="card-menu-item">
-              <i class="fa-solid fa-plus"></i> Buat Agenda Baru
+            <a href="{{ route('kegiatan.agenda', ['locale' => App::getLocale()]) }}?tambah=1" class="card-menu-item">
+              <i class="fa-solid fa-plus"></i> {{ __('general.buat_agenda_baru') }}
             </a>
           </div>
         </div>
@@ -82,7 +82,7 @@
             </div>
           </li>
         @empty
-          <li class="agenda-item" style="color: var(--text-muted);">Belum ada agenda terdekat.</li>
+          <li class="agenda-item" style="color: var(--text-muted);">{{ __('dashboard.belum_ada_agenda') }}</li>
         @endforelse
       </ul>
     </div>
@@ -91,7 +91,7 @@
   <div class="dashboard-grid dashboard-grid-3">
     <div class="card chart-card">
       <div class="card-header">
-        <h2 class="card-title">Donasi &amp; Infaq 6 Bulan</h2>
+        <h2 class="card-title">{{ __('dashboard.donasi_infaq') }}</h2>
       </div>
       <div class="chart-wrapper">
         <canvas id="donasiChart"></canvas>
@@ -100,7 +100,7 @@
 
     <div class="card chart-card">
       <div class="card-header">
-        <h2 class="card-title">Pertumbuhan Jemaah</h2>
+        <h2 class="card-title">{{ __('dashboard.pertumbuhan_jemaah') }}</h2>
       </div>
       <div class="chart-wrapper">
         <canvas id="jamaahChart"></canvas>
@@ -109,7 +109,7 @@
 
     <div class="card chart-card">
       <div class="card-header">
-        <h2 class="card-title">Distribusi Ziswaf</h2>
+        <h2 class="card-title">{{ __('dashboard.distribusi_ziswaf') }}</h2>
       </div>
       <div class="chart-wrapper chart-wrapper-donut">
         <canvas id="ziswafChart"></canvas>
@@ -119,33 +119,33 @@
 
   <div class="card table-card">
     <div class="card-header">
-      <h2 class="card-title">Aktivitas Jemaah Terakhir</h2>
+      <h2 class="card-title">{{ __('dashboard.aktivitas_jemaah_terakhir') }}</h2>
     </div>
     <div class="filter-bar" style="padding: 0 20px 16px">
       <div class="filter-group filter-search-group">
-        <span class="filter-label">Cari</span>
+        <span class="filter-label">{{ __('general.cari') }}</span>
         <div class="filter-search">
           <i class="fa-solid fa-magnifying-glass"></i>
-          <input type="text" placeholder="Cari" id="tableSearch" />
+          <input type="text" placeholder="{{ __('general.cari') }}" id="tableSearch" />
         </div>
       </div>
       <div class="filter-group">
-        <span class="filter-label">Urutkan</span>
+        <span class="filter-label">{{ __('general.urutkan') }}</span>
         <select class="filter-select" id="sortFilter">
-          <option value="nama-asc">Nama (A-Z)</option>
-          <option value="nama-desc">Nama (Z-A)</option>
-          <option value="terakhir-baru">Terakhir Hadir Terbaru</option>
-          <option value="terakhir-lama">Terakhir Hadir Terlama</option>
+          <option value="nama-asc">{{ __('general.nama_az') }}</option>
+          <option value="nama-desc">{{ __('general.nama_za') }}</option>
+          <option value="terakhir-baru">{{ __('general.terbaru') }}</option>
+          <option value="terakhir-lama">{{ __('general.terlama') }}</option>
         </select>
       </div>
       <div class="filter-group">
-        <span class="filter-label">Saring Status</span>
+        <span class="filter-label">{{ __('general.saring_status') }}</span>
         <select class="filter-select" id="statusFilter">
-          <option value="">Semua Status</option>
-          <option value="Aktif">Aktif</option>
-          <option value="Tidak Aktif">Tidak Aktif</option>
-          <option value="Pindah">Pindah</option>
-          <option value="Wafat">Wafat</option>
+          <option value="">{{ __('general.semua_status') }}</option>
+          <option value="Aktif">{{ __('general.aktif') }}</option>
+          <option value="Tidak Aktif">{{ __('general.tidak_aktif') }}</option>
+          <option value="Pindah">{{ __('general.pindah') }}</option>
+          <option value="Wafat">{{ __('general.wafat') }}</option>
         </select>
       </div>
     </div>
@@ -154,12 +154,12 @@
       <thead>
         <tr>
           <th><input type="checkbox" /></th>
-          <th>Foto</th>
-          <th>Nama</th>
-          <th>Status</th>
-          <th>Terakhir Hadir</th>
-          <th>Riwayat Infaq</th>
-          <th>Aksi</th>
+          <th>{{ __('general.foto') }}</th>
+          <th>{{ __('general.nama') }}</th>
+          <th>{{ __('general.status') }}</th>
+          <th>{{ __('dashboard.terakhir_hadir') }}</th>
+          <th>{{ __('dashboard.riwayat_infaq') }}</th>
+          <th>{{ __('general.aksi') }}</th>
         </tr>
       </thead>
       <tbody id="jamaahTableBody">
@@ -172,12 +172,12 @@
             <td>{{ $j['tanggalBergabung'] }}</td>
             <td>{{ $j['infaq'] }}</td>
             <td>
-              <button class="btn-sm btn-detail">Detail</button>
-              <button class="btn-sm btn-edit">Edit</button>
+              <button class="btn-sm btn-detail">{{ __('general.detail') }}</button>
+              <button class="btn-sm btn-edit">{{ __('general.edit') }}</button>
             </td>
           </tr>
         @empty
-          <tr><td colspan="7" class="empty-state">Belum ada data jemaah.</td></tr>
+          <tr><td colspan="7" class="empty-state">{{ __('dashboard.belum_ada_data') }}</td></tr>
         @endforelse
       </tbody>
     </table>
