@@ -1,6 +1,6 @@
 // profil-masjid.js
-// Semua interaksi di halaman Profil Masjid. Belum nyambung ke backend/API
-// beneran -- tujuannya cuma biar tombol2 keliatan 'hidup' pas dites.
+// Semua interaksi halaman Profil Masjid, termasuk penyimpanan profil dan media
+// melalui endpoint backend.
 
 function initProfilMasjid() {
   const form = document.getElementById('profilForm')
@@ -183,12 +183,6 @@ function initProfilMasjid() {
     })
   })
 
-  // ---- management info: pilih pengurus dari data jamaah (dummy list di <option>) ----
-  document.querySelectorAll('.mgmt-select-input').forEach((select) => {
-    select.addEventListener('change', () => {
-      showToast(`Pengurus diperbarui: ${select.selectedOptions[0].textContent}`)
-    })
-  })
 }
 
 document.addEventListener('DOMContentLoaded', initProfilMasjid)

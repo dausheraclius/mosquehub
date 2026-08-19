@@ -15,7 +15,7 @@ class JamaahController extends Controller
     public function index()
     {
         $mosqueId = $this->mosqueId;
-        $jamaahList = Jamaah::where('mosque_id', $mosqueId)->orderBy('nama')->get()->map(function ($j) {
+        $jamaahList = Jamaah::forMosque($mosqueId)->orderBy('nama')->get()->map(function ($j) {
             return $this->toArrayForFrontend($j);
         });
 
@@ -76,7 +76,7 @@ class JamaahController extends Controller
                 continue;
             }
 
-            if (Jamaah::where('mosque_id', $mosqueId)->where('nama', $nama)->exists()) {
+            if (Jamaah::forMosque($mosqueId)->where('nama', $nama)->exists()) {
                 $errors[] = "\"$nama\" sudah ada, dilewati";
                 continue;
             }
@@ -120,7 +120,7 @@ class JamaahController extends Controller
     {
 
         $mosqueId = $this->mosqueId;
-        $jamaah = Jamaah::where('mosque_id', $mosqueId)->findOrFail($id);
+        $jamaah = Jamaah::forMosque($mosqueId)->findOrFail($id);
 
         $validated = $this->validateRequest($request);
 
@@ -135,7 +135,7 @@ class JamaahController extends Controller
     {
 
         $mosqueId = $this->mosqueId;
-        $jamaah = Jamaah::where('mosque_id', $mosqueId)->findOrFail($id);
+        $jamaah = Jamaah::forMosque($mosqueId)->findOrFail($id);
 
         if ($jamaah->foto) {
             Storage::disk('public')->delete($jamaah->foto);
@@ -184,7 +184,7 @@ class JamaahController extends Controller
         $jamaah->update(['foto' => $path]);
     }
 
-    // Ubah 1 baris Jamaah jadi bentuk array persis kayak format dummy data lama,
+    // Ubah 1 baris Jamaah menjadi format frontend yang stabil,
     // biar data-jamaah.js gak perlu diubah logic render/filter-nya sama sekali.
     private function toArrayForFrontend(Jamaah $j): array
     {

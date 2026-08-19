@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToMosque;
 use Illuminate\Database\Eloquent\Model;
 
 class PengaturanUmum extends Model
 {
+    use BelongsToMosque;
+
     protected $fillable = [
         'mosque_id', 'app_name', 'timezone', 'date_format', 'wa_gateway_number',
         'notif_infaq_bulanan', 'notif_agenda_kegiatan', 'notif_jamaah_baru', 'notif_laporan_mingguan',

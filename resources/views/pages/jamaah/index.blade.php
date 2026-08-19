@@ -259,7 +259,7 @@
 
             <div class="form-group">
               <label class="form-label" for="addGender">Jenis Kelamin</label>
-              <select class="form-select" id="addGender" required>
+              <select class="form-select" id="addGender" data-native-select required>
                 <option value="">Pilih Jenis Kelamin</option>
                 <option value="Laki-laki">Laki-laki</option>
                 <option value="Perempuan">Perempuan</option>
@@ -303,7 +303,7 @@
 
             <div class="form-group">
               <label class="form-label" for="addNikah">Status Pernikahan</label>
-              <select class="form-select" id="addNikah">
+              <select class="form-select" id="addNikah" data-native-select>
                 <option value="Belum Menikah">Belum Menikah</option>
                 <option value="Menikah">Menikah</option>
                 <option value="Janda">Janda</option>
@@ -313,7 +313,7 @@
 
             <div class="form-group">
               <label class="form-label" for="addStatusJamaah">Status Jemaah</label>
-              <select class="form-select" id="addStatusJamaah">
+              <select class="form-select" id="addStatusJamaah" data-native-select>
                 <option value="Aktif">Aktif</option>
                 <option value="Tidak Aktif">Tidak Aktif</option>
                 <option value="Pindah">Pindah</option>

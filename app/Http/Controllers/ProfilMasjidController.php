@@ -19,9 +19,9 @@ class ProfilMasjidController extends Controller
         );
 
         $pengurus = [
-            'ketua' => Jabatan::where('mosque_id', $this->mosqueId)->where('nama', 'Ketua YMBPK')->with('jamaah')->first()?->jamaah?->nama,
-            'sekretaris' => Jabatan::where('mosque_id', $this->mosqueId)->where('nama', 'Sekretaris YMBPK')->with('jamaah')->first()?->jamaah?->nama,
-            'bendahara' => Jabatan::where('mosque_id', $this->mosqueId)->where('nama', 'Bendahara YMBPK')->with('jamaah')->first()?->jamaah?->nama,
+            'ketua' => Jabatan::forMosque()->where('nama', 'Ketua YMBPK')->with('jamaah')->first()?->jamaah?->nama,
+            'sekretaris' => Jabatan::forMosque()->where('nama', 'Sekretaris YMBPK')->with('jamaah')->first()?->jamaah?->nama,
+            'bendahara' => Jabatan::forMosque()->where('nama', 'Bendahara YMBPK')->with('jamaah')->first()?->jamaah?->nama,
         ];
 
         return view('pages.pengaturan.profil-masjid', ['mosque' => $mosque, 'pengurus' => $pengurus]);

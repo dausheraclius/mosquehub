@@ -12,7 +12,7 @@ class JadwalPetugasController extends Controller
     use HasMosqueContext;
     public function index()
     {
-        $list = JadwalPetugasSholat::where('mosque_id', $this->mosqueId)
+        $list = JadwalPetugasSholat::forMosque()
             ->orderBy('tanggal')
             ->orderByRaw("FIELD(sholat, 'Jumat', 'Subuh', 'Dzuhur', 'Ashar', 'Maghrib', 'Isya')")
             ->get()
@@ -20,19 +20,19 @@ class JadwalPetugasController extends Controller
 
         return view('pages.kegiatan.jadwal-petugas', [
             'jadwalList' => $list,
-            'jamaahOptions' => \App\Models\Jamaah::where('mosque_id', $this->mosqueId)
+            'jamaahOptions' => \App\Models\Jamaah::forMosque()
                 ->orderBy('nama')
                 ->get()
                 ->map(fn ($j) => ['nama' => $j->nama, 'email' => $j->email ?? '', 'hp' => $j->no_hp ?? '']),
             'stats' => [
                 'total' => $list->count(),
-                'jumat' => JadwalPetugasSholat::where('mosque_id', $this->mosqueId)
+                'jumat' => JadwalPetugasSholat::forMosque()
                     ->where('sholat', 'Jumat')
                     ->count(),
-                'bulanIni' => JadwalPetugasSholat::where('mosque_id', $this->mosqueId)
+                'bulanIni' => JadwalPetugasSholat::forMosque()
                     ->whereBetween('tanggal', [now()->startOfMonth()->toDateString(), now()->endOfMonth()->toDateString()])
                     ->count(),
-                'denganKhatib' => JadwalPetugasSholat::where('mosque_id', $this->mosqueId)
+                'denganKhatib' => JadwalPetugasSholat::forMosque()
                     ->whereNotNull('khatib')
                     ->where('khatib', '!=', '')
                     ->count(),
@@ -52,7 +52,7 @@ class JadwalPetugasController extends Controller
 
     public function update(Request $request, int $id)
     {
-        $jadwal = JadwalPetugasSholat::where('mosque_id', $this->mosqueId)->findOrFail($id);
+        $jadwal = JadwalPetugasSholat::forMosque()->findOrFail($id);
 
         $jadwal->update($this->validated($request));
 
@@ -61,7 +61,7 @@ class JadwalPetugasController extends Controller
 
     public function destroy(int $id)
     {
-        $jadwal = JadwalPetugasSholat::where('mosque_id', $this->mosqueId)->findOrFail($id);
+        $jadwal = JadwalPetugasSholat::forMosque()->findOrFail($id);
 
         $jadwal->delete();
 

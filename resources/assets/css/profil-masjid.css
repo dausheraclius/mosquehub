@@ -197,6 +197,17 @@
   font-size: 20px;
 }
 
+.map-placeholder.map-link {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.map-placeholder.map-link:hover {
+  border-color: var(--color-teal);
+  color: var(--color-teal);
+}
+
 /* ===== social media list ===== */
 .social-row {
   display: flex;

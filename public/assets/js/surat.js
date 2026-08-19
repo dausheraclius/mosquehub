@@ -171,19 +171,14 @@ function resetTambahForm() {
   document.getElementById('inputKepada').value = ''
   document.getElementById('inputIsi').value = ''
   document.getElementById('inputFile').value = ''
-  document.getElementById('fileInfo').style.display = 'none'
+  document.getElementById('fileInfo').textContent = 'Belum ada file'
   if (typeof syncCustomSelects === 'function') syncCustomSelects()
 }
 
 document.getElementById('inputFile').addEventListener('change', (e) => {
   const file = e.target.files[0]
   const info = document.getElementById('fileInfo')
-  if (file) {
-    info.textContent = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`
-    info.style.display = 'block'
-  } else {
-    info.style.display = 'none'
-  }
+  info.textContent = file ? `${file.name} (${(file.size / 1024).toFixed(1)} KB)` : 'Belum ada file'
 })
 
 document.getElementById('tambahSuratBtn').addEventListener('click', () => {

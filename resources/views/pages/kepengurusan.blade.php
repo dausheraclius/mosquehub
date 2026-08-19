@@ -26,9 +26,14 @@
   <div class="kepengurusan-top-row">
     <div class="top-card" style="padding: 10px 14px">
       <div class="org-tabs" id="orgTabs">
-        <button type="button" class="org-tab active" data-org="YMBPK">
-          <i class="fa-solid fa-people-group"></i> YMBPK
-        </button>
+        @foreach ($organisasiTersedia as $namaOrganisasi)
+          <a href="{{ route('kepengurusan', ['organisasi' => $namaOrganisasi]) }}"
+             class="org-tab {{ $organisasi === $namaOrganisasi ? 'active' : '' }}"
+             data-org="{{ $namaOrganisasi }}">
+            <i class="fa-solid {{ $namaOrganisasi === 'IKRAM' ? 'fa-hands-holding-circle' : 'fa-people-group' }}"></i>
+            {{ $namaOrganisasi }}
+          </a>
+        @endforeach
       </div>
     </div>
 
@@ -120,6 +125,7 @@
     window.__PENEMPATAN__ = @json($penempatan);
     window.__POSISI_ORG__ = @json($posisiOrg);
     window.__DAFTAR_JAMAAH__ = @json($daftarJamaah);
+    window.__ORGANISASI__ = @json($organisasi);
   </script>
-  <script src="{{ asset('assets/js/kepengurusan.js') }}"></script>
+  <script src="{{ asset('assets/js/kepengurusan.js') }}?v={{ filemtime(public_path('assets/js/kepengurusan.js')) }}"></script>
 @endpush

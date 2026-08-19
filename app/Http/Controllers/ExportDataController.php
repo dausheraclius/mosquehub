@@ -27,7 +27,7 @@ class ExportDataController extends Controller
 
     public function pengumuman()
     {
-        $rows = Pengumuman::where('mosque_id', $this->mosqueId)->orderByDesc('tanggal')->get()
+        $rows = Pengumuman::forMosque()->orderByDesc('tanggal')->get()
             ->map(fn ($p) => [$p->judul, $p->kategori ?? '-', $p->status, $p->tanggal?->format('d/m/Y') ?? '-', $p->isi ?? '']);
 
         return $this->streamExcel('pengumuman', ['Judul', 'Kategori', 'Status', 'Tanggal', 'Isi'], $rows);
@@ -35,7 +35,7 @@ class ExportDataController extends Controller
 
     public function surat()
     {
-        $rows = Surat::where('mosque_id', $this->mosqueId)->orderByDesc('tanggal')->get()
+        $rows = Surat::forMosque()->orderByDesc('tanggal')->get()
             ->map(fn ($s) => [$s->nomor, $s->subjek, $s->jenis ?? '-', $s->status, $s->tanggal?->format('d/m/Y') ?? '-', $s->kepada ?? '-', $s->isi ?? '']);
 
         return $this->streamExcel('surat', ['Nomor', 'Subjek', 'Jenis', 'Status', 'Tanggal', 'Kepada', 'Isi'], $rows);
@@ -43,7 +43,7 @@ class ExportDataController extends Controller
 
     public function inventaris()
     {
-        $rows = Inventaris::where('mosque_id', $this->mosqueId)->orderBy('nama')->get()
+        $rows = Inventaris::forMosque()->orderBy('nama')->get()
             ->map(fn ($i) => [$i->nama, $i->kode ?? '-', $i->kategori ?? '-', $i->lokasi ?? '-', $i->kondisi, $i->qty, $i->sumber ?? '-', $i->tgl_beli?->format('d/m/Y') ?? '-', $i->harga ?? 0, $i->catatan ?? '']);
 
         return $this->streamExcel('inventaris', ['Nama', 'Kode', 'Kategori', 'Lokasi', 'Kondisi', 'Qty', 'Sumber', 'Tgl Beli', 'Harga', 'Catatan'], $rows);
@@ -51,7 +51,7 @@ class ExportDataController extends Controller
 
     public function agenda()
     {
-        $rows = Kegiatan::where('mosque_id', $this->mosqueId)->orderByDesc('tanggal')->get()
+        $rows = Kegiatan::forMosque()->orderByDesc('tanggal')->get()
             ->map(fn ($k) => [
                 $k->tanggal?->format('d/m/Y') ?? '-',
                 $k->nama,
@@ -70,7 +70,7 @@ class ExportDataController extends Controller
 
     public function jadwal()
     {
-        $rows = Kegiatan::where('mosque_id', $this->mosqueId)
+        $rows = Kegiatan::forMosque()
             ->whereDate('tanggal', now()->toDateString())
             ->orderBy('jam_mulai')
             ->get()
@@ -88,7 +88,7 @@ class ExportDataController extends Controller
 
     public function kepengurusan()
     {
-        $rows = Jabatan::where('mosque_id', $this->mosqueId)
+        $rows = Jabatan::forMosque()
             ->with('jamaah')
             ->orderBy('urutan')
             ->get()
@@ -99,7 +99,7 @@ class ExportDataController extends Controller
 
     public function relawan()
     {
-        $rows = KegiatanRelawan::whereHas('kegiatan', fn ($q) => $q->where('mosque_id', $this->mosqueId))
+        $rows = KegiatanRelawan::whereHas('kegiatan', fn ($q) => $q->forMosque())
             ->with('kegiatan')
             ->latest()
             ->get()
@@ -110,7 +110,7 @@ class ExportDataController extends Controller
 
     public function jadwalPetugas()
     {
-        $rows = \App\Models\JadwalPetugasSholat::where('mosque_id', $this->mosqueId)
+        $rows = \App\Models\JadwalPetugasSholat::forMosque()
             ->orderBy('tanggal')
             ->get()
             ->map(fn ($j) => [

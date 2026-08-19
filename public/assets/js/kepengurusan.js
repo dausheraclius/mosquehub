@@ -1,4 +1,9 @@
 const daftarJamaah = window.__DAFTAR_JAMAAH__ || []
+const organisasi = window.__ORGANISASI__ || 'YMBPK'
+
+function withOrganisasi(payload) {
+  return { ...payload, organisasi }
+}
 
 function personMeta(p) {
   return [p.email, p.hp].filter(Boolean).join(' | ')
@@ -22,6 +27,23 @@ function simpanHierarki(hierarki) {
   window.__HIERARKI__ = hierarki
 }
 
+// Perubahan hierarki dapat dipicu beruntun lewat dropdown atau drag. Antrekan
+// request agar perpindahan organisasi tidak membatalkan request terakhir.
+let parentSaveChain = Promise.resolve()
+
+function simpanParentServer(nama, parentNama) {
+  parentSaveChain = parentSaveChain.catch(() => {}).then(async () => {
+    const res = await fetch('/kepengurusan/jabatan/parent', {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(withOrganisasi({ nama, parent_nama: parentNama })),
+    })
+    if (!res.ok) throw new Error('Gagal menyimpan struktur jabatan')
+  })
+
+  return parentSaveChain
+}
+
 // Cek: apakah `calonAtasan` adalah keturunan dari `nama`? (cegah struktur muter/cycle)
 function isDescendant(hierarki, nama, calonAtasan) {
   let current = calonAtasan
@@ -40,7 +62,7 @@ async function simpanPenempatan(penempatan) {
   const res = await fetch('/kepengurusan/penempatan', {
     method: 'POST',
     headers: getHeaders(),
-    body: JSON.stringify({ penempatan }),
+    body: JSON.stringify(withOrganisasi({ penempatan })),
   })
   if (!res.ok) throw new Error('Gagal menyimpan penempatan')
   window.__PENEMPATAN__ = penempatan
@@ -154,9 +176,28 @@ async function simpanPositionsServer() {
   const res = await fetch('/kepengurusan/jabatan/positions', {
     method: 'POST',
     headers: getHeaders(),
-    body: JSON.stringify({ positions }),
+    body: JSON.stringify(withOrganisasi({ positions })),
   })
   if (!res.ok) throw new Error('Gagal menyimpan posisi')
+  return res.json()
+}
+
+// Posisi adalah state bagan tersendiri. Simpan dalam antrean khusus agar
+// perubahan posisi tidak ikut gagal bila penempatan jemaah bermasalah.
+let positionSaveChain = Promise.resolve()
+
+function simpanPositionsKeServer() {
+  positionSaveChain = positionSaveChain.catch(() => {}).then(async () => {
+    const result = await simpanPositionsServer()
+    if (result.total > 0 && result.updated === 0) {
+      showToast('Posisi gagal tersimpan — nama jabatan tidak cocok di server', 'fa-solid fa-triangle-exclamation')
+      return
+    }
+    Object.keys(serverPositions).forEach((k) => delete serverPositions[k])
+    Object.assign(serverPositions, JSON.parse(JSON.stringify(positions)))
+  })
+
+  return positionSaveChain
 }
 
 // ============ RENDER ORG CHART (canvas + posisi absolut) ============
@@ -342,11 +383,11 @@ function renderStrukturList() {
       renderOrgChart()
       renderStrukturList()
 
-      await fetch('/kepengurusan/jabatan/parent', {
-        method: 'POST',
-        headers: getHeaders(),
-        body: JSON.stringify({ nama, parent_nama: newParent }),
-      })
+      try {
+        await simpanParentServer(nama, newParent)
+      } catch (err) {
+        showToast('Gagal menyimpan struktur jabatan.', 'fa-solid fa-triangle-exclamation')
+      }
     })
   })
 }
@@ -426,7 +467,10 @@ function renderDropdownItems(dropdownEl, namaJabatan, keyword = '') {
         ${isSelected ? '<i class="fa-solid fa-check" style="color:var(--color-green); margin-left:auto;"></i>' : ''}
       </div>
     `
-  }).join('')
+  }).join('') + `
+    <button type="button" class="jabatan-dropdown-empty jabatan-clear-selection">
+      Kosongkan penempatan
+    </button>`
 
   itemsContainer.querySelectorAll('.jabatan-dropdown-item').forEach((el) => {
     el.addEventListener('click', () => {
@@ -438,6 +482,14 @@ function renderDropdownItems(dropdownEl, namaJabatan, keyword = '') {
       renderJabatanList()
       renderOrgChart()
     })
+  })
+
+  itemsContainer.querySelector('.jabatan-clear-selection')?.addEventListener('click', () => {
+    const jabatan = jabatanData.find((j) => j.nama === namaJabatan)
+    jabatan.person = null
+    dropdownEl.classList.remove('show')
+    renderJabatanList()
+    renderOrgChart()
   })
 }
 
@@ -496,26 +548,59 @@ document.getElementById('resetBtn').addEventListener('click', () => {
   }
 })
 
-// Simpan = penempatan jamaah + posisi node (hierarki sudah tersimpan saat diubah)
-document.getElementById('simpanBtn').addEventListener('click', async () => {
+// Simpan = penempatan jamaah + posisi node (hierarki disimpan langsung saat diubah)
+async function simpanPerubahanSaatIni() {
   const penempatan = {}
-  jabatanData.forEach((j) => { if (j.person) penempatan[j.nama] = j.person.id })
+  jabatanData.forEach((j) => { penempatan[j.nama] = j.person ? j.person.id : null })
 
+  // Tunggu request hierarki sebelumnya selesai (abaikan error biar save gak stuck)
+  await parentSaveChain.catch(() => {})
+  const results = await Promise.allSettled([
+    simpanPenempatan(penempatan),
+    simpanPositionsKeServer(),
+  ])
+  updateRingkasan()
+
+  const failures = results.filter((r) => r.status === 'rejected')
+  if (failures.length > 0) {
+    const msg = failures[0].reason?.message || 'Gagal menyimpan'
+    throw new Error(msg)
+  }
+}
+
+document.getElementById('simpanBtn').addEventListener('click', async () => {
   const btn = document.getElementById('simpanBtn')
   btn.disabled = true
   try {
-    await simpanPenempatan(penempatan)
-    await simpanPositionsServer()
-    // Snapshot terbaru dari server — jadi Reset berikutnya kembali ke data ini
-    Object.keys(serverPositions).forEach((k) => delete serverPositions[k])
-    Object.assign(serverPositions, JSON.parse(JSON.stringify(positions)))
-    updateRingkasan()
+    await simpanPerubahanSaatIni()
     showToast('Perubahan kepengurusan berhasil disimpan.')
   } catch (err) {
     showToast('Gagal menyimpan perubahan. Coba lagi.', 'fa-solid fa-triangle-exclamation')
   } finally {
     btn.disabled = false
   }
+})
+
+// Tab organisasi adalah tautan halaman. Simpan posisi bagan aktif (best-effort)
+// supaya posisi hasil drag tidak hilang saat berpindah tab. Navigasi tetap
+// berjalan meskipun simpan gagal — supaya user tidak terjebak di satu tab.
+document.querySelectorAll('#orgTabs .org-tab').forEach((tab) => {
+  tab.addEventListener('click', async (event) => {
+    if (tab.classList.contains('active')) return
+
+    event.preventDefault()
+    if (tab.dataset.saving === 'true') return
+    tab.dataset.saving = 'true'
+
+    try {
+      // Best-effort: simpan posisi saja (bukan penempatan) supaya navigasi
+      // tidak diblokir oleh validasi penempatan lintas organisasi.
+      await simpanPositionsKeServer()
+    } catch (_e) {
+      // Abaikan — posisi bisa disimpan nanti
+    }
+    window.location.assign(tab.href)
+  })
 })
 
 // ============ TOMBOL + TAMBAH JABATAN ANAK ============
@@ -578,7 +663,7 @@ async function confirmAddJabatan() {
   const res = await fetch('/kepengurusan/jabatan', {
     method: 'POST',
     headers: getHeaders(),
-    body: JSON.stringify({ nama: trimmed, parent_nama: parentNama }),
+    body: JSON.stringify(withOrganisasi({ nama: trimmed, parent_nama: parentNama })),
   })
   if (!res.ok) {
     const err = await res.json()
@@ -723,9 +808,16 @@ document.addEventListener('pointermove', (e) => {
 
 function endPositionDrag(e) {
   if (!dragState || (e && e.pointerId !== dragState.pointerId)) return
-  const node = dragState.moved ? nodeMap[dragState.nama] : null
+  const movedNama = dragState.moved ? dragState.nama : null
+  const node = movedNama ? nodeMap[movedNama] : null
   if (node) node.classList.remove('moving')
   dragState = null
+
+  if (movedNama) {
+    simpanPositionsKeServer()
+      .then(() => showToast('Posisi bagan tersimpan.'))
+      .catch(() => showToast('Gagal menyimpan posisi bagan.', 'fa-solid fa-triangle-exclamation'))
+  }
 }
 
 document.addEventListener('pointerup', endPositionDrag)
@@ -818,10 +910,8 @@ dndWrapper.addEventListener('drop', (e) => {
     if (isEditMode) renderStrukturList()
     showToast(`"${draggedNama}" sekarang di bawah "${targetNama}"`)
 
-    fetch('/kepengurusan/jabatan/parent', {
-      method: 'POST',
-      headers: getHeaders(),
-      body: JSON.stringify({ nama: draggedNama, parent_nama: targetNama }),
+    simpanParentServer(draggedNama, targetNama).catch(() => {
+      showToast('Gagal menyimpan struktur jabatan.', 'fa-solid fa-triangle-exclamation')
     })
   } else {
     // Drop ke root area — jadi level teratas
@@ -831,10 +921,8 @@ dndWrapper.addEventListener('drop', (e) => {
     if (isEditMode) renderStrukturList()
     showToast(`"${draggedNama}" dipindah ke level teratas`)
 
-    fetch('/kepengurusan/jabatan/parent', {
-      method: 'POST',
-      headers: getHeaders(),
-      body: JSON.stringify({ nama: draggedNama, parent_nama: null }),
+    simpanParentServer(draggedNama, null).catch(() => {
+      showToast('Gagal menyimpan struktur jabatan.', 'fa-solid fa-triangle-exclamation')
     })
   }
 

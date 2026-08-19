@@ -56,37 +56,47 @@
             Anda.
           </p>
 
-          <div class="jabatan-panel active" id="jabatanDkm">
-            <div class="jabatan-table-header">
-              <span class="jabatan-table-title">Daftar Jabatan YMBPK</span>
-              <button class="btn btn-primary btn-jabatan-tambah"><i class="fa-solid fa-plus"></i> Tambah</button>
-            </div>
-            <table class="jabatan-table">
-              <thead>
-                <tr>
-                  <th>No</th>
-                  <th>Nama Jabatan</th>
-                  <th>Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
-                @forelse ($namaJabatanList as $idx => $namaJabatan)
-                  <tr>
-                    <td>{{ $idx + 1 }}</td>
-                    <td><input type="text" class="jabatan-input" value="{{ $namaJabatan }}" data-original="{{ $namaJabatan }}" /></td>
-                    <td>
-                      <button class="icon-action-btn edit"><i class="fa-solid fa-check"></i></button>
-                      <button class="icon-action-btn hapus"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                  </tr>
-                @empty
-                  <tr>
-                    <td colspan="3" class="empty-state">Belum ada jabatan. Klik "Tambah" untuk membuat.</td>
-                  </tr>
-                @endforelse
-              </tbody>
-            </table>
+          <div class="jabatan-tabs" role="tablist" aria-label="Organisasi kepengurusan">
+            @foreach (['YMBPK', 'IKRAM'] as $namaOrganisasi)
+              <button type="button" class="jabatan-tab {{ $loop->first ? 'active' : '' }}"
+                      data-target="jabatan{{ $namaOrganisasi }}" role="tab">
+                <i class="fa-solid {{ $namaOrganisasi === 'IKRAM' ? 'fa-hands-holding-circle' : 'fa-people-group' }}"></i>
+                {{ $namaOrganisasi }}
+              </button>
+            @endforeach
           </div>
+
+          @foreach (['YMBPK', 'IKRAM'] as $namaOrganisasi)
+            <div class="jabatan-panel {{ $loop->first ? 'active' : '' }}" id="jabatan{{ $namaOrganisasi }}" data-organisasi="{{ $namaOrganisasi }}">
+              <div class="jabatan-table-header">
+                <span class="jabatan-table-title">Daftar Jabatan {{ $namaOrganisasi }}</span>
+                <button class="btn btn-primary btn-jabatan-tambah"><i class="fa-solid fa-plus"></i> Tambah</button>
+              </div>
+              <table class="jabatan-table">
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Nama Jabatan</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @forelse (($namaJabatanPerOrganisasi->get($namaOrganisasi) ?? collect()) as $idx => $namaJabatan)
+                    <tr>
+                      <td>{{ $idx + 1 }}</td>
+                      <td><input type="text" class="jabatan-input" value="{{ $namaJabatan }}" data-original="{{ $namaJabatan }}" /></td>
+                      <td>
+                        <button class="icon-action-btn edit"><i class="fa-solid fa-check"></i></button>
+                        <button class="icon-action-btn hapus"><i class="fa-solid fa-trash"></i></button>
+                      </td>
+                    </tr>
+                  @empty
+                    <tr><td colspan="3" class="empty-state">Belum ada jabatan. Klik "Tambah" untuk membuat.</td></tr>
+                  @endforelse
+                </tbody>
+              </table>
+            </div>
+          @endforeach
         </section>
 
         <!-- PANEL: PROFIL APLIKASI -->
@@ -211,7 +221,7 @@
             </div>
           </div>
 
-          <button class="btn btn-primary settings-save" data-panel-save="Tampilan">
+          <button class="btn btn-primary settings-save" data-panel-save="Tampilan" type="button">
             <i class="fa-solid fa-check"></i> Simpan Perubahan
           </button>
         </section>

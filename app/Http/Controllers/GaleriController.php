@@ -13,7 +13,7 @@ class GaleriController extends Controller
 
     public function index()
     {
-        $albums = GaleriAlbum::where('mosque_id', $this->mosqueId)
+        $albums = GaleriAlbum::forMosque()
             ->orderByDesc('tanggal')
             ->get()
             ->map(fn ($a) => $this->toArray($a));
@@ -116,7 +116,7 @@ class GaleriController extends Controller
 
     private function findAlbum(int $albumId): GaleriAlbum
     {
-        return GaleriAlbum::where('mosque_id', $this->mosqueId)->findOrFail($albumId);
+        return GaleriAlbum::forMosque()->findOrFail($albumId);
     }
 
     private function rules(): array

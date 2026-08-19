@@ -13,27 +13,27 @@ class AgendaController extends Controller
     use HasMosqueContext;
     public function index()
     {
-        $agendaList = Kegiatan::where('mosque_id', $this->mosqueId)
+        $agendaList = Kegiatan::forMosque()
             ->orderBy('tanggal')
             ->get()
             ->map(fn ($k) => $this->toArray($k));
 
         $stats = [
-            'hariIni' => Kegiatan::where('mosque_id', $this->mosqueId)
+            'hariIni' => Kegiatan::forMosque()
                 ->whereDate('tanggal', now()->toDateString())
                 ->count(),
-            'mingguIni' => Kegiatan::where('mosque_id', $this->mosqueId)
+            'mingguIni' => Kegiatan::forMosque()
                 ->whereBetween('tanggal', [now()->startOfWeek()->toDateString(), now()->endOfWeek()->toDateString()])
                 ->count(),
-            'bulanIni' => Kegiatan::where('mosque_id', $this->mosqueId)
+            'bulanIni' => Kegiatan::forMosque()
                 ->whereBetween('tanggal', [now()->startOfMonth()->toDateString(), now()->endOfMonth()->toDateString()])
                 ->count(),
-            'selesai' => Kegiatan::where('mosque_id', $this->mosqueId)
+            'selesai' => Kegiatan::forMosque()
                 ->where('status', 'Selesai')
                 ->count(),
         ];
 
-        $highlight = Kegiatan::where('mosque_id', $this->mosqueId)
+        $highlight = Kegiatan::forMosque()
             ->whereDate('tanggal', now()->toDateString())
             ->orderBy('jam_mulai')
             ->first();
@@ -42,7 +42,7 @@ class AgendaController extends Controller
             'agendaList' => $agendaList,
             'highlight' => $highlight ? $this->toArray($highlight) : null,
             'stats' => $stats,
-            'jamaahNames' => Jamaah::where('mosque_id', $this->mosqueId)
+            'jamaahNames' => Jamaah::forMosque()
                 ->orderBy('nama')
                 ->pluck('nama'),
         ]);

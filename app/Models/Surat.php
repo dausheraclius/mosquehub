@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToMosque;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Surat extends Model implements HasMedia
 {
-    use InteractsWithMedia;
+    use BelongsToMosque, InteractsWithMedia;
 
     protected $fillable = [
         'mosque_id',

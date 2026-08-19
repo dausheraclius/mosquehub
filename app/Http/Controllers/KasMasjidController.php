@@ -15,7 +15,7 @@ class KasMasjidController extends Controller
     {
         $mosqueId = $this->mosqueId;
 
-        $all = KasTransaction::where('mosque_id', $mosqueId)->orderByDesc('tanggal')->get();
+        $all = KasTransaction::forMosque($mosqueId)->orderByDesc('tanggal')->get();
 
         $saldoSekarang = $all->sum('pemasukan') - $all->sum('pengeluaran');
 
@@ -85,7 +85,7 @@ class KasMasjidController extends Controller
     {
         $validated = $request->validate($this->rules());
 
-        $transaksi = KasTransaction::where('mosque_id', $this->mosqueId)->findOrFail($id);
+        $transaksi = KasTransaction::forMosque()->findOrFail($id);
 
         $transaksi->update([
             'tanggal' => $validated['tanggal'],
@@ -101,7 +101,7 @@ class KasMasjidController extends Controller
 
     public function destroy($id)
     {
-        $transaksi = KasTransaction::where('mosque_id', $this->mosqueId)->findOrFail($id);
+        $transaksi = KasTransaction::forMosque()->findOrFail($id);
         $transaksi->delete();
 
         return response()->json(['success' => true]);

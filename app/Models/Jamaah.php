@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToMosque;
 use Illuminate\Database\Eloquent\Model;
 
 class Jamaah extends Model
 {
+    use BelongsToMosque;
+
     protected $table = 'jamaah';
 
     protected $fillable = [

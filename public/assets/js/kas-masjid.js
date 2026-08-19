@@ -1,4 +1,4 @@
-// Data dummy transaksi
+// Data transaksi dari backend
 const dataTransaksi = window.__KAS_DATA__ || []
 
 const dataAktivitas = window.__AKTIVITAS_DATA__ || []

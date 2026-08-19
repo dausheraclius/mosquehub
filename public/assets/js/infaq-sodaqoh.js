@@ -9,7 +9,7 @@
 // sendiri (qurbanView), lihat bagian bawah file ini.
 // ============================
 
-// ---- SUMBER DATA UTAMA (nanti diganti fetch dari backend/API) ----
+// ---- SUMBER DATA UTAMA (dikirim server melalui view) ----
 const dataDonasi = window.__DONASI_DATA__ || []
 
 // ---- Daftar petugas penerima (dari Data Jemaah, dikirim server) ----

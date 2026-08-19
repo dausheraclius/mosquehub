@@ -86,7 +86,9 @@ document.addEventListener('DOMContentLoaded', () => {
 // Semua dropdown single-choice memakai komponen custom. Dengan begitu select
 // tanpa class khusus (mis. di halaman pengaturan dan halaman publik) tidak
 // lagi jatuh ke tampilan bawaan browser.
-const CUSTOM_SELECT_SELECTOR = 'select:not([multiple])'
+// Select dalam modal yang bisa di-scroll memakai kontrol native agar opsi tidak
+// terpotong oleh container `overflow-y: auto`.
+const CUSTOM_SELECT_SELECTOR = 'select:not([multiple]):not([data-native-select])'
 
 function initCustomSelects() {
   document.querySelectorAll(CUSTOM_SELECT_SELECTOR).forEach((nativeSelect) => {
@@ -311,9 +313,9 @@ function closeConfirmDelete() {
 // Event listeners for the global confirm delete dialog
 document.addEventListener('click', (e) => {
   if (e.target.id === 'confirmDeleteOverlay') closeConfirmDelete()
-  if (e.target.id === 'confirmDeleteCloseBtn') closeConfirmDelete()
-  if (e.target.id === 'confirmDeleteCancelBtn') closeConfirmDelete()
-  if (e.target.id === 'confirmDeleteConfirmBtn' && _confirmDeleteCallback) {
+  if (e.target.closest('#confirmDeleteCloseBtn')) closeConfirmDelete()
+  if (e.target.closest('#confirmDeleteCancelBtn')) closeConfirmDelete()
+  if (e.target.closest('#confirmDeleteConfirmBtn') && _confirmDeleteCallback) {
     const btn = document.getElementById('confirmDeleteConfirmBtn')
     btn.disabled = true
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menghapus...'

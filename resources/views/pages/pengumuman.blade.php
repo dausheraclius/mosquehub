@@ -21,13 +21,6 @@
     </a>
   </x-page-header>
 
-  @if (session('success'))
-    <div class="login-alert" style="background: var(--color-green-light); color: var(--color-green); margin-bottom: 16px;">
-      <i class="fa-solid fa-circle-check"></i>
-      <span>{{ session('success') }}</span>
-    </div>
-  @endif
-
   <!-- STATISTIK PENGUMUMAN (Interaktif) -->
   <div class="stat-cards">
     <div class="stat-card custom-stat-card clickable" onclick="filterPengumuman('semua')">
@@ -260,6 +253,10 @@
 
 @push('scripts-late')
   <script>
+    @if (session('success'))
+      showToast(@json(session('success')), 'fa-solid fa-circle-check');
+    @endif
+
     window.__PENGUMUMAN_DATA__ = @json($pengumumanList);
     window.__PENGUMUMAN_ROUTES__ = {
       store: '{{ route('pengumuman.store') }}',

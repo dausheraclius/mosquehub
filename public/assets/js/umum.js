@@ -9,6 +9,7 @@ function renumberAndRemove(tr) {
 }
 
 function bindBarisJabatan(tr) {
+  const organisasi = tr.dataset.organisasi || tr.closest('.jabatan-panel')?.dataset.organisasi || 'YMBPK'
 
   tr.querySelector('.icon-action-btn.hapus').addEventListener('click', () => {
     const namaSekarang = tr.querySelector('.jabatan-input').dataset.original
@@ -25,7 +26,7 @@ function bindBarisJabatan(tr) {
         await fetch('/kepengurusan/jabatan', {
           method: 'DELETE',
           headers: getHeaders(),
-          body: JSON.stringify({ nama: namaSekarang }),
+          body: JSON.stringify({ nama: namaSekarang, organisasi }),
         })
         renumberAndRemove(tr)
         showToast('Jabatan berhasil dihapus', 'fa-solid fa-trash')
@@ -43,7 +44,7 @@ function bindBarisJabatan(tr) {
       const res = await fetch('/kepengurusan/jabatan', {
         method: 'POST',
         headers: getHeaders(),
-        body: JSON.stringify({ nama: namaBaru, parent_nama: null }),
+        body: JSON.stringify({ nama: namaBaru, parent_nama: null, organisasi }),
       })
       if (!res.ok) {
         const err = await res.json()
@@ -54,7 +55,7 @@ function bindBarisJabatan(tr) {
       const res = await fetch('/kepengurusan/jabatan/rename', {
         method: 'POST',
         headers: getHeaders(),
-        body: JSON.stringify({ nama_lama: namaLama, nama_baru: namaBaru }),
+        body: JSON.stringify({ nama_lama: namaLama, nama_baru: namaBaru, organisasi }),
       })
       if (!res.ok) {
         const err = await res.json()
@@ -70,8 +71,9 @@ function bindBarisJabatan(tr) {
   return tr
 }
 
-function buatBarisJabatan(nama, index) {
+function buatBarisJabatan(nama, index, organisasi) {
   const tr = document.createElement('tr')
+  tr.dataset.organisasi = organisasi
   tr.innerHTML = `
     <td>${index + 1}</td>
     <td>
@@ -86,6 +88,21 @@ function buatBarisJabatan(nama, index) {
 }
 
 function initUmum() {
+  const jabatanTabStorageKey = 'mosquehub-active-jabatan-organisasi'
+  const activateJabatanTab = (targetId) => {
+    const tab = document.querySelector(`.jabatan-tab[data-target="${targetId}"]`)
+    if (!tab) return
+
+    document.querySelectorAll('.jabatan-tab').forEach((item) => item.classList.toggle('active', item === tab))
+    document.querySelectorAll('.jabatan-panel').forEach((panel) => {
+      panel.classList.toggle('active', panel.id === targetId)
+    })
+    localStorage.setItem(jabatanTabStorageKey, tab.dataset.target.replace('jabatan', ''))
+  }
+
+  const savedOrganisasi = localStorage.getItem(jabatanTabStorageKey)
+  if (savedOrganisasi) activateJabatanTab(`jabatan${savedOrganisasi}`)
+
   document.querySelectorAll('.jabatan-table tbody tr').forEach((tr) => {
     if (!tr.querySelector('.jabatan-input')) return
     bindBarisJabatan(tr)
@@ -95,13 +112,20 @@ function initUmum() {
     btn.addEventListener('click', () => {
       const panel = btn.closest('.jabatan-panel')
       const tbody = panel.querySelector('.jabatan-table tbody')
-      const tr = buatBarisJabatan('', tbody.querySelectorAll('tr').length)
+      tbody.querySelector('.empty-state')?.closest('tr')?.remove()
+      const tr = buatBarisJabatan('', tbody.querySelectorAll('.jabatan-input').length, panel.dataset.organisasi)
       tbody.appendChild(tr)
       const newInput = tr.querySelector('.jabatan-input')
       newInput.dataset.original = ''
       newInput.placeholder = 'Nama jabatan baru...'
       newInput.focus()
       showToast('Baris baru ditambahkan — isi nama terus klik ✓ buat simpan', 'fa-solid fa-plus')
+    })
+  })
+
+  document.querySelectorAll('.jabatan-tab').forEach((tab) => {
+    tab.addEventListener('click', () => {
+      activateJabatanTab(tab.dataset.target)
     })
   })
 
@@ -151,7 +175,9 @@ function initUmum() {
           payload['tampil_sholat_' + key] = tampil ?? true
         })
       } else {
-        showToast(`${btn.dataset.panelSave} tersimpan (dummy, belum ke server)`)
+        // Preferensi tampilan memang bersifat lokal per browser, bukan data
+        // masjid. Dark mode dan ukuran font sudah disimpan ke localStorage.
+        showToast('Preferensi tampilan tersimpan di perangkat ini.')
         return
       }
 
@@ -310,12 +336,15 @@ function initUmum() {
   document.getElementById('backupFreq')?.addEventListener('change', simpanBackupSetting)
 
   document.getElementById('btnResetJabatan')?.addEventListener('click', async () => {
-    if (!confirm('Reset semua data jabatan, hierarki, dan penempatan ke default?')) return
+    const organisasi = document.querySelector('.jabatan-panel.active')?.dataset.organisasi || 'YMBPK'
+    localStorage.setItem(jabatanTabStorageKey, organisasi)
+    if (!confirm(`Reset semua data jabatan ${organisasi}, hierarki, dan penempatan ke default?`)) return
     await fetch('/kepengurusan/jabatan/reset', {
       method: 'POST',
       headers: getHeaders(),
+      body: JSON.stringify({ organisasi }),
     })
-    showToast('Data jabatan & kepengurusan direset ke default', 'fa-solid fa-rotate-left')
+    showToast(`Data jabatan ${organisasi} direset ke default`, 'fa-solid fa-rotate-left')
     setTimeout(() => location.reload(), 800)
   })
 }

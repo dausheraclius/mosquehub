@@ -112,6 +112,11 @@ body.dark-mode .table-avatar-jamaah {
   display: flex;
 }
 
+/* Jangan biarkan halaman utama ikut bergerak ketika modal terbuka. */
+body.modal-open {
+  overflow: hidden;
+}
+
 .modal-box {
   background: var(--color-white);
   border-radius: var(--radius-md);
@@ -119,7 +124,6 @@ body.dark-mode .table-avatar-jamaah {
   width: 100%;
   max-width: 680px;
   max-height: 88vh;
-  overflow-y: auto;
   border: 1px solid var(--border-color);
 }
 
@@ -165,6 +169,8 @@ body.dark-mode .modal-close:hover {
 
 .modal-body {
   padding: 24px 22px;
+  overflow-y: auto;
+  min-height: 0;
 }
 
 .detail-modal-body {
@@ -299,6 +305,25 @@ body.dark-mode .detail-note-box {
    ============================ */
 .add-modal {
   max-width: 620px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Form harus ikut menjadi flex container agar modal-body mendapatkan tinggi
+   terbatas dan scrollbar muncul ketika isi form melebihi viewport. */
+.add-modal form {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.add-modal form .modal-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .avatar-upload-wrap {

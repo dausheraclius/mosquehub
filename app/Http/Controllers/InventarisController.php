@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\InventarisResource;
 use App\Models\Inventaris;
 use App\Support\Concerns\HasMosqueContext;
-use App\Support\MediaHelper;
 use Illuminate\Http\Request;
 
 class InventarisController extends Controller
@@ -13,10 +13,10 @@ class InventarisController extends Controller
 
     public function index()
     {
-        $inventarisList = Inventaris::where('mosque_id', $this->mosqueId)
+        $inventarisList = Inventaris::forMosque()
             ->orderByDesc('created_at')
             ->get()
-            ->map(fn ($i) => $this->toArray($i));
+            ->map(fn ($i) => InventarisResource::make($i)->resolve());
 
         return view('pages.inventaris', ['inventarisList' => $inventarisList]);
     }
@@ -27,7 +27,7 @@ class InventarisController extends Controller
         $validated['mosque_id'] = $this->mosqueId;
         $validated['qty'] = $validated['qty'] ?? '1';
 
-        $total = Inventaris::where('mosque_id', $this->mosqueId)->count();
+        $total = Inventaris::forMosque()->count();
         $validated['kode'] = 'MOSQ-NEW-' . str_pad($total + 1, 3, '0', STR_PAD_LEFT);
 
         $item = Inventaris::create($validated);
@@ -36,7 +36,7 @@ class InventarisController extends Controller
             $item->addMedia($request->file('gambar'))->toMediaCollection('gambar');
         }
 
-        return response()->json($this->toArray($item));
+        return response()->json(InventarisResource::make($item));
     }
 
     public function update(Request $request, Inventaris $inventari)
@@ -50,7 +50,7 @@ class InventarisController extends Controller
             $inventari->addMedia($request->file('gambar'))->toMediaCollection('gambar');
         }
 
-        return response()->json($this->toArray($inventari));
+        return response()->json(InventarisResource::make($inventari));
     }
 
     public function destroy(Inventaris $inventari)
@@ -73,25 +73,6 @@ class InventarisController extends Controller
             'harga' => 'nullable|string|max:100',
             'catatan' => 'nullable|string',
             'gambar' => 'nullable|image|max:5120',
-        ];
-    }
-
-    private function toArray(Inventaris $item): array
-    {
-        return [
-            'id' => $item->id,
-            'nama' => $item->nama,
-            'kategori' => $item->kategori,
-            'lokasi' => $item->lokasi,
-            'kondisi' => $item->kondisi,
-            'qty' => $item->qty,
-            'sumber' => $item->sumber,
-            'kode' => $item->kode,
-            'tglBeli' => $item->tgl_beli?->format('d M Y'),
-            'tglBeliIso' => $item->tgl_beli?->format('Y-m-d'),
-            'harga' => $item->harga,
-            'catatan' => $item->catatan,
-            'gambar' => MediaHelper::relativeUrl($item->getFirstMediaUrl('gambar') ?: null),
         ];
     }
 }

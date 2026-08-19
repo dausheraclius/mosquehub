@@ -125,7 +125,14 @@
               <input type="text" id="mapsLink" name="maps_link" value="{{ $mosque->maps_link }}" disabled />
             </div>
           </div>
-          <div class="map-placeholder"><i class="fa-solid fa-location-dot"></i></div>
+          @if ($mosque->maps_link)
+            <a class="map-placeholder map-link" href="{{ $mosque->maps_link }}" target="_blank" rel="noopener noreferrer">
+              <i class="fa-solid fa-location-dot"></i>
+              <span>Buka lokasi di Google Maps</span>
+            </a>
+          @else
+            <div class="map-placeholder"><i class="fa-solid fa-location-dot"></i><span>Link Google Maps belum diisi</span></div>
+          @endif
         </div>
 
         <div class="card">

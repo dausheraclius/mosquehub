@@ -10,7 +10,7 @@ class PublicJadwalController extends Controller
     public function index()
     {
         // Daftar lengkap agenda mendatang (kartu gaya beranda) — bisa dicari & difilter.
-        $agendaList = Kegiatan::where('mosque_id', SiteContext::mosqueId())
+        $agendaList = Kegiatan::forMosque(SiteContext::mosqueId())
             ->where('tanggal', '>=', now()->toDateString())
             ->with('relawans')
             ->orderBy('tanggal')
@@ -30,7 +30,7 @@ class PublicJadwalController extends Controller
         $start = now()->startOfDay();
         $end = now()->addDays(6)->endOfDay();
 
-        $kegiatans = Kegiatan::where('mosque_id', SiteContext::mosqueId())
+        $kegiatans = Kegiatan::forMosque(SiteContext::mosqueId())
             ->whereBetween('tanggal', [$start, $end])
             ->orderBy('tanggal')
             ->orderBy('jam_mulai')

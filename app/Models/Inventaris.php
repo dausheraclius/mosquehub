@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToMosque;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Inventaris extends Model implements HasMedia
 {
-    use InteractsWithMedia;
+    use BelongsToMosque, InteractsWithMedia;
 
     protected $table = 'inventaris';
 

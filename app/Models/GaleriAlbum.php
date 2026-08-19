@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToMosque;
 use App\Support\MediaHelper;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
@@ -10,7 +11,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class GaleriAlbum extends Model implements HasMedia
 {
-    use InteractsWithMedia;
+    use BelongsToMosque, InteractsWithMedia;
 
     protected $fillable = ['mosque_id', 'nama', 'tanggal', 'deskripsi', 'status'];
 

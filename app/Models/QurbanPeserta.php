@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToMosque;
 use Illuminate\Database\Eloquent\Model;
 
 class QurbanPeserta extends Model
 {
+    use BelongsToMosque;
+
     protected $fillable = ['mosque_id', 'nama', 'paket', 'target', 'mulai'];
 
     protected $casts = [

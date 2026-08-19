@@ -132,8 +132,11 @@
         </div>
         <div class="form-group">
           <label class="form-label" for="inputFile">File Surat (PDF/DOCX)</label>
-          <input type="file" id="inputFile" accept=".pdf,.docx,.doc,.jpg,.jpeg,.png" />
-          <div id="fileInfo" style="display:none; font-size:11px; color:var(--color-teal); margin-top:4px;"></div>
+          <div class="file-pick-wrap">
+            <input type="file" id="inputFile" accept=".pdf,.docx,.doc,.jpg,.jpeg,.png" />
+            <span class="file-pick-btn"><i class="fa-solid fa-paperclip"></i> Pilih File</span>
+            <span class="file-pick-name" id="fileInfo">Belum ada file</span>
+          </div>
         </div>
       </div>
       <div class="modal-footer">

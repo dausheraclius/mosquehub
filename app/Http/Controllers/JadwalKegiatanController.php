@@ -17,7 +17,7 @@ class JadwalKegiatanController extends Controller
     {
         $filters = $this->filters($request);
 
-        $query = Kegiatan::where('mosque_id', $this->mosqueId)
+        $query = Kegiatan::forMosque()
             ->orderBy('tanggal')
             ->orderBy('jam_mulai');
 
@@ -48,7 +48,7 @@ class JadwalKegiatanController extends Controller
         $kegiatans = $query->paginate(self::PER_PAGE)->withQueryString();
 
         // Data pendukung (statistik & sidebar) — dihitung tanpa memuat semua baris.
-        $allQuery = Kegiatan::where('mosque_id', $this->mosqueId);
+        $allQuery = Kegiatan::forMosque();
 
         $stats = [
             'total' => (clone $allQuery)->count(),
@@ -57,29 +57,29 @@ class JadwalKegiatanController extends Controller
             'selesai' => (clone $allQuery)->where('status', 'Selesai')->count(),
         ];
 
-        $kegiatanBerikutnya = Kegiatan::where('mosque_id', $this->mosqueId)
+        $kegiatanBerikutnya = Kegiatan::forMosque()
             ->whereDate('tanggal', '>=', now()->toDateString())
             ->orderBy('tanggal')
             ->orderBy('jam_mulai')
             ->first();
 
         $besok = now()->addDay()->toDateString();
-        $jadwalBesok = Kegiatan::where('mosque_id', $this->mosqueId)
+        $jadwalBesok = Kegiatan::forMosque()
             ->whereDate('tanggal', $besok)
             ->orderBy('jam_mulai')
             ->take(3)
             ->get();
 
-        $mingguIni = Kegiatan::where('mosque_id', $this->mosqueId)
+        $mingguIni = Kegiatan::forMosque()
             ->whereBetween('tanggal', [now()->startOfWeek(), now()->endOfWeek()])
             ->count();
 
         // Opsi dropdown Kategori & Lokasi — diambil dari seluruh data
         // (bukan hanya halaman yang sedang aktif) biar opsinya stabil.
-        $kategoriOptions = Kegiatan::where('mosque_id', $this->mosqueId)
+        $kategoriOptions = Kegiatan::forMosque()
             ->whereNotNull('kategori')->where('kategori', '!=', '')
             ->distinct()->orderBy('kategori')->pluck('kategori');
-        $lokasiOptions = Kegiatan::where('mosque_id', $this->mosqueId)
+        $lokasiOptions = Kegiatan::forMosque()
             ->whereNotNull('lokasi')->where('lokasi', '!=', '')
             ->distinct()->orderBy('lokasi')->pluck('lokasi');
 

@@ -287,6 +287,7 @@ function openAddModal() {
   document.getElementById('addModalSubmitBtn').innerHTML = '<i class="fa-solid fa-check"></i> Simpan Jemaah'
   avatarUploadPreview.innerHTML = `<i class="fa-solid fa-user"></i>`
   if (typeof syncCustomSelects === 'function') syncCustomSelects()
+  document.body.classList.add('modal-open')
   addModalOverlay.classList.add('active')
 }
 
@@ -316,11 +317,13 @@ function openEditModal(id) {
     : `<i class="fa-solid fa-user"></i>`
 
   if (typeof syncCustomSelects === 'function') syncCustomSelects()
+  document.body.classList.add('modal-open')
   addModalOverlay.classList.add('active')
 }
 
 function closeAddModal() {
   addModalOverlay.classList.remove('active')
+  document.body.classList.remove('modal-open')
   addJamaahForm.reset()
   avatarUploadPreview.innerHTML = `<i class="fa-solid fa-user"></i>`
 }

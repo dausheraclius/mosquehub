@@ -314,6 +314,13 @@ body.umum-dark-preview .form-field select {
    JABATAN — tab YMBPK + tabel input penamaan
    ========================================================== */
 
+.jabatan-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--border-color, #e6e9e8);
+}
+
 .jabatan-tab {
   display: flex;
   align-items: center;

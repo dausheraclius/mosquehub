@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToMosque;
 use Illuminate\Database\Eloquent\Model;
 
 class Donasi extends Model
 {
+    use BelongsToMosque;
+
     protected $fillable = [
         'mosque_id', 'tanggal', 'tanggal_akhir', 'donatur', 'kategori', 'jenis',
         'tipe', 'nominal', 'keterangan', 'metode', 'petugas', 'status',

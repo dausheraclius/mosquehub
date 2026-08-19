@@ -11,7 +11,7 @@ class PublicPengurusController extends Controller
     {
         $mosqueId = SiteContext::mosqueId();
 
-        $jabatans = Jabatan::where('mosque_id', $mosqueId)
+        $jabatans = Jabatan::forMosque($mosqueId)
             ->with('jamaah')
             ->orderBy('urutan')
             ->get();

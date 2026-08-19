@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Jamaah;
 use App\Models\Kegiatan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 use App\Support\Concerns\HasMosqueContext;
 
@@ -13,13 +14,13 @@ class RelawanController extends Controller
     use HasMosqueContext;
     public function index()
     {
-        $kegiatanList = Kegiatan::where('mosque_id', $this->mosqueId)
+        $kegiatanList = Kegiatan::forMosque()
             ->with('relawans')
             ->orderByDesc('tanggal')
             ->get()
             ->map(fn ($k) => $this->toArray($k));
 
-        $daftarJamaahRelawan = Jamaah::where('mosque_id', $this->mosqueId)
+        $daftarJamaahRelawan = Jamaah::forMosque()
             ->orderBy('nama')
             ->get()
             ->map(fn ($j) => ['nama' => $j->nama, 'telepon' => $j->no_hp ?: '-']);
@@ -38,10 +39,12 @@ class RelawanController extends Controller
             'relawan.*.telepon' => 'nullable|string|max:50',
         ]);
 
-        $kegiatan->relawans()->delete();
-        foreach ($validated['relawan'] as $r) {
-            $kegiatan->relawans()->create(['nama' => $r['nama'], 'telepon' => $r['telepon'] ?? '-']);
-        }
+        DB::transaction(function () use ($kegiatan, $validated): void {
+            $kegiatan->relawans()->delete();
+            foreach ($validated['relawan'] as $r) {
+                $kegiatan->relawans()->create(['nama' => $r['nama'], 'telepon' => $r['telepon'] ?? '-']);
+            }
+        });
 
         return response()->json($this->toArray($kegiatan->fresh('relawans')));
     }

@@ -6,6 +6,7 @@ use App\Models\Mosque;
 use App\Models\KasTransaction;
 use App\Models\Jamaah;
 use App\Models\PengaturanUmum;
+use App\Models\Pengumuman;
 use App\Models\User;
 use App\Services\MosqueBackupService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -177,6 +178,29 @@ class KeamananAksesTest extends TestCase
             ->assertJson(['success' => true]);
 
         $this->assertDatabaseMissing('kas_transactions', ['id' => $transaksi->id]);
+    }
+
+    public function test_pengumuman_dihapus_dengan_respons_json(): void
+    {
+        $this->masjid();
+        $ketua = User::create([
+            'name' => 'Ketua', 'email' => 'ketua-pengumuman@example.com', 'password' => 'rahasia123',
+            'role' => 'Ketua YMBPK', 'mosque_id' => 1,
+        ]);
+        $pengumuman = Pengumuman::create([
+            'mosque_id' => 1,
+            'judul' => 'Kerja bakti',
+            'isi' => 'Dilaksanakan hari Minggu.',
+            'status' => 'Aktif',
+            'tanggal' => now()->toDateString(),
+        ]);
+
+        $this->actingAs($ketua)
+            ->deleteJson('/pengumuman/' . $pengumuman->id)
+            ->assertOk()
+            ->assertJson(['success' => true]);
+
+        $this->assertDatabaseMissing('pengumumans', ['id' => $pengumuman->id]);
     }
 
     public function test_backup_dapat_dipulihkan_ke_masjid_yang_sama(): void

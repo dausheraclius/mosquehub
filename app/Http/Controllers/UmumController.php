@@ -2,33 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Donasi;
-use App\Models\Inventaris;
 use App\Models\Jabatan;
-use App\Models\Jamaah;
-use App\Models\KasTransaction;
-use App\Models\Kegiatan;
 use App\Models\PengaturanUmum;
-use App\Models\Pengumuman;
-use App\Models\Surat;
 use App\Services\MosqueBackupService;
+use App\Support\Concerns\HasMosqueContext;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-
-use App\Support\Concerns\HasMosqueContext;
 
 class UmumController extends Controller
 {
     use HasMosqueContext;
+
     public function index()
     {
         $pengaturan = PengaturanUmum::firstOrCreate(['mosque_id' => $this->mosqueId]);
 
-        $namaJabatanList = Jabatan::where('mosque_id', $this->mosqueId)->orderBy('urutan')->pluck('nama');
+        $namaJabatanPerOrganisasi = Jabatan::forMosque()
+            ->whereIn('organisasi', ['YMBPK', 'IKRAM'])
+            ->orderBy('urutan')
+            ->get()
+            ->groupBy('organisasi')
+            ->map(fn ($jabatans) => $jabatans->pluck('nama'));
 
         return view('pages.pengaturan.umum', [
             'pengaturan' => $pengaturan,
-            'namaJabatanList' => $namaJabatanList,
+            'namaJabatanPerOrganisasi' => $namaJabatanPerOrganisasi,
         ]);
     }
 
@@ -40,7 +38,7 @@ class UmumController extends Controller
             'date_format' => 'required|string|max:50',
         ]);
 
-        PengaturanUmum::where('mosque_id', $this->mosqueId)->update($validated);
+        PengaturanUmum::forMosque()->update($validated);
 
         return response()->json(['success' => true]);
     }
@@ -55,7 +53,7 @@ class UmumController extends Controller
             'notif_laporan_mingguan' => 'boolean',
         ]);
 
-        PengaturanUmum::where('mosque_id', $this->mosqueId)->update($validated);
+        PengaturanUmum::forMosque()->update($validated);
 
         return response()->json(['success' => true]);
     }
@@ -78,7 +76,7 @@ class UmumController extends Controller
      */
     public function exportData(MosqueBackupService $backups)
     {
-        $fileName = 'backup-masjid-' . now()->format('Y-m-d-Hi') . '.json';
+        $fileName = 'backup-masjid-'.now()->format('Y-m-d-Hi').'.json';
         $snapshot = $backups->snapshot($this->mosqueId);
 
         return response()->streamDownload(function () use ($snapshot) {
@@ -133,7 +131,7 @@ class UmumController extends Controller
 
         $user = $request->user();
 
-        if (!Hash::check($validated['old_password'], $user->password)) {
+        if (! Hash::check($validated['old_password'], $user->password)) {
             return response()->json(['message' => 'Password lama salah.'], 422);
         }
 

@@ -180,6 +180,57 @@ body.dark-mode .datepicker-today:hover {
 }
 
 /* ========================================================== */
+/* FILE UPLOAD — tombol compact custom                       */
+/* ========================================================== */
+.file-pick-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.file-pick-wrap input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.file-pick-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--color-teal);
+  background: var(--color-green-light);
+  border: 1px solid var(--color-teal);
+  border-radius: var(--radius-sm);
+  padding: 6px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.file-pick-btn:hover {
+  background: var(--color-teal);
+  color: #fff;
+}
+
+body.dark-mode .file-pick-btn:hover {
+  color: #fff;
+}
+
+.file-pick-name {
+  font-size: 12px;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 220px;
+}
+
+/* ========================================================== */
 /* FORM & MODAL — TIDAK ADA TEKS DENGAN BOBOT > 500          */
 /* ========================================================== */
 .modal-overlay,

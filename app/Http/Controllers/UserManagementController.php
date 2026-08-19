@@ -24,7 +24,7 @@ class UserManagementController extends Controller
 
     public function index()
     {
-        $userList = User::where('mosque_id', $this->mosqueId)
+        $userList = User::forMosque()
             ->orderBy('name')
             ->get()
             ->map(fn ($u) => $this->toArrayForFrontend($u));
@@ -62,7 +62,7 @@ class UserManagementController extends Controller
 
     public function update(Request $request, $id)
     {
-        $user = User::where('mosque_id', $this->mosqueId)->findOrFail($id);
+        $user = User::forMosque()->findOrFail($id);
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -92,7 +92,7 @@ class UserManagementController extends Controller
 
     public function updateStatus(Request $request, $id)
     {
-        $user = User::where('mosque_id', $this->mosqueId)->findOrFail($id);
+        $user = User::forMosque()->findOrFail($id);
 
         $validated = $request->validate([
             'status' => 'required|in:aktif,nonaktif',
@@ -113,7 +113,7 @@ class UserManagementController extends Controller
 
     public function resetPassword(Request $request, $id)
     {
-        $user = User::where('mosque_id', $this->mosqueId)->findOrFail($id);
+        $user = User::forMosque()->findOrFail($id);
 
         $validated = $request->validate([
             'password' => 'required|string|min:8',
@@ -126,7 +126,7 @@ class UserManagementController extends Controller
 
     public function destroy(Request $request, $id)
     {
-        $user = User::where('mosque_id', $this->mosqueId)->findOrFail($id);
+        $user = User::forMosque()->findOrFail($id);
 
         if ($user->id === $request->user()?->id) {
             return response()->json(['message' => 'Tidak bisa menghapus akun sendiri.'], 422);
@@ -143,7 +143,7 @@ class UserManagementController extends Controller
 
     private function guardLastActiveLeader(User $user, string $message): void
     {
-        $activeLeaders = User::where('mosque_id', $this->mosqueId)
+        $activeLeaders = User::forMosque()
             ->where('role', 'Ketua YMBPK')
             ->where('status', 'aktif')
             ->count();

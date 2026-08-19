@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\SuratResource;
 use App\Models\Surat;
 use App\Support\Concerns\HasMosqueContext;
-use App\Support\MediaHelper;
 use Illuminate\Http\Request;
 
 class SuratController extends Controller
@@ -13,10 +13,10 @@ class SuratController extends Controller
 
     public function index()
     {
-        $suratList = Surat::where('mosque_id', $this->mosqueId)
+        $suratList = Surat::forMosque()
             ->orderByDesc('tanggal')
             ->get()
-            ->map(fn ($s) => $this->toArray($s));
+            ->map(fn ($s) => SuratResource::make($s)->resolve());
 
         return view('pages.surat', ['suratList' => $suratList]);
     }
@@ -32,7 +32,7 @@ class SuratController extends Controller
             $surat->addMedia($request->file('file'))->toMediaCollection('lampiran');
         }
 
-        return response()->json($this->toArray($surat));
+        return response()->json(SuratResource::make($surat));
     }
 
     public function update(Request $request, Surat $surat)
@@ -45,7 +45,7 @@ class SuratController extends Controller
             $surat->addMedia($request->file('file'))->toMediaCollection('lampiran');
         }
 
-        return response()->json($this->toArray($surat));
+        return response()->json(SuratResource::make($surat));
     }
 
     public function destroy(Surat $surat)
@@ -66,22 +66,6 @@ class SuratController extends Controller
             'kepada' => 'nullable|string|max:255',
             'isi' => 'nullable|string',
             'file' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120',
-        ];
-    }
-
-    private function toArray(Surat $surat): array
-    {
-        return [
-            'id' => $surat->id,
-            'nomor' => $surat->nomor,
-            'subjek' => $surat->subjek,
-            'jenis' => $surat->jenis,
-            'status' => $surat->status,
-            'tanggal' => $surat->tanggal->format('Y-m-d'),
-            'kepada' => $surat->kepada,
-            'isi' => $surat->isi,
-            'fileUrl' => MediaHelper::relativeUrl($surat->getFirstMediaUrl('lampiran') ?: null),
-            'fileName' => $surat->getFirstMedia('lampiran')?->file_name,
         ];
     }
 }

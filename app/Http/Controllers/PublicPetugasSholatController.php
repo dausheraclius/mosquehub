@@ -11,7 +11,7 @@ class PublicPetugasSholatController extends Controller
     {
         $mosqueId = SiteContext::mosqueId();
 
-        $items = JadwalPetugasSholat::where('mosque_id', $mosqueId)
+        $items = JadwalPetugasSholat::forMosque($mosqueId)
             ->where('tanggal', '>=', now()->toDateString())
             ->orderBy('tanggal')
             ->orderByRaw('FIELD(sholat, "Subuh", "Dzuhur", "Ashar", "Maghrib", "Isya")')

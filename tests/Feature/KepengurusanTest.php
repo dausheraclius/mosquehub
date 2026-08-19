@@ -61,6 +61,36 @@ class KepengurusanTest extends TestCase
         $this->assertDatabaseHas('jabatans', ['nama' => 'Sekretaris', 'posisi_x' => 250, 'posisi_y' => 200]);
     }
 
+    public function test_posisi_ikram_disimpan_terpisah_dari_ymbpk(): void
+    {
+        $this->masjid();
+        $ymbpk = Jabatan::create([
+            'mosque_id' => 1,
+            'organisasi' => 'YMBPK',
+            'nama' => 'Ketua',
+            'urutan' => 0,
+            'posisi_x' => 100,
+            'posisi_y' => 100,
+        ]);
+        $ikram = Jabatan::create([
+            'mosque_id' => 1,
+            'organisasi' => 'IKRAM',
+            'nama' => 'Ketua',
+            'urutan' => 0,
+        ]);
+
+        $this->actingAs($this->ketua())
+            ->post('/kepengurusan/jabatan/positions', [
+                'organisasi' => 'IKRAM',
+                'positions' => ['Ketua' => ['x' => 420, 'y' => 180]],
+            ])
+            ->assertOk()
+            ->assertJson(['success' => true]);
+
+        $this->assertDatabaseHas('jabatans', ['id' => $ikram->id, 'posisi_x' => 420, 'posisi_y' => 180]);
+        $this->assertDatabaseHas('jabatans', ['id' => $ymbpk->id, 'posisi_x' => 100, 'posisi_y' => 100]);
+    }
+
     public function test_posisi_menolak_koordinat_tidak_valid(): void
     {
         $this->masjid();
@@ -128,5 +158,72 @@ class KepengurusanTest extends TestCase
             ->assertJson(['success' => true]);
 
         $this->assertDatabaseHas('jabatans', ['nama' => 'Sekretaris', 'parent_id' => $ketua->id]);
+    }
+
+    public function test_jabatan_dapat_memiliki_nama_yang_sama_di_organisasi_berbeda(): void
+    {
+        $this->masjid();
+        Jabatan::create(['mosque_id' => 1, 'organisasi' => 'YMBPK', 'nama' => 'Ketua', 'urutan' => 0]);
+
+        $this->actingAs($this->ketua())
+            ->post('/kepengurusan/jabatan', [
+                'organisasi' => 'IKRAM',
+                'nama' => 'Ketua',
+            ])
+            ->assertOk();
+
+        $this->assertDatabaseHas('jabatans', [
+            'mosque_id' => 1,
+            'organisasi' => 'IKRAM',
+            'nama' => 'Ketua',
+        ]);
+    }
+
+    public function test_parent_menolak_struktur_siklik(): void
+    {
+        $this->masjid();
+        $ketua = Jabatan::create(['mosque_id' => 1, 'nama' => 'Ketua', 'urutan' => 0]);
+        $sekretaris = Jabatan::create(['mosque_id' => 1, 'nama' => 'Sekretaris', 'parent_id' => $ketua->id, 'urutan' => 1]);
+
+        $this->actingAs($this->ketua())
+            ->post('/kepengurusan/jabatan/parent', [
+                'nama' => 'Ketua',
+                'parent_nama' => 'Sekretaris',
+            ])
+            ->assertUnprocessable()
+            ->assertJsonPath('message', 'Struktur jabatan tidak boleh membentuk siklus.');
+
+        $this->assertDatabaseHas('jabatans', ['id' => $ketua->id, 'parent_id' => null]);
+        $this->assertDatabaseHas('jabatans', ['id' => $sekretaris->id, 'parent_id' => $ketua->id]);
+    }
+
+    public function test_penempatan_dapat_dikosongkan_dan_tidak_boleh_lintas_organisasi(): void
+    {
+        $this->masjid();
+        $jamaah = Jamaah::create([
+            'mosque_id' => 1, 'nama' => 'Ahmad', 'jenis_kelamin' => 'Laki-laki', 'no_hp' => '0812',
+            'status_jamaah' => 'Aktif', 'tanggal_bergabung' => now()->toDateString(),
+        ]);
+        $ymbpk = Jabatan::create(['mosque_id' => 1, 'nama' => 'Ketua', 'jamaah_id' => $jamaah->id, 'urutan' => 0]);
+        Jabatan::create(['mosque_id' => 1, 'organisasi' => 'IKRAM', 'nama' => 'Ketua', 'urutan' => 0]);
+
+        $this->actingAs($this->ketua())
+            ->post('/kepengurusan/penempatan', [
+                'organisasi' => 'YMBPK',
+                'penempatan' => ['Ketua' => null],
+            ])
+            ->assertOk();
+        $this->assertDatabaseHas('jabatans', ['id' => $ymbpk->id, 'jamaah_id' => null]);
+
+        $this->post('/kepengurusan/penempatan', [
+            'organisasi' => 'IKRAM',
+            'penempatan' => ['Ketua' => $jamaah->id],
+        ])->assertOk();
+
+        $this->post('/kepengurusan/penempatan', [
+            'organisasi' => 'YMBPK',
+            'penempatan' => ['Ketua' => $jamaah->id],
+        ])->assertUnprocessable()
+            ->assertJsonPath('message', 'Jemaah tersebut sudah ditempatkan di organisasi lain.');
     }
 }

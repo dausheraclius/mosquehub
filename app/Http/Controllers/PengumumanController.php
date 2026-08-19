@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PengumumanRequest;
 use App\Models\Pengumuman;
-use Illuminate\Http\Request;
-
 use App\Support\Concerns\HasMosqueContext;
 
 class PengumumanController extends Controller
 {
     use HasMosqueContext;
+
     public function index()
     {
-        $list = Pengumuman::where('mosque_id', $this->mosqueId)->orderByDesc('tanggal')->get();
+        $list = Pengumuman::forMosque($this->mosqueId)->orderByDesc('tanggal')->get();
 
         $stats = [
             'total' => $list->count(),
@@ -41,9 +41,9 @@ class PengumumanController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(PengumumanRequest $request)
     {
-        $validated = $request->validate($this->rules());
+        $validated = $request->validated();
         $validated['mosque_id'] = $this->mosqueId;
 
         Pengumuman::create($validated);
@@ -51,11 +51,9 @@ class PengumumanController extends Controller
         return redirect()->route('pengumuman')->with('success', 'Pengumuman berhasil dibuat.');
     }
 
-    public function update(Request $request, Pengumuman $pengumuman)
+    public function update(PengumumanRequest $request, Pengumuman $pengumuman)
     {
-        $validated = $request->validate($this->rules());
-
-        $pengumuman->update($validated);
+        $pengumuman->update($request->validated());
 
         return redirect()->route('pengumuman')->with('success', 'Pengumuman berhasil diperbarui.');
     }
@@ -64,17 +62,8 @@ class PengumumanController extends Controller
     {
         $pengumuman->delete();
 
-        return redirect()->route('pengumuman')->with('success', 'Pengumuman dihapus.');
-    }
-
-    private function rules(): array
-    {
-        return [
-            'judul' => 'required|string|max:255',
-            'isi' => 'required|string',
-            'kategori' => 'nullable|string|max:100',
-            'status' => 'required|in:Aktif,Terjadwal,Arsip',
-            'tanggal' => 'required|date',
-        ];
+        // Endpoint ini dipanggil lewat fetch dari halaman pengumuman. Mengirim
+        // JSON mencegah fetch mengikuti redirect dan memuat ulang halaman.
+        return response()->json(['success' => true]);
     }
 }

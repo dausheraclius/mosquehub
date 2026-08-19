@@ -1,4 +1,4 @@
-// --- Data dummy agenda, key-nya format "YYYY-MM-DD" ---
+// --- Data agenda dari backend, dengan key tanggal "YYYY-MM-DD" ---
 let agendaData = Array.isArray(window.__AGENDA_DATA__) ? window.__AGENDA_DATA__ : []
 
 let activeTab = 'hari-ini'

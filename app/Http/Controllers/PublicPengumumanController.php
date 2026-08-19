@@ -9,7 +9,7 @@ class PublicPengumumanController extends Controller
 {
     public function index()
     {
-        $list = Pengumuman::where('mosque_id', SiteContext::mosqueId())
+        $list = Pengumuman::forMosque(SiteContext::mosqueId())
             ->where('status', 'Aktif')
             ->orderByDesc('tanggal')
             ->get();

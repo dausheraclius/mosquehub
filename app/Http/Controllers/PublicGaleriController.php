@@ -10,7 +10,7 @@ class PublicGaleriController extends Controller
 {
     public function index()
     {
-        $albums = GaleriAlbum::where('mosque_id', SiteContext::mosqueId())
+        $albums = GaleriAlbum::forMosque(SiteContext::mosqueId())
             ->where('status', 'published')
             ->orderByDesc('tanggal')
             ->get()

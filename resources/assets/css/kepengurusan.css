@@ -427,6 +427,20 @@ body.dark-mode .jabatan-dropdown-item:hover {
   color: var(--text-muted);
 }
 
+.jabatan-clear-selection {
+  display: block;
+  width: 100%;
+  border: 0;
+  border-top: 1px solid var(--border-color);
+  background: transparent;
+  cursor: pointer;
+}
+
+.jabatan-clear-selection:hover {
+  background: #f5f6f8;
+  color: var(--color-red);
+}
+
 /* --- Footer tombol Reset / Simpan --- */
 .jabatan-footer-actions {
   display: flex;

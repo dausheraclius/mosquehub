@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToMosque;
 use Illuminate\Database\Eloquent\Model;
 
 class Kegiatan extends Model
 {
+    use BelongsToMosque;
+
     public function relawans()
     {
     return $this->hasMany(KegiatanRelawan::class, 'kegiatan_id');
