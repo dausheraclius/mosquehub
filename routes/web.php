@@ -94,7 +94,7 @@ Route::prefix('{locale}')->whereIn('locale', ['id', 'en'])->group(function () {
 
     Route::post('/logout', [LoginController::class, 'destroy'])
         ->middleware(['locale', 'auth'])
-        ->name('logout');
+        ->name('logout.locale');
 
     Route::middleware(['locale', 'auth', 'super.admin'])->prefix('super-admin')->name('super.')->group(function () {
     Route::get('/', [SuperAdminDashboardController::class, 'index'])->name('dashboard');

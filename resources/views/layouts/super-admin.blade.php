@@ -23,8 +23,8 @@
       <span class="topbar-text">Super Admin Panel — MosqueHub</span>
     </div>
     <div class="topbar-right">
-      <a href="{{ route('dashboard') }}" class="btn-daftar" style="text-decoration:none;">Ke Dashboard Masjid</a>
-      <form action="{{ route('logout', ['locale' => App::getLocale()]) }}" method="POST" style="display:inline;">
+      <a href="{{ route('dashboard', ['locale' => App::getLocale()]) }}" class="btn-daftar" style="text-decoration:none;">Ke Dashboard Masjid</a>
+      <form action="{{ route('logout.locale', ['locale' => App::getLocale()]) }}" method="POST" style="display:inline;">
         @csrf
         <button type="submit" class="topbar-icon-btn" title="Keluar"><i class="fa-solid fa-power-off"></i></button>
       </form>
@@ -38,17 +38,17 @@
           <span class="sidebar-section-label">SUPER ADMIN</span>
           <ul class="sidebar-menu">
             <li class="sidebar-item">
-              <a href="{{ route('super.dashboard') }}" class="sidebar-link {{ request()->routeIs('super.dashboard') ? 'active' : '' }}">
+              <a href="{{ route('super.dashboard', ['locale' => App::getLocale()]) }}" class="sidebar-link {{ request()->routeIs('super.dashboard') ? 'active' : '' }}">
                 <i class="fa-solid fa-gauge sidebar-icon"></i><span>Dashboard</span>
               </a>
             </li>
             <li class="sidebar-item">
-              <a href="{{ route('super.mosques') }}" class="sidebar-link {{ request()->routeIs('super.mosques*') ? 'active' : '' }}">
+              <a href="{{ route('super.mosques', ['locale' => App::getLocale()]) }}" class="sidebar-link {{ request()->routeIs('super.mosques*') ? 'active' : '' }}">
                 <i class="fa-solid fa-mosque sidebar-icon"></i><span>Kelola Masjid</span>
               </a>
             </li>
             <li class="sidebar-item">
-              <a href="{{ route('super.users') }}" class="sidebar-link {{ request()->routeIs('super.users') ? 'active' : '' }}">
+              <a href="{{ route('super.users', ['locale' => App::getLocale()]) }}" class="sidebar-link {{ request()->routeIs('super.users') ? 'active' : '' }}">
                 <i class="fa-solid fa-users sidebar-icon"></i><span>Semua User</span>
               </a>
             </li>

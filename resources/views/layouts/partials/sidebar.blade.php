@@ -5,13 +5,14 @@
   $menuKeys = $fullAccess ? ['*'] : (array) ($u->permissions ?? []);
   $can = fn ($key) => in_array('*', $menuKeys, true) || in_array($key, $menuKeys, true);
   $locale = App::getLocale();
+  $isRoute = fn ($pattern) => request()->routeIs($pattern);
 @endphp
 <aside class="sidebar" id="sidebar">
   <nav class="sidebar-nav">
     <div class="sidebar-section">
       <span class="sidebar-section-label">{{ __('menu.menu_admin') }}</span>
       <ul class="sidebar-menu">
-        <li class="sidebar-item">
+        <li class="sidebar-item {{ $isRoute('dashboard') ? 'active' : '' }}">
           <a href="{{ route('dashboard', ['locale' => $locale]) }}" class="sidebar-link">
             <i class="fa-solid fa-house sidebar-icon"></i>
             <span>{{ __('menu.beranda') }}</span>
@@ -19,7 +20,7 @@
         </li>
 
         @if ($can('data-jamaah'))
-          <li class="sidebar-item">
+          <li class="sidebar-item {{ $isRoute('jamaah.index') ? 'active' : '' }}">
             <a href="{{ route('jamaah.index', ['locale' => $locale]) }}" class="sidebar-link">
               <i class="fa-solid fa-users sidebar-icon"></i>
               <span>{{ __('menu.data_jamaah') }}</span>
@@ -28,7 +29,7 @@
         @endif
 
         @if ($can('keuangan') || $can('Kas Masjid') || $can('Infaq / Sodaqoh (Zakat)'))
-          <li class="sidebar-item has-submenu">
+          <li class="sidebar-item has-submenu {{ $isRoute('keuangan.*') ? 'active open' : '' }}">
             <a href="#" class="sidebar-link submenu-toggle">
               <i class="fa-solid fa-wallet sidebar-icon"></i>
               <span>{{ __('menu.keuangan') }}</span>
@@ -36,17 +37,17 @@
             </a>
             <ul class="submenu">
               @if ($can('Infaq / Sodaqoh (Zakat)') || $can('keuangan'))
-                <li><a href="{{ route('keuangan.infaq', ['locale' => $locale]) }}" class="submenu-link">{{ __('menu.ziswaf') }}</a></li>
+                <li><a href="{{ route('keuangan.infaq', ['locale' => $locale]) }}" class="submenu-link {{ $isRoute('keuangan.infaq') ? 'active' : '' }}">{{ __('menu.ziswaf') }}</a></li>
               @endif
               @if ($can('Kas Masjid') || $can('keuangan'))
-                <li><a href="{{ route('keuangan.kas', ['locale' => $locale]) }}" class="submenu-link">{{ __('menu.kas_masjid') }}</a></li>
+                <li><a href="{{ route('keuangan.kas', ['locale' => $locale]) }}" class="submenu-link {{ $isRoute('keuangan.kas') ? 'active' : '' }}">{{ __('menu.kas_masjid') }}</a></li>
               @endif
             </ul>
           </li>
         @endif
 
         @if ($can('kegiatan') || $can('Agenda') || $can('Jadwal Kegiatan') || $can('Galeri') || $can('Jadwal Petugas Sholat'))
-          <li class="sidebar-item has-submenu">
+          <li class="sidebar-item has-submenu {{ $isRoute('kegiatan.*') ? 'active open' : '' }}">
             <a href="#" class="sidebar-link submenu-toggle">
               <i class="fa-solid fa-calendar-days sidebar-icon"></i>
               <span>{{ __('menu.kegiatan') }}</span>
@@ -54,23 +55,23 @@
             </a>
             <ul class="submenu">
               @if ($can('Agenda') || $can('kegiatan'))
-                <li><a href="{{ route('kegiatan.agenda', ['locale' => $locale]) }}" class="submenu-link">{{ __('menu.agenda') }}</a></li>
+                <li><a href="{{ route('kegiatan.agenda', ['locale' => $locale]) }}" class="submenu-link {{ $isRoute('kegiatan.agenda') ? 'active' : '' }}">{{ __('menu.agenda') }}</a></li>
               @endif
               @if ($can('Jadwal Kegiatan') || $can('kegiatan'))
-                <li><a href="{{ route('kegiatan.jadwal', ['locale' => $locale]) }}" class="submenu-link">{{ __('menu.jadwal_kegiatan') }}</a></li>
+                <li><a href="{{ route('kegiatan.jadwal', ['locale' => $locale]) }}" class="submenu-link {{ $isRoute('kegiatan.jadwal') ? 'active' : '' }}">{{ __('menu.jadwal_kegiatan') }}</a></li>
               @endif
               @if ($can('Jadwal Petugas Sholat') || $can('kegiatan'))
-                <li><a href="{{ route('kegiatan.petugas', ['locale' => $locale]) }}" class="submenu-link">{{ __('menu.jadwal_petugas_sholat') }}</a></li>
+                <li><a href="{{ route('kegiatan.petugas', ['locale' => $locale]) }}" class="submenu-link {{ $isRoute('kegiatan.petugas') ? 'active' : '' }}">{{ __('menu.jadwal_petugas_sholat') }}</a></li>
               @endif
               @if ($can('Galeri') || $can('kegiatan'))
-                <li><a href="{{ route('kegiatan.galeri', ['locale' => $locale]) }}" class="submenu-link">{{ __('menu.galeri') }}</a></li>
+                <li><a href="{{ route('kegiatan.galeri', ['locale' => $locale]) }}" class="submenu-link {{ $isRoute('kegiatan.galeri') ? 'active' : '' }}">{{ __('menu.galeri') }}</a></li>
               @endif
             </ul>
           </li>
         @endif
 
         @if ($can('pengumuman'))
-          <li class="sidebar-item">
+          <li class="sidebar-item {{ $isRoute('pengumuman') ? 'active' : '' }}">
             <a href="{{ route('pengumuman', ['locale' => $locale]) }}" class="sidebar-link">
               <i class="fa-solid fa-bullhorn sidebar-icon"></i>
               <span>{{ __('menu.pengumuman') }}</span>
@@ -84,7 +85,7 @@
       <span class="sidebar-section-label">{{ __('menu.pengelolaan') }}</span>
       <ul class="sidebar-menu">
         @if ($can('kepengurusan'))
-          <li class="sidebar-item">
+          <li class="sidebar-item {{ $isRoute('kepengurusan') ? 'active' : '' }}">
             <a href="{{ route('kepengurusan', ['locale' => $locale]) }}" class="sidebar-link">
               <i class="fa-solid fa-users sidebar-icon"></i>
               <span>{{ __('menu.kepengurusan') }}</span>
@@ -92,7 +93,7 @@
           </li>
         @endif
         @if ($can('relawan'))
-          <li class="sidebar-item">
+          <li class="sidebar-item {{ $isRoute('relawan') ? 'active' : '' }}">
             <a href="{{ route('relawan', ['locale' => $locale]) }}" class="sidebar-link">
               <i class="fa-solid fa-hand-holding-heart sidebar-icon"></i>
               <span>{{ __('menu.relawan') }}</span>
@@ -100,7 +101,7 @@
           </li>
         @endif
         @if ($can('surat'))
-          <li class="sidebar-item">
+          <li class="sidebar-item {{ $isRoute('surat') ? 'active' : '' }}">
             <a href="{{ route('surat', ['locale' => $locale]) }}" class="sidebar-link">
               <i class="fa-solid fa-envelope sidebar-icon"></i>
               <span>{{ __('menu.surat') }}</span>
@@ -108,7 +109,7 @@
           </li>
         @endif
         @if ($can('inventaris'))
-          <li class="sidebar-item">
+          <li class="sidebar-item {{ $isRoute('inventaris') ? 'active' : '' }}">
             <a href="{{ route('inventaris', ['locale' => $locale]) }}" class="sidebar-link">
               <i class="fa-solid fa-boxes-stacked sidebar-icon"></i>
               <span>{{ __('menu.inventaris') }}</span>
@@ -122,7 +123,7 @@
       <div class="sidebar-section">
         <span class="sidebar-section-label">{{ __('menu.laporan') }}</span>
         <ul class="sidebar-menu">
-          <li class="sidebar-item">
+          <li class="sidebar-item {{ $isRoute('laporan') || $isRoute('laporan.*') ? 'active' : '' }}">
             <a href="{{ route('laporan', ['locale' => $locale]) }}" class="sidebar-link">
               <i class="fa-solid fa-chart-column sidebar-icon"></i>
               <span>{{ __('menu.laporan_page') }}</span>
@@ -136,7 +137,7 @@
       <div class="sidebar-section">
         <span class="sidebar-section-label">{{ __('menu.pengawasan') }}</span>
         <ul class="sidebar-menu">
-          <li class="sidebar-item">
+          <li class="sidebar-item {{ $isRoute('activity-log') ? 'active' : '' }}">
             <a href="{{ route('activity-log', ['locale' => $locale]) }}" class="sidebar-link">
               <i class="fa-solid fa-clipboard-list sidebar-icon"></i>
               <span>{{ __('menu.log_aktivitas') }}</span>
@@ -151,7 +152,7 @@
         <span class="sidebar-section-label">{{ __('menu.pengaturan') }}</span>
         <ul class="sidebar-menu">
           @if ($can('Profile Masjid') || $can('pengaturan'))
-            <li class="sidebar-item">
+            <li class="sidebar-item {{ $isRoute('pengaturan.profil') ? 'active' : '' }}">
               <a href="{{ route('pengaturan.profil', ['locale' => $locale]) }}" class="sidebar-link">
                 <i class="fa-solid fa-mosque sidebar-icon"></i>
                 <span>{{ __('menu.profil_masjid') }}</span>
@@ -159,7 +160,7 @@
             </li>
           @endif
           @if ($can('Umum') || $can('pengaturan'))
-            <li class="sidebar-item">
+            <li class="sidebar-item {{ $isRoute('pengaturan.umum') ? 'active' : '' }}">
               <a href="{{ route('pengaturan.umum', ['locale' => $locale]) }}" class="sidebar-link">
                 <i class="fa-solid fa-gear sidebar-icon"></i>
                 <span>{{ __('menu.umum') }}</span>
@@ -167,7 +168,7 @@
             </li>
           @endif
           @if ($fullAccess)
-            <li class="sidebar-item">
+            <li class="sidebar-item {{ $isRoute('pengaturan.user-management') ? 'active' : '' }}">
               <a href="{{ route('pengaturan.user-management', ['locale' => $locale]) }}" class="sidebar-link">
                 <i class="fa-solid fa-user-shield sidebar-icon"></i>
                 <span>{{ __('menu.manajemen_pengguna') }}</span>
@@ -181,7 +182,7 @@
     <div class="sidebar-section">
       <span class="sidebar-section-label">{{ __('menu.akun_saya') }}</span>
       <ul class="sidebar-menu">
-        <li class="sidebar-item">
+        <li class="sidebar-item {{ $isRoute('profil') ? 'active' : '' }}">
           <a href="{{ route('profil', ['locale' => $locale]) }}" class="sidebar-link">
             <i class="fa-solid fa-circle-user sidebar-icon"></i>
             <span>{{ __('menu.profil_saya') }}</span>
@@ -221,7 +222,7 @@
       <span class="sidebar-section-label">{{ __('menu.keluar_aplikasi') }}</span>
       <ul class="sidebar-menu">
         <li class="sidebar-item">
-          <a href="{{ route('logout', ['locale' => $locale]) }}" class="sidebar-link" id="sidebarLogout">
+          <a href="{{ route('logout.locale', ['locale' => $locale]) }}" class="sidebar-link" id="sidebarLogout">
             <i class="fa-solid fa-right-from-bracket sidebar-icon"></i>
             <span>{{ __('menu.keluar') }}</span>
           </a>
@@ -229,7 +230,7 @@
       </ul>
     </div>
 
-    <form id="logoutForm" action="{{ route('logout', ['locale' => $locale]) }}" method="POST" style="display: none;">
+    <form id="logoutForm" action="{{ route('logout.locale', ['locale' => $locale]) }}" method="POST" style="display: none;">
     @csrf
     </form>
 
