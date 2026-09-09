@@ -36,6 +36,6 @@ class MosqueController extends Controller
     {
         SiteContext::setActiveMosque($mosque->id);
 
-        return redirect()->route('dashboard', ['locale' => $request->route('locale')])->with('success', "Sekarang lo lagi lihat sebagai: {$mosque->name}");
+        return redirect()->route('dashboard', ['locale' => session('locale', 'id')])->with('success', "Sekarang lo lagi lihat sebagai: {$mosque->name}");
     }
 }

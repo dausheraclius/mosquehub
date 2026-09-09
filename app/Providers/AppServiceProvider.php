@@ -6,6 +6,7 @@ use App\Models\Mosque;
 use App\Models\PengaturanUmum;
 use App\Support\SiteContext;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -28,6 +29,11 @@ class AppServiceProvider extends ServiceProvider
         // Aplikasi berbahasa Indonesia — pastikan nama bulan/tanggal dari
         // Carbon (mis. translatedFormat) tampil dalam Bahasa Indonesia.
         Carbon::setLocale('id');
+
+        // Pagination server-side memakai view khusus (vendor/pagination/mosquehub)
+        // bergaya .pagination-btn — bukan template bawaan Tailwind yang tampil
+        // rusak (SVG panah melebar) karena aplikasi tidak memuat Tailwind.
+        Paginator::defaultView('vendor.pagination.mosquehub');
 
         // Frontend memakai JSON apa adanya (bukan {data: ...}) — matikan
         // wrapper bawaan JsonResource supaya shape respons tidak berubah.

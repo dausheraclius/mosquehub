@@ -14,6 +14,18 @@
 
   <x-page-header crumb="{{ __('menu.pengelolaan') }}" active="{{ __('pages.kepengurusan_title') }}" title="{{ __('pages.kepengurusan_title') }}" subtitle="{{ __('pages.kepengurusan_subtitle') }}" />
 
+  <!-- TAB ORGANISASI: YMBPK / IKRAM (gaya seperti tab ZISWAF) -->
+  <div class="org-tabs" id="orgTabs">
+    @foreach ($organisasiTersedia as $namaOrganisasi)
+      <a href="{{ route('kepengurusan', ['locale' => App::getLocale(), 'organisasi' => $namaOrganisasi]) }}"
+         class="org-tab {{ $organisasi === $namaOrganisasi ? 'active' : '' }}"
+         data-org="{{ $namaOrganisasi }}">
+        <i class="fa-solid {{ $namaOrganisasi === 'IKRAM' ? 'fa-hands-holding-circle' : 'fa-people-group' }}"></i>
+        {{ $namaOrganisasi }}
+      </a>
+    @endforeach
+  </div>
+
   <!-- ACTION ROW: tombol aksi utama -->
   <div class="kepengurusan-actions">
     <button class="btn btn-primary" id="toggleEditBtn"><i class="fa-solid fa-pen"></i> {{ __('general.edit_kepengurusan') }}</button>
@@ -22,21 +34,8 @@
     </a>
   </div>
 
-  <!-- TOP ROW: 4 CARD RINGKASAN -->
+  <!-- TOP ROW: 3 CARD RINGKASAN -->
   <div class="kepengurusan-top-row">
-    <div class="top-card" style="padding: 10px 14px">
-      <div class="org-tabs" id="orgTabs">
-        @foreach ($organisasiTersedia as $namaOrganisasi)
-          <a href="{{ route('kepengurusan', ['locale' => App::getLocale(), 'organisasi' => $namaOrganisasi]) }}"
-             class="org-tab {{ $organisasi === $namaOrganisasi ? 'active' : '' }}"
-             data-org="{{ $namaOrganisasi }}">
-            <i class="fa-solid {{ $namaOrganisasi === 'IKRAM' ? 'fa-hands-holding-circle' : 'fa-people-group' }}"></i>
-            {{ $namaOrganisasi }}
-          </a>
-        @endforeach
-      </div>
-    </div>
-
     <div class="top-card top-card-split">
       <div>
         <div class="top-card-label">{{ __('general.periode_aktif') }}</div>

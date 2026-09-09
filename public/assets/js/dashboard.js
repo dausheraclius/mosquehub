@@ -101,6 +101,17 @@ function initArusKasChart() {
     chart.options.scales.x.ticks.color = dark ? '#94a3b8' : '#6b7280'
     chart.update()
   })
+
+  // Legenda interaktif: klik "Pemasukan"/"Pengeluaran" → tampil/sembunyikan garis
+  canvas.closest('.card')?.querySelectorAll('.legend-item').forEach((item, i) => {
+    item.style.cursor = 'pointer'
+    item.addEventListener('click', () => {
+      const meta = chart.getDatasetMeta(i)
+      meta.hidden = !meta.hidden
+      item.classList.toggle('dimmed', meta.hidden)
+      chart.update()
+    })
+  })
 }
 
 // Grafik donasi & infaq per bulan (6 bulan terakhir)
@@ -236,7 +247,7 @@ function initTableTools() {
 
     // Filter: kata kunci (nama) + status
     rows.forEach((row) => {
-      const name = (row.children[2]?.textContent || '').toLowerCase() // kolom "Nama"
+      const name = (row.children[1]?.textContent || '').toLowerCase() // kolom "Nama"
       const rowStatus = row.dataset.status || ''
       const matchSearch = name.includes(keyword)
       const matchStatus = !status || rowStatus === status
@@ -246,8 +257,8 @@ function initTableTools() {
     // Urutkan baris yang terlihat
     const visible = rows.filter((row) => row.style.display !== 'none')
     visible.sort((a, b) => {
-      const nameA = (a.children[2]?.textContent || '').toLowerCase()
-      const nameB = (b.children[2]?.textContent || '').toLowerCase()
+      const nameA = (a.children[1]?.textContent || '').toLowerCase()
+      const nameB = (b.children[1]?.textContent || '').toLowerCase()
       const dateA = a.dataset.tanggal || ''
       const dateB = b.dataset.tanggal || ''
       switch (sort) {

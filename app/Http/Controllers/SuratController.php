@@ -11,6 +11,9 @@ class SuratController extends Controller
 {
     use HasMosqueContext;
 
+    private const REQUIRED_STRING_255 = 'required|string|max:255';
+    private const NULLABLE_STRING_255 = 'nullable|string|max:255';
+
     public function index()
     {
         $suratList = Surat::forMosque()
@@ -58,12 +61,12 @@ class SuratController extends Controller
     private function rules(): array
     {
         return [
-            'nomor' => 'required|string|max:255',
-            'subjek' => 'required|string|max:255',
+            'nomor' => self::REQUIRED_STRING_255,
+            'subjek' => self::REQUIRED_STRING_255,
             'jenis' => 'required|in:Surat Undangan,Sertifikat,Surat Keterangan,Surat Tugas',
             'status' => 'required|in:Draft,Terkirim',
             'tanggal' => 'required|date',
-            'kepada' => 'nullable|string|max:255',
+            'kepada' => self::NULLABLE_STRING_255,
             'isi' => 'nullable|string',
             'file' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120',
         ];

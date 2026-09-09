@@ -11,6 +11,9 @@ class InventarisController extends Controller
 {
     use HasMosqueContext;
 
+    private const REQUIRED_STRING_255 = 'required|string|max:255';
+    private const NULLABLE_STRING_255 = 'nullable|string|max:255';
+
     public function index()
     {
         $inventarisList = Inventaris::forMosque()
@@ -63,9 +66,9 @@ class InventarisController extends Controller
     private function rules(): array
     {
         return [
-            'nama' => 'required|string|max:255',
-            'kategori' => 'nullable|string|max:255',
-            'lokasi' => 'nullable|string|max:255',
+            'nama' => self::REQUIRED_STRING_255,
+            'kategori' => self::NULLABLE_STRING_255,
+            'lokasi' => self::NULLABLE_STRING_255,
             'kondisi' => 'required|in:Baik,Perlu Perbaikan,Rusak,Nonaktif',
             'qty' => 'nullable|string|max:50',
             'sumber' => 'required|in:Beli,Waqaf',

@@ -215,7 +215,7 @@
           <div class="form-row" style="margin-top:14px;">
             <div class="form-group">
               <label class="form-label" for="inputKategori">Kategori</label>
-              <select class="form-select" id="inputKategori" name="kategori" data-native-select>
+              <select class="form-select" id="inputKategori" name="kategori">
                 <option value="Umum">Umum</option>
                 <option value="Kegiatan">Kegiatan</option>
                 <option value="Darurat">Darurat</option>
@@ -223,7 +223,7 @@
             </div>
             <div class="form-group">
               <label class="form-label" for="inputStatus">Status</label>
-              <select class="form-select" id="inputStatus" name="status" data-native-select>
+              <select class="form-select" id="inputStatus" name="status">
                 <option value="Aktif">Aktif</option>
                 <option value="Terjadwal">Terjadwal</option>
                 <option value="Arsip">Arsip</option>

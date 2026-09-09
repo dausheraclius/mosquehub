@@ -50,7 +50,9 @@ class ExampleTest extends TestCase
             'mosque_id' => 1,
         ]);
 
-        $response = $this->actingAs($user)->get('/');
+        $response = $this->actingAs($user)
+            ->followingRedirects()
+            ->get('/');
 
         $response->assertOk();
     }

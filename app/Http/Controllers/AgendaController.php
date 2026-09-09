@@ -11,6 +11,8 @@ use App\Support\Concerns\HasMosqueContext;
 class AgendaController extends Controller
 {
     use HasMosqueContext;
+
+    private const NULLABLE_STRING_255 = 'nullable|string|max:255';
     public function index()
     {
         $agendaList = Kegiatan::forMosque()
@@ -80,9 +82,9 @@ class AgendaController extends Controller
             'tanggal' => 'required|date',
             'jam_mulai' => 'required|date_format:H:i',
             'jam_selesai' => 'required|date_format:H:i',
-            'lokasi' => 'nullable|string|max:255',
-            'pemateri' => 'nullable|string|max:255',
-            'pj' => 'nullable|string|max:255',
+            'lokasi' => self::NULLABLE_STRING_255,
+            'pemateri' => self::NULLABLE_STRING_255,
+            'pj' => self::NULLABLE_STRING_255,
             'peserta' => 'nullable|integer',
             'status' => 'required|in:Akan Datang,Berlangsung,Selesai,Dibatalkan',
             'deskripsi' => 'nullable|string',

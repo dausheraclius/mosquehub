@@ -25,7 +25,7 @@ class UserController extends Controller
         session(['impersonator_id' => auth()->id()]);
         Auth::login($user);
 
-        return redirect()->route('dashboard', ['locale' => $request->route('locale')])->with('success', "Sekarang login sebagai: {$user->name}");
+        return redirect()->route('dashboard', ['locale' => session('locale', 'id')])->with('success', "Sekarang login sebagai: {$user->name}");
     }
 
     public function stopImpersonate(Request $request)
@@ -37,6 +37,6 @@ class UserController extends Controller
             Auth::loginUsingId($originalId);
         }
 
-        return redirect()->route('super.mosques', ['locale' => $request->route('locale')])->with('success', 'Kembali ke akun Super Admin.');
+        return redirect()->route('super.mosques', ['locale' => session('locale', 'id')])->with('success', 'Kembali ke akun Super Admin.');
     }
 }

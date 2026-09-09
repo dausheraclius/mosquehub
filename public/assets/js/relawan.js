@@ -185,7 +185,7 @@ document.getElementById('saveRelawanBtn').addEventListener('click', async () => 
   const relawanTerpilih = daftarJamaahRelawan.filter((j) => tempSelectedPhones.includes(j.telepon))
 
   try {
-    const res = await fetch(`/relawan/${activeKegiatanId}`, {
+    const res = await fetch(adminUrl(`/relawan/${activeKegiatanId}`), {
       method: 'POST',
       headers: getHeaders(),
       body: JSON.stringify({ relawan: relawanTerpilih }),

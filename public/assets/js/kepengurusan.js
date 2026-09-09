@@ -33,7 +33,7 @@ let parentSaveChain = Promise.resolve()
 
 function simpanParentServer(nama, parentNama) {
   parentSaveChain = parentSaveChain.catch(() => {}).then(async () => {
-    const res = await fetch('/kepengurusan/jabatan/parent', {
+    const res = await fetch(adminUrl('/kepengurusan/jabatan/parent'), {
       method: 'POST',
       headers: getHeaders(),
       body: JSON.stringify(withOrganisasi({ nama, parent_nama: parentNama })),
@@ -59,7 +59,7 @@ function getPenempatan() {
 }
 
 async function simpanPenempatan(penempatan) {
-  const res = await fetch('/kepengurusan/penempatan', {
+  const res = await fetch(adminUrl('/kepengurusan/penempatan'), {
     method: 'POST',
     headers: getHeaders(),
     body: JSON.stringify(withOrganisasi({ penempatan })),
@@ -173,7 +173,7 @@ function ensureDefaultPositions() {
 }
 
 async function simpanPositionsServer() {
-  const res = await fetch('/kepengurusan/jabatan/positions', {
+  const res = await fetch(adminUrl('/kepengurusan/jabatan/positions'), {
     method: 'POST',
     headers: getHeaders(),
     body: JSON.stringify(withOrganisasi({ positions })),
@@ -660,7 +660,7 @@ async function confirmAddJabatan() {
   }
 
   // Tambah ke master list jabatan
-  const res = await fetch('/kepengurusan/jabatan', {
+  const res = await fetch(adminUrl('/kepengurusan/jabatan'), {
     method: 'POST',
     headers: getHeaders(),
     body: JSON.stringify(withOrganisasi({ nama: trimmed, parent_nama: parentNama })),

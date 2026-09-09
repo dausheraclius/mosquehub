@@ -11,6 +11,10 @@ use App\Support\Concerns\HasMosqueContext;
 class ProfilMasjidController extends Controller
 {
     use HasMosqueContext;
+
+    private const NULLABLE_STRING_255 = 'nullable|string|max:255';
+    private const NULLABLE_STRING_100 = 'nullable|string|max:100';
+    private const NULLABLE_FILE_2048 = 'nullable|file|max:2048';
     public function index()
     {
         $mosque = Mosque::firstOrCreate(
@@ -33,28 +37,28 @@ class ProfilMasjidController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'short_name' => 'nullable|string|max:100',
+            'short_name' => self::NULLABLE_STRING_100,
             'established_year' => 'nullable|string|max:4',
-            'category' => 'nullable|string|max:100',
+            'category' => self::NULLABLE_STRING_100,
             'phone' => 'nullable|string|max:50',
             'email' => 'nullable|email|max:255',
-            'website' => 'nullable|string|max:255',
-            'province' => 'nullable|string|max:100',
-            'city' => 'nullable|string|max:100',
-            'district' => 'nullable|string|max:100',
-            'kelurahan' => 'nullable|string|max:100',
+            'website' => self::NULLABLE_STRING_255,
+            'province' => self::NULLABLE_STRING_100,
+            'city' => self::NULLABLE_STRING_100,
+            'district' => self::NULLABLE_STRING_100,
+            'kelurahan' => self::NULLABLE_STRING_100,
             'postal_code' => 'nullable|string|max:20',
             'address' => 'nullable|string',
             'maps_link' => 'nullable|string|max:500',
-            'instagram' => 'nullable|string|max:255',
-            'facebook' => 'nullable|string|max:255',
-            'youtube' => 'nullable|string|max:255',
-            'tiktok' => 'nullable|string|max:255',
-            'whatsapp' => 'nullable|string|max:255',
+            'instagram' => self::NULLABLE_STRING_255,
+            'facebook' => self::NULLABLE_STRING_255,
+            'youtube' => self::NULLABLE_STRING_255,
+            'tiktok' => self::NULLABLE_STRING_255,
+            'whatsapp' => self::NULLABLE_STRING_255,
             'logo' => 'nullable|image|max:2048',
-            'stempel' => 'nullable|file|max:2048',
-            'kop_surat' => 'nullable|file|max:2048',
-            'ttd' => 'nullable|file|max:2048',
+            'stempel' => self::NULLABLE_FILE_2048,
+            'kop_surat' => self::NULLABLE_FILE_2048,
+            'ttd' => self::NULLABLE_FILE_2048,
         ]);
 
         $mosque->update(collect($validated)->except(['logo', 'stempel', 'kop_surat', 'ttd'])->toArray());

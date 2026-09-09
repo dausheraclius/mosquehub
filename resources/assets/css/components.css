@@ -1017,12 +1017,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 /* ============================================================
-   NATIVE <select> — satu desain untuk semua dropdown
-   Dropdown yang masih memakai <select> asli (modal, form,
-   pengaturan, dsb.) diberi tampilan seragam dari sini.
-   Ganti desainnya di tempat ini saja = semua dropdown ikut
-   berubah, tanpa menyentuh tiap halaman satu per satu.
-   Catatan: panel daftar opsi saat dibuka tetap bawaan browser.
+   NATIVE <select> — fallback & tampilan sebelum JS jalan
+   Semua dropdown single-choice diubah jadi custom-select oleh
+   app.js. Aturan ini tinggal sebagai fallback (selama JS belum
+   jalan / jika gagal) agar select tetap tampil seragam.
    ============================================================ */
 select.form-select,
 select.form-control,
@@ -1174,3 +1172,4 @@ body.dark-mode .confirm-icon {
   color: var(--color-green);
   font-size: 11px;
 }
+

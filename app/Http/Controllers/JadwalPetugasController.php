@@ -10,6 +10,8 @@ use App\Support\Concerns\HasMosqueContext;
 class JadwalPetugasController extends Controller
 {
     use HasMosqueContext;
+
+    private const NULLABLE_STRING_255 = 'nullable|string|max:255';
     public function index()
     {
         $list = JadwalPetugasSholat::forMosque()
@@ -73,9 +75,9 @@ class JadwalPetugasController extends Controller
         return $request->validate([
             'tanggal' => 'required|date',
             'sholat' => 'required|in:Jumat,Subuh,Dzuhur,Ashar,Maghrib,Isya',
-            'khatib' => 'nullable|string|max:255',
-            'imam' => 'nullable|string|max:255',
-            'muadzin' => 'nullable|string|max:255',
+            'khatib' => self::NULLABLE_STRING_255,
+            'imam' => self::NULLABLE_STRING_255,
+            'muadzin' => self::NULLABLE_STRING_255,
             'keterangan' => 'nullable|string',
         ]);
     }

@@ -64,7 +64,7 @@ function initProfilMasjid() {
     const formData = new FormData(form)
 
     try {
-      const res = await fetch('/pengaturan/profil-masjid', {
+      const res = await fetch(adminUrl('/pengaturan/profil-masjid'), {
         method: 'POST',
         headers: getHeaders({ multipart: true }),
         body: formData,
@@ -128,7 +128,7 @@ function initProfilMasjid() {
       confirmText: 'Hapus Logo',
       onConfirm: async () => {
         try {
-          const res = await fetch('/pengaturan/profil-masjid/logo', {
+          const res = await fetch(adminUrl('/pengaturan/profil-masjid/logo'), {
             method: 'DELETE',
             headers: getHeaders(),
           })

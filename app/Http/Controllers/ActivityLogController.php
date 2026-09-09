@@ -18,7 +18,8 @@ class ActivityLogController extends Controller
             ->with('causer:id,name,email')
             ->where('properties->mosque_id', $this->mosqueId)
             ->latest()
-            ->paginate(30);
+            ->paginate(10)
+            ->onEachSide(1);
 
         return view('pages.activity-log', compact('activities'));
     }

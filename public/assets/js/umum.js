@@ -23,7 +23,7 @@ function bindBarisJabatan(tr) {
       message: `Yakin ingin menghapus jabatan "${namaSekarang}"?`,
       confirmText: 'Hapus',
       onConfirm: async () => {
-        await fetch('/kepengurusan/jabatan', {
+        await fetch(adminUrl('/kepengurusan/jabatan'), {
           method: 'DELETE',
           headers: getHeaders(),
           body: JSON.stringify({ nama: namaSekarang, organisasi }),
@@ -41,7 +41,7 @@ function bindBarisJabatan(tr) {
     if (!namaBaru) return
 
     if (!namaLama) {
-      const res = await fetch('/kepengurusan/jabatan', {
+      const res = await fetch(adminUrl('/kepengurusan/jabatan'), {
         method: 'POST',
         headers: getHeaders(),
         body: JSON.stringify({ nama: namaBaru, parent_nama: null, organisasi }),
@@ -52,7 +52,7 @@ function bindBarisJabatan(tr) {
         return
       }
     } else if (namaBaru !== namaLama) {
-      const res = await fetch('/kepengurusan/jabatan/rename', {
+      const res = await fetch(adminUrl('/kepengurusan/jabatan/rename'), {
         method: 'POST',
         headers: getHeaders(),
         body: JSON.stringify({ nama_lama: namaLama, nama_baru: namaBaru, organisasi }),
@@ -147,7 +147,7 @@ function initUmum() {
       let payload = {}
 
       if (btn.dataset.panelSave === 'Profil Aplikasi') {
-        url = '/pengaturan/umum/profil-aplikasi'
+        url = adminUrl('/pengaturan/umum/profil-aplikasi')
         payload = {
           app_name: document.getElementById('appName').value,
           timezone: document.getElementById('appTimezone').value,
@@ -155,7 +155,7 @@ function initUmum() {
         }
       } else if (btn.dataset.panelSave === 'Notifikasi WhatsApp') {
         const toggles = document.querySelectorAll('#panelNotif .switch input')
-        url = '/pengaturan/umum/notifikasi'
+        url = adminUrl('/pengaturan/umum/notifikasi')
         payload = {
           wa_gateway_number: document.getElementById('waAdminNumber').value,
           notif_infaq_bulanan: toggles[0].checked,
@@ -165,7 +165,7 @@ function initUmum() {
         }
       } else if (btn.dataset.panelSave === 'Jadwal Sholat') {
         const panel = document.getElementById('panelJadwalSholat')
-        url = '/pengaturan/umum/jadwal-sholat'
+        url = adminUrl('/pengaturan/umum/jadwal-sholat')
         payload = {}
         ;['subuh', 'dzuhur', 'ashar', 'maghrib', 'isya'].forEach((key) => {
           const jam = panel.querySelector(`select.time-select[data-sholat="${key}"][data-unit="jam"]`)?.value
@@ -251,7 +251,7 @@ function initUmum() {
     }
 
     try {
-      const res = await fetch('/pengaturan/umum/password', {
+      const res = await fetch(adminUrl('/pengaturan/umum/password'), {
         method: 'POST',
         headers: getHeaders(),
         body: JSON.stringify({ old_password: oldPass, new_password: newPass, new_password_confirmation: confirmPass }),
@@ -277,10 +277,10 @@ function initUmum() {
   }
 
   document.getElementById('btnBackupNow')?.addEventListener('click', () => {
-    downloadUrl('/pengaturan/umum/backup/ekspor', 'Backup sedang diunduh...')
+    downloadUrl(adminUrl('/pengaturan/umum/backup/ekspor'), 'Backup sedang diunduh...')
   })
   document.getElementById('btnExportData')?.addEventListener('click', () => {
-    downloadUrl('/pengaturan/umum/backup/ekspor', 'Backup JSON sedang diunduh...')
+    downloadUrl(adminUrl('/pengaturan/umum/backup/ekspor'), 'Backup JSON sedang diunduh...')
   })
 
   const importInput = document.getElementById('importFileInput')
@@ -297,7 +297,7 @@ function initUmum() {
     const fd = new FormData()
     fd.append('file', file)
     try {
-      const res = await fetch('/pengaturan/umum/backup/impor', {
+      const res = await fetch(adminUrl('/pengaturan/umum/backup/impor'), {
         method: 'POST',
         headers: getHeaders({ multipart: true }),
         body: fd,
@@ -319,7 +319,7 @@ function initUmum() {
   // Setelan backup otomatis & frekuensi disimpan langsung saat diubah
   async function simpanBackupSetting() {
     try {
-      const res = await fetch('/pengaturan/umum/backup', {
+      const res = await fetch(adminUrl('/pengaturan/umum/backup'), {
         method: 'POST',
         headers: getHeaders(),
         body: JSON.stringify({
@@ -339,7 +339,7 @@ function initUmum() {
     const organisasi = document.querySelector('.jabatan-panel.active')?.dataset.organisasi || 'YMBPK'
     localStorage.setItem(jabatanTabStorageKey, organisasi)
     if (!confirm(`Reset semua data jabatan ${organisasi}, hierarki, dan penempatan ke default?`)) return
-    await fetch('/kepengurusan/jabatan/reset', {
+    await fetch(adminUrl('/kepengurusan/jabatan/reset'), {
       method: 'POST',
       headers: getHeaders(),
       body: JSON.stringify({ organisasi }),

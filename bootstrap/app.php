@@ -24,6 +24,12 @@ return Application::configure(basePath: dirname(__DIR__))
             'active.user' => EnsureActiveUser::class,
             'locale' => SetLocale::class,
         ]);
+
+        // Route dashboard memakai prefix wajib {locale}; redirect bawaan Laravel
+        // sebelumnya memanggil route('dashboard') tanpa parameter tersebut.
+        $middleware->redirectUsersTo(
+            fn () => route('dashboard', ['locale' => session('locale', 'id')])
+        );
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

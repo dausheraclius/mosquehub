@@ -11,6 +11,8 @@ class DonasiController extends Controller
 {
     use HasMosqueContext;
 
+    private const REQUIRED_STRING_255 = 'required|string|max:255';
+
     public function storeDonasi(Request $request)
     {
         $validated = $request->validate($this->rules());
@@ -45,14 +47,14 @@ class DonasiController extends Controller
         return [
             'tanggal' => 'required|date',
             'tanggal_akhir' => 'nullable|date',
-            'donatur' => 'required|string|max:255',
+            'donatur' => self::REQUIRED_STRING_255,
             'kategori' => "required|in:Zakat,Zakat Fitrah,Zakat Maal,Infaq,Infaq Jumat,Infaq Harian,Sodaqoh,Sodaqoh Dhuafa,Sodaqoh Anak Yatim,Sodaqoh Bencana,Wakaf,Wakaf Uang,Wakaf Tanah,Wakaf Bangunan,Wakaf Al-Qur'an,Donasi,Donasi Bencana,Donasi Pendidikan,Donasi Kesehatan,Donasi Umum",
-            'jenis' => 'required|string|max:255',
+            'jenis' => self::REQUIRED_STRING_255,
             'tipe' => 'required|in:Uang,Barang',
             'nominal' => 'required|numeric|min:0',
             'keterangan' => 'nullable|string',
             'metode' => 'nullable|string|max:100',
-            'petugas' => 'required|string|max:255',
+            'petugas' => self::REQUIRED_STRING_255,
             'status' => 'required|in:Berhasil,Pending',
         ];
     }

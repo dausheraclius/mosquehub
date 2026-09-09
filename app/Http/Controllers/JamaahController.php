@@ -12,6 +12,10 @@ class JamaahController extends Controller
 {
     use HasMosqueContext;
 
+    private const REQUIRED_STRING_255 = 'required|string|max:255';
+    private const NULLABLE_STRING_255 = 'nullable|string|max:255';
+    private const NULLABLE_STRING = 'nullable|string';
+
     public function index()
     {
         $mosqueId = $this->mosqueId;
@@ -50,48 +54,28 @@ class JamaahController extends Controller
 
         while (($row = fgetcsv($handle)) !== false) {
             $row = array_map('trim', $row);
+
+            // Baris pertama bisa jadi header kalau mengandung kolom "nama".
             if ($header === null) {
                 $header = array_map('strtolower', $row);
                 if (in_array('nama', $header, true)) {
                     continue;
                 }
-                $header = null;
+                $header = null; // baris ini bukan header, proses sebagai data
             }
 
             $data = $header
                 ? array_combine($header, array_slice(array_pad($row, count($header), null), 0, count($header)))
                 : ['nama' => $row[0] ?? null, 'jenis_kelamin' => $row[1] ?? null, 'no_hp' => $row[2] ?? null, 'email' => $row[3] ?? null, 'alamat' => $row[4] ?? null, 'status_jamaah' => $row[5] ?? null, 'tanggal_bergabung' => $row[6] ?? null];
 
-            $nama = $data['nama'] ?? null;
-            if (!$nama) {
-                continue;
-            }
+            $result = $this->processCsvRow($data, $mosqueId);
 
-            try {
-                $tanggalBergabung = empty($data['tanggal_bergabung'])
-                    ? now()->toDateString()
-                    : Carbon::parse($data['tanggal_bergabung'])->toDateString();
-            } catch (\Throwable) {
-                $errors[] = "\"$nama\" memiliki tanggal bergabung tidak valid, dilewati";
-                continue;
+            if ($result['error'] !== null) {
+                $errors[] = $result['error'];
             }
-
-            if (Jamaah::forMosque($mosqueId)->where('nama', $nama)->exists()) {
-                $errors[] = "\"$nama\" sudah ada, dilewati";
-                continue;
+            if ($result['created']) {
+                $imported++;
             }
-
-            Jamaah::create([
-                'mosque_id' => $mosqueId,
-                'nama' => $nama,
-                'jenis_kelamin' => in_array($data['jenis_kelamin'] ?? null, ['Laki-laki', 'Perempuan'], true) ? $data['jenis_kelamin'] : 'Laki-laki',
-                'no_hp' => $data['no_hp'] ?? null,
-                'email' => $data['email'] ?? null,
-                'alamat' => $data['alamat'] ?? null,
-                'status_jamaah' => in_array($data['status_jamaah'] ?? null, ['Aktif', 'Tidak Aktif', 'Pindah', 'Wafat'], true) ? $data['status_jamaah'] : 'Aktif',
-                'tanggal_bergabung' => $tanggalBergabung,
-            ]);
-            $imported++;
         }
 
         fclose($handle);
@@ -146,21 +130,58 @@ class JamaahController extends Controller
         return response()->json(['message' => 'Jemaah dihapus']);
     }
 
+    /**
+     * Proses satu baris CSV: validasi, cek duplikat, dan buat jemaah baru.
+     * Mengembalikan array ['error' => ?string, 'created' => bool].
+     */
+    private function processCsvRow(array $data, int $mosqueId): array
+    {
+        $nama = $data['nama'] ?? null;
+        if (!$nama) {
+            return ['error' => null, 'created' => false];
+        }
+
+        try {
+            $tanggalBergabung = empty($data['tanggal_bergabung'])
+                ? now()->toDateString()
+                : Carbon::parse($data['tanggal_bergabung'])->toDateString();
+        } catch (\Throwable) {
+            return ["\"$nama\" memiliki tanggal bergabung tidak valid, dilewati", false];
+        }
+
+        if (Jamaah::forMosque($mosqueId)->where('nama', $nama)->exists()) {
+            return ["\"$nama\" sudah ada, dilewati", false];
+        }
+
+        Jamaah::create([
+            'mosque_id' => $mosqueId,
+            'nama' => $nama,
+            'jenis_kelamin' => in_array($data['jenis_kelamin'] ?? null, ['Laki-laki', 'Perempuan'], true) ? $data['jenis_kelamin'] : 'Laki-laki',
+            'no_hp' => $data['no_hp'] ?? null,
+            'email' => $data['email'] ?? null,
+            'alamat' => $data['alamat'] ?? null,
+            'status_jamaah' => in_array($data['status_jamaah'] ?? null, ['Aktif', 'Tidak Aktif', 'Pindah', 'Wafat'], true) ? $data['status_jamaah'] : 'Aktif',
+            'tanggal_bergabung' => $tanggalBergabung,
+        ]);
+
+        return [null, true];
+    }
+
     private function validateRequest(Request $request): array
     {
         $validated = $request->validate([
-            'nama' => 'required|string|max:255',
+            'nama' => self::REQUIRED_STRING_255,
             'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
-            'tempat_lahir' => 'nullable|string|max:255',
+            'tempat_lahir' => self::NULLABLE_STRING_255,
             'tanggal_lahir' => 'nullable|date',
             'no_hp' => 'required|string|max:30',
             'email' => 'nullable|email|max:255',
-            'alamat' => 'nullable|string',
-            'pekerjaan' => 'nullable|string|max:255',
+            'alamat' => self::NULLABLE_STRING,
+            'pekerjaan' => self::NULLABLE_STRING_255,
             'status_pernikahan' => 'nullable|in:Belum Menikah,Menikah,Janda,Duda',
             'status_jamaah' => 'nullable|in:Aktif,Tidak Aktif,Pindah,Wafat',
             'tanggal_bergabung' => 'nullable|date',
-            'catatan' => 'nullable|string',
+            'catatan' => self::NULLABLE_STRING,
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
 
@@ -173,7 +194,9 @@ class JamaahController extends Controller
     // Simpan foto profil ke disk public, hapus foto lama kalau ada.
     private function storeFoto(Request $request, Jamaah $jamaah): void
     {
-        if (!$request->hasFile('foto')) return;
+        if (!$request->hasFile('foto')) {
+            return;
+        }
 
         $oldFoto = $jamaah->getRawOriginal('foto');
         if ($oldFoto) {
@@ -210,14 +233,18 @@ class JamaahController extends Controller
 
     private function formatTanggalLahir($date): string
     {
-        if (!$date) return '-';
+        if (!$date) {
+            return '-';
+        }
         $bulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
         return $date->format('d') . ' ' . $bulan[$date->month - 1] . ' ' . $date->format('Y');
     }
 
     private function formatTanggalBergabung($date): string
     {
-        if (!$date) return '-';
+        if (!$date) {
+            return '-';
+        }
         $bulan = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'];
         return $date->format('d') . ' ' . $bulan[$date->month - 1] . ' ' . $date->format('Y');
     }

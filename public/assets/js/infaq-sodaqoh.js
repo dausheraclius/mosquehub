@@ -490,7 +490,7 @@ function renderTable(allData) {
         message: `Yakin ingin menghapus transaksi ${item.donatur} (${formatRupiah(item.nominal)})?`,
         onConfirm: async () => {
           try {
-            const res = await fetch(`/keuangan/infaq-sodaqoh/donasi/${item.id}`, {
+            const res = await fetch(adminUrl(`/keuangan/infaq-sodaqoh/donasi/${item.id}`), {
               method: 'DELETE',
               headers: getHeaders(),
             })
@@ -982,7 +982,7 @@ function renderPesertaList() {
         message: `Yakin ingin menghapus setoran ${formatRupiah(setoran.jumlah)} (${formatTanggalIndo(setoran.tanggal)}) dari ${peserta.nama}?`,
         onConfirm: async () => {
           try {
-            const res = await fetch(`/keuangan/infaq-sodaqoh/setoran/${setoranId}`, {
+            const res = await fetch(adminUrl(`/keuangan/infaq-sodaqoh/setoran/${setoranId}`), {
               method: 'DELETE',
               headers: getHeaders(),
             })
@@ -1021,7 +1021,7 @@ function renderPesertaList() {
         message: `Yakin ingin menghapus ${member.nama} dari patungan ini?`,
         onConfirm: async () => {
           try {
-            const res = await fetch(`/keuangan/infaq-sodaqoh/anggota/${memberId}`, {
+            const res = await fetch(adminUrl(`/keuangan/infaq-sodaqoh/anggota/${memberId}`), {
               method: 'DELETE',
               headers: getHeaders(),
             })
@@ -1063,7 +1063,7 @@ function renderPesertaList() {
         message: `Yakin ingin menghapus ${peserta.nama}? Seluruh setoran & anggota patungannya ikut terhapus.`,
         onConfirm: async () => {
           try {
-            const res = await fetch(`/keuangan/infaq-sodaqoh/peserta/${id}`, {
+            const res = await fetch(adminUrl(`/keuangan/infaq-sodaqoh/peserta/${id}`), {
               method: 'DELETE',
               headers: getHeaders(),
             })
@@ -1258,9 +1258,9 @@ async function savePeserta() {
   }
 
   try {
-    const url = editingPesertaId
+    const url = adminUrl(editingPesertaId
       ? `/keuangan/infaq-sodaqoh/peserta/${editingPesertaId}`
-      : '/keuangan/infaq-sodaqoh/peserta'
+      : '/keuangan/infaq-sodaqoh/peserta')
     const res = await fetch(url, {
       method: editingPesertaId ? 'PUT' : 'POST',
       headers: {
@@ -1323,7 +1323,7 @@ async function saveMember() {
   const payload = { nama, jamaah_id: matched ? matched.id : null }
 
   try {
-    const res = await fetch(`/keuangan/infaq-sodaqoh/peserta/${memberModalPesertaId}/anggota`, {
+    const res = await fetch(adminUrl(`/keuangan/infaq-sodaqoh/peserta/${memberModalPesertaId}/anggota`), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -1419,9 +1419,9 @@ async function saveSetoran() {
   }
 
   try {
-    const url = editingSetoranId
+    const url = adminUrl(editingSetoranId
       ? `/keuangan/infaq-sodaqoh/setoran/${editingSetoranId}`
-      : '/keuangan/infaq-sodaqoh/setoran'
+      : '/keuangan/infaq-sodaqoh/setoran')
     const res = await fetch(url, {
       method: editingSetoranId ? 'PUT' : 'POST',
       headers: {
@@ -1593,9 +1593,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     try {
-      const url = editingDonasiId
+      const url = adminUrl(editingDonasiId
         ? `/keuangan/infaq-sodaqoh/donasi/${editingDonasiId}`
-        : '/keuangan/infaq-sodaqoh/donasi'
+        : '/keuangan/infaq-sodaqoh/donasi')
       const res = await fetch(url, {
         method: editingDonasiId ? 'PUT' : 'POST',
         headers: {

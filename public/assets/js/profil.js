@@ -22,7 +22,7 @@ function initProfil() {
     }
 
     try {
-      const res = await fetch('/profil', {
+      const res = await fetch(adminUrl('/profil'), {
         method: 'PUT',
         headers,
         body: JSON.stringify({
@@ -60,7 +60,7 @@ function initProfil() {
     }
 
     try {
-      const res = await fetch('/profil/password', {
+      const res = await fetch(adminUrl('/profil/password'), {
         method: 'POST',
         headers,
         body: JSON.stringify({
@@ -88,7 +88,7 @@ function initProfil() {
   const btnResend = document.getElementById('btnResendVerification')
   btnResend?.addEventListener('click', async () => {
     try {
-      const res = await fetch('/email/verification-notification', {
+      const res = await fetch(adminUrl('/email/verification-notification'), {
         method: 'POST',
         headers,
       })

@@ -35,7 +35,7 @@ class KepengurusanTest extends TestCase
         Jabatan::create(['mosque_id' => 1, 'nama' => 'Ketua YMBPK', 'urutan' => 0, 'posisi_x' => 500, 'posisi_y' => 50]);
 
         $this->actingAs($this->ketua())
-            ->get('/kepengurusan')
+            ->get('/id/kepengurusan')
             ->assertOk()
             ->assertSee('__POSISI_ORG__')
             ->assertSee('500');
@@ -48,7 +48,7 @@ class KepengurusanTest extends TestCase
         Jabatan::create(['mosque_id' => 1, 'nama' => 'Sekretaris', 'urutan' => 1, 'parent_id' => 1]);
 
         $this->actingAs($this->ketua())
-            ->post('/kepengurusan/jabatan/positions', [
+            ->post('/id/kepengurusan/jabatan/positions', [
                 'positions' => [
                     'Ketua YMBPK' => ['x' => 500, 'y' => 50],
                     'Sekretaris' => ['x' => 250, 'y' => 200],
@@ -80,7 +80,7 @@ class KepengurusanTest extends TestCase
         ]);
 
         $this->actingAs($this->ketua())
-            ->post('/kepengurusan/jabatan/positions', [
+            ->post('/id/kepengurusan/jabatan/positions', [
                 'organisasi' => 'IKRAM',
                 'positions' => ['Ketua' => ['x' => 420, 'y' => 180]],
             ])
@@ -97,7 +97,7 @@ class KepengurusanTest extends TestCase
         Jabatan::create(['mosque_id' => 1, 'nama' => 'Ketua YMBPK', 'urutan' => 0]);
 
         $this->actingAs($this->ketua())
-            ->post('/kepengurusan/jabatan/positions', [
+            ->post('/id/kepengurusan/jabatan/positions', [
                 'positions' => [
                     'Ketua YMBPK' => ['x' => -5, 'y' => 'bukan-angka'],
                 ],
@@ -113,7 +113,7 @@ class KepengurusanTest extends TestCase
         Jabatan::create(['mosque_id' => 1, 'nama' => 'Ketua YMBPK', 'urutan' => 0]);
 
         $this->actingAs($this->ketua())
-            ->post('/kepengurusan/jabatan/positions', [
+            ->post('/id/kepengurusan/jabatan/positions', [
                 'positions' => [
                     'Jabatan Hantu' => ['x' => 10, 'y' => 10],
                 ],
@@ -134,7 +134,7 @@ class KepengurusanTest extends TestCase
         Jabatan::create(['mosque_id' => 1, 'nama' => 'Ketua YMBPK', 'urutan' => 0]);
 
         $this->actingAs($this->ketua())
-            ->post('/kepengurusan/penempatan', [
+            ->post('/id/kepengurusan/penempatan', [
                 'penempatan' => ['Ketua YMBPK' => $jamaah->id],
             ])
             ->assertOk()
@@ -150,7 +150,7 @@ class KepengurusanTest extends TestCase
         Jabatan::create(['mosque_id' => 1, 'nama' => 'Sekretaris', 'urutan' => 1]);
 
         $this->actingAs($this->ketua())
-            ->post('/kepengurusan/jabatan/parent', [
+            ->post('/id/kepengurusan/jabatan/parent', [
                 'nama' => 'Sekretaris',
                 'parent_nama' => 'Ketua YMBPK',
             ])
@@ -166,7 +166,7 @@ class KepengurusanTest extends TestCase
         Jabatan::create(['mosque_id' => 1, 'organisasi' => 'YMBPK', 'nama' => 'Ketua', 'urutan' => 0]);
 
         $this->actingAs($this->ketua())
-            ->post('/kepengurusan/jabatan', [
+            ->post('/id/kepengurusan/jabatan', [
                 'organisasi' => 'IKRAM',
                 'nama' => 'Ketua',
             ])
@@ -186,7 +186,7 @@ class KepengurusanTest extends TestCase
         $sekretaris = Jabatan::create(['mosque_id' => 1, 'nama' => 'Sekretaris', 'parent_id' => $ketua->id, 'urutan' => 1]);
 
         $this->actingAs($this->ketua())
-            ->post('/kepengurusan/jabatan/parent', [
+            ->post('/id/kepengurusan/jabatan/parent', [
                 'nama' => 'Ketua',
                 'parent_nama' => 'Sekretaris',
             ])
@@ -208,19 +208,19 @@ class KepengurusanTest extends TestCase
         Jabatan::create(['mosque_id' => 1, 'organisasi' => 'IKRAM', 'nama' => 'Ketua', 'urutan' => 0]);
 
         $this->actingAs($this->ketua())
-            ->post('/kepengurusan/penempatan', [
+            ->post('/id/kepengurusan/penempatan', [
                 'organisasi' => 'YMBPK',
                 'penempatan' => ['Ketua' => null],
             ])
             ->assertOk();
         $this->assertDatabaseHas('jabatans', ['id' => $ymbpk->id, 'jamaah_id' => null]);
 
-        $this->post('/kepengurusan/penempatan', [
+        $this->post('/id/kepengurusan/penempatan', [
             'organisasi' => 'IKRAM',
             'penempatan' => ['Ketua' => $jamaah->id],
         ])->assertOk();
 
-        $this->post('/kepengurusan/penempatan', [
+        $this->post('/id/kepengurusan/penempatan', [
             'organisasi' => 'YMBPK',
             'penempatan' => ['Ketua' => $jamaah->id],
         ])->assertUnprocessable()

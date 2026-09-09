@@ -122,14 +122,14 @@ class IsolasiMasjidTest extends TestCase
         };
 
         $url = match ($modul) {
-            'kas' => '/keuangan/kas-masjid/'.$model->id,
-            'surat' => '/surat/'.$model->id,
-            'inventaris' => '/inventaris/'.$model->id,
-            'jamaah' => '/data-jamaah/'.$model->id,
-            'agenda' => '/kegiatan/agenda/'.$model->id,
-            'jadwal_petugas' => '/kegiatan/jadwal-petugas-sholat/'.$model->id,
-            'donasi' => '/keuangan/infaq-sodaqoh/donasi/'.$model->id,
-            'user' => '/pengaturan/user-management/'.$model->id,
+            'kas' => '/id/keuangan/kas-masjid/'.$model->id,
+            'surat' => '/id/surat/'.$model->id,
+            'inventaris' => '/id/inventaris/'.$model->id,
+            'jamaah' => '/id/data-jamaah/'.$model->id,
+            'agenda' => '/id/kegiatan/agenda/'.$model->id,
+            'jadwal_petugas' => '/id/kegiatan/jadwal-petugas-sholat/'.$model->id,
+            'donasi' => '/id/keuangan/infaq-sodaqoh/donasi/'.$model->id,
+            'user' => '/id/pengaturan/user-management/'.$model->id,
         };
 
         $table = match ($modul) {
@@ -175,7 +175,7 @@ class IsolasiMasjidTest extends TestCase
         ]);
 
         $this->actingAs($ketuaA)
-            ->put('/pengumuman/'.$pengumumanB->id, [
+            ->put('/id/pengumuman/'.$pengumumanB->id, [
                 'judul' => 'Diserobot A',
                 'isi' => 'Isi diubah dari masjid A.',
                 'status' => 'Aktif',
@@ -204,7 +204,7 @@ class IsolasiMasjidTest extends TestCase
         ]);
 
         $this->actingAs($ketuaA)
-            ->deleteJson('/pengumuman/'.$pengumumanB->id)
+            ->deleteJson('/id/pengumuman/'.$pengumumanB->id)
             ->assertNotFound();
 
         $this->assertDatabaseHas('pengumumans', ['id' => $pengumumanB->id]);
@@ -225,7 +225,7 @@ class IsolasiMasjidTest extends TestCase
         ]);
 
         $this->actingAs($ketuaA)
-            ->postJson('/keuangan/infaq-sodaqoh/setoran', [
+            ->postJson('/id/keuangan/infaq-sodaqoh/setoran', [
                 'qurban_peserta_id' => $pesertaB->id,
                 'tanggal' => now()->toDateString(),
                 'jumlah' => 100000,
@@ -266,7 +266,7 @@ class IsolasiMasjidTest extends TestCase
         ]);
 
         $this->actingAs($ketua)
-            ->putJson('/keuangan/infaq-sodaqoh/setoran/'.$setoran->id, [
+            ->putJson('/id/keuangan/infaq-sodaqoh/setoran/'.$setoran->id, [
                 'qurban_peserta_member_id' => $anggotaPesertaLain->id,
                 'tanggal' => now()->toDateString(),
                 'jumlah' => 150000,
@@ -294,7 +294,7 @@ class IsolasiMasjidTest extends TestCase
         ]);
 
         $this->actingAs($ketua)
-            ->deleteJson('/kegiatan/galeri/'.$album->id)
+            ->deleteJson('/id/kegiatan/galeri/'.$album->id)
             ->assertOk()
             ->assertJson(['success' => true]);
 
@@ -315,7 +315,7 @@ class IsolasiMasjidTest extends TestCase
         ]);
 
         $this->actingAs($ketuaA)
-            ->deleteJson('/kegiatan/galeri/'.$albumB->id)
+            ->deleteJson('/id/kegiatan/galeri/'.$albumB->id)
             ->assertNotFound();
 
         $this->assertDatabaseHas('galeri_albums', ['id' => $albumB->id]);
@@ -369,7 +369,7 @@ class IsolasiMasjidTest extends TestCase
         $jabatanB = Jabatan::create(['mosque_id' => $masjidB->id, 'nama' => 'Sekretaris YMBPK', 'urutan' => 1]);
 
         $this->actingAs($ketuaA)
-            ->deleteJson('/kepengurusan/jabatan', ['nama' => 'Sekretaris YMBPK'])
+            ->deleteJson('/id/kepengurusan/jabatan', ['nama' => 'Sekretaris YMBPK'])
             ->assertOk();
 
         $this->assertDatabaseMissing('jabatans', ['mosque_id' => $masjidA->id, 'nama' => 'Sekretaris YMBPK']);
@@ -384,7 +384,7 @@ class IsolasiMasjidTest extends TestCase
         $jabatanB = Jabatan::create(['mosque_id' => $masjidB->id, 'nama' => 'Pengurus Khusus B', 'urutan' => 0]);
 
         $this->actingAs($ketuaA)
-            ->postJson('/kepengurusan/jabatan/reset')
+            ->postJson('/id/kepengurusan/jabatan/reset')
             ->assertOk();
 
         $this->assertDatabaseHas('jabatans', ['id' => $jabatanB->id, 'nama' => 'Pengurus Khusus B']);
@@ -404,7 +404,7 @@ class IsolasiMasjidTest extends TestCase
         ]);
 
         $this->actingAs($ketuaA)
-            ->postJson('/relawan/'.$kegiatan->id, [
+            ->postJson('/id/relawan/'.$kegiatan->id, [
                 'relawan' => [['nama' => 'Relawan A', 'telepon' => '0812']],
             ])
             ->assertNotFound();
@@ -432,7 +432,7 @@ class IsolasiMasjidTest extends TestCase
         ]);
 
         $this->actingAs($ketuaA)
-            ->get('/relawan')
+            ->get('/id/relawan')
             ->assertOk()
             ->assertSee('Kegiatan masjid A')
             ->assertDontSee('ZZZ-ISOLASI-B-RELAWAN');
@@ -507,12 +507,12 @@ class IsolasiMasjidTest extends TestCase
 
         $this->actingAs($ketuaA);
 
-        $this->get('/data-jamaah')->assertOk()->assertDontSee('ZZZ-ISOLASI-B-JAMAAH');
-        $this->get('/keuangan/kas-masjid')->assertOk()->assertDontSee('ZZZ-ISOLASI-B-KAS');
-        $this->get('/surat')->assertOk()->assertDontSee('ZZZ-ISOLASI-B-SURAT');
-        $this->get('/inventaris')->assertOk()->assertDontSee('ZZZ-ISOLASI-B-INVENTARIS');
-        $this->get('/kegiatan/agenda')->assertOk()->assertDontSee('ZZZ-ISOLASI-B-AGENDA');
-        $this->get('/keuangan/infaq-sodaqoh')->assertOk()->assertDontSee('ZZZ-ISOLASI-B-DONATUR');
-        $this->get('/pengaturan/user-management')->assertOk()->assertDontSee('ZZZ-ISOLASI-B-USER');
+        $this->get('/id/data-jamaah')->assertOk()->assertDontSee('ZZZ-ISOLASI-B-JAMAAH');
+        $this->get('/id/keuangan/kas-masjid')->assertOk()->assertDontSee('ZZZ-ISOLASI-B-KAS');
+        $this->get('/id/surat')->assertOk()->assertDontSee('ZZZ-ISOLASI-B-SURAT');
+        $this->get('/id/inventaris')->assertOk()->assertDontSee('ZZZ-ISOLASI-B-INVENTARIS');
+        $this->get('/id/kegiatan/agenda')->assertOk()->assertDontSee('ZZZ-ISOLASI-B-AGENDA');
+        $this->get('/id/keuangan/infaq-sodaqoh')->assertOk()->assertDontSee('ZZZ-ISOLASI-B-DONATUR');
+        $this->get('/id/pengaturan/user-management')->assertOk()->assertDontSee('ZZZ-ISOLASI-B-USER');
     }
 }

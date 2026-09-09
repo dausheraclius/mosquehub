@@ -14,6 +14,9 @@ class KepengurusanController extends Controller
     use HasMosqueContext;
 
     private const ORGANISASI = ['YMBPK', 'IKRAM'];
+    private const REQUIRED_STRING = 'required|string';
+    private const REQUIRED_STRING_255 = 'required|string|max:255';
+    private const NULLABLE_STRING_255 = 'nullable|string|max:255';
 
     public function index(Request $request)
     {
@@ -66,8 +69,8 @@ class KepengurusanController extends Controller
     {
         $organisasi = $this->setOrganisasi($request);
         $validated = $request->validate([
-            'nama' => 'required|string|max:255',
-            'parent_nama' => 'nullable|string|max:255',
+            'nama' => self::REQUIRED_STRING_255,
+            'parent_nama' => self::NULLABLE_STRING_255,
         ]);
 
         if (Jabatan::forMosque()->forOrganisasi($organisasi)->where('nama', $validated['nama'])->exists()) {
@@ -128,7 +131,9 @@ class KepengurusanController extends Controller
         DB::transaction(function () use ($jabatans, $validated, &$updated): void {
             foreach ($validated['positions'] as $nama => $pos) {
                 $jabatan = $jabatans->get($nama);
-                if (!$jabatan) continue;
+                if (!$jabatan) {
+                    continue;
+                }
 
                 $jabatan->update(['posisi_x' => $pos['x'], 'posisi_y' => $pos['y']]);
                 $updated++;
@@ -162,6 +167,17 @@ class KepengurusanController extends Controller
             return response()->json(['message' => 'Salah satu jemaah yang dipilih tidak tersedia.'], 422);
         }
 
+        // Jemaah yang akan ditempatkan tidak boleh sudah menempati jabatan lain
+        // (termasuk organisasi lain) di masjid yang sama, karena jabatans punya
+        // constraint unique(mosque_id, jamaah_id). Jabatan yang sedang di-update
+        // dalam payload ini dikecualikan.
+        $conflict = Jabatan::forMosque()
+            ->whereIn('jamaah_id', $jamaahIds)
+            ->whereNotIn('id', $jabatans->pluck('id'))
+            ->exists();
+        if ($conflict) {
+            return response()->json(['message' => 'Jemaah tersebut sudah ditempatkan di organisasi lain.'], 422);
+        }
 
 
         DB::transaction(function () use ($jabatans, $penempatan): void {
@@ -182,8 +198,8 @@ class KepengurusanController extends Controller
     {
     $organisasi = $this->setOrganisasi($request);
     $validated = $request->validate([
-        'nama_lama' => 'required|string',
-        'nama_baru' => 'required|string|max:255',
+        'nama_lama' => self::REQUIRED_STRING,
+        'nama_baru' => self::REQUIRED_STRING_255,
     ]);
 
     $jabatan = Jabatan::forMosque()->forOrganisasi($organisasi)->where('nama', $validated['nama_lama'])->firstOrFail();
@@ -201,7 +217,7 @@ class KepengurusanController extends Controller
 public function destroyJabatan(Request $request)
 {
     $organisasi = $this->setOrganisasi($request);
-    $validated = $request->validate(['nama' => 'required|string']);
+    $validated = $request->validate(['nama' => self::REQUIRED_STRING]);
 
     Jabatan::forMosque()->forOrganisasi($organisasi)->where('nama', $validated['nama'])->delete();
     // anak-anaknya otomatis pindah ke level teratas (nullOnDelete di migration)
@@ -224,7 +240,9 @@ public function destroyJabatan(Request $request)
         $parentId = null;
         foreach ($defaults as $i => $nama) {
             $j = Jabatan::create(['mosque_id' => $this->mosqueId, 'organisasi' => $organisasi, 'nama' => $nama, 'parent_id' => $i === 0 ? null : $parentId, 'urutan' => $i]);
-            if ($i === 0) $parentId = $j->id;
+            if ($i === 0) {
+                $parentId = $j->id;
+            }
         }
     });
 

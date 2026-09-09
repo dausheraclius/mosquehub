@@ -15,6 +15,8 @@ class QurbanPesertaController extends Controller
 {
     use HasMosqueContext;
 
+    private const REQUIRED_STRING_255 = 'required|string|max:255';
+
     public function storePeserta(Request $request)
     {
         $validated = $request->validate($this->rulesPeserta());
@@ -86,7 +88,7 @@ class QurbanPesertaController extends Controller
         }
 
         $validated = $request->validate([
-            'nama' => 'required|string|max:255',
+            'nama' => self::REQUIRED_STRING_255,
             'jamaah_id' => 'nullable|integer|exists:jamaah,id',
         ]);
 
@@ -121,12 +123,12 @@ class QurbanPesertaController extends Controller
     private function rulesPeserta(): array
     {
         return [
-            'nama' => 'required|string|max:255',
+            'nama' => self::REQUIRED_STRING_255,
             'paket' => 'required|in:Patungan Sapi,Kambing,Sapi Utuh',
             'target' => 'required|numeric|min:1',
             'mulai' => 'required|date',
             'members' => 'nullable|array|min:1|max:7',
-            'members.*.nama' => 'required|string|max:255',
+            'members.*.nama' => self::REQUIRED_STRING_255,
             'members.*.jamaah_id' => 'nullable|integer',
         ];
     }

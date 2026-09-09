@@ -8,11 +8,7 @@
 
 @section('content')
 
-  <x-content-header title="{{ __('dashboard.assalam', ['name' => auth()->user()->name]) }}" subtitle="{{ $siteMosque->name }} · {{ now()->translatedFormat('d F Y') }}">
-    <a href="{{ route('jamaah.index', ['locale' => App::getLocale()]) }}" class="btn btn-primary"><i class="fa-solid fa-plus"></i> {{ __('general.tambah_jemaah') }}</a>
-    <a href="{{ route('keuangan.infaq', ['locale' => App::getLocale()]) }}" class="btn btn-outline"><i class="fa-regular fa-note-sticky"></i> {{ __('general.catat_infaq') }}</a>
-    <a href="{{ route('kegiatan.agenda', ['locale' => App::getLocale()]) }}" class="btn btn-outline"><i class="fa-regular fa-calendar-plus"></i> {{ __('general.buat_agenda') }}</a>
-  </x-content-header>
+  <x-content-header title="{{ __('dashboard.assalam', ['name' => auth()->user()->name]) }}" subtitle="{{ $siteMosque->name }} · {{ now()->translatedFormat('d F Y') }}" />
 
   <div class="stat-cards">
     <div class="stat-card">
@@ -65,9 +61,6 @@
           <div class="card-menu" id="agendaCardMenu">
             <a href="{{ route('kegiatan.agenda', ['locale' => App::getLocale()]) }}" class="card-menu-item">
               <i class="fa-solid fa-calendar-days"></i> {{ __('general.lihat_semua_agenda') }}
-            </a>
-            <a href="{{ route('kegiatan.agenda', ['locale' => App::getLocale()]) }}?tambah=1" class="card-menu-item">
-              <i class="fa-solid fa-plus"></i> {{ __('general.buat_agenda_baru') }}
             </a>
           </div>
         </div>
@@ -153,31 +146,24 @@
     <table class="data-table">
       <thead>
         <tr>
-          <th><input type="checkbox" /></th>
           <th>{{ __('general.foto') }}</th>
           <th>{{ __('general.nama') }}</th>
           <th>{{ __('general.status') }}</th>
           <th>{{ __('dashboard.terakhir_hadir') }}</th>
           <th>{{ __('dashboard.riwayat_infaq') }}</th>
-          <th>{{ __('general.aksi') }}</th>
         </tr>
       </thead>
       <tbody id="jamaahTableBody">
         @forelse ($jamaahTerbaru as $j)
           <tr data-status="{{ $j['status'] }}" data-tanggal="{{ $j['tanggalBergabungIso'] }}">
-            <td><input type="checkbox" /></td>
             <td><div class="table-avatar"><i class="fa-solid fa-user"></i></div></td>
             <td>{{ $j['nama'] }}</td>
             <td><span class="status-badge status-aktif">{{ $j['status'] }}</span></td>
             <td>{{ $j['tanggalBergabung'] }}</td>
             <td>{{ $j['infaq'] }}</td>
-            <td>
-              <button class="btn-sm btn-detail">{{ __('general.detail') }}</button>
-              <button class="btn-sm btn-edit">{{ __('general.edit') }}</button>
-            </td>
           </tr>
         @empty
-          <tr><td colspan="7" class="empty-state">{{ __('dashboard.belum_ada_data') }}</td></tr>
+          <tr><td colspan="5" class="empty-state">{{ __('dashboard.belum_ada_data') }}</td></tr>
         @endforelse
       </tbody>
     </table>

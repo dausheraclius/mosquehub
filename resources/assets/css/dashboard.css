@@ -28,7 +28,7 @@
 }
 
 .stat-value {
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 400;
   color: var(--text-dark);
 }
@@ -76,6 +76,20 @@
   gap: 6px;
   font-size: 12.5px;
   color: var(--text-muted);
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.legend-item:hover {
+  color: var(--text-dark);
+}
+
+.legend-item.dimmed {
+  opacity: 0.35;
+}
+
+.legend-item.dimmed .legend-dot {
+  filter: grayscale(1);
 }
 
 .legend-dot {

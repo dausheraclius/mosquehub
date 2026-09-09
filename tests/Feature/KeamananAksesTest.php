@@ -57,7 +57,7 @@ class KeamananAksesTest extends TestCase
         ]);
 
         $this->actingAs($ketua)
-            ->get('/data-jamaah')
+            ->get('/id/data-jamaah')
             ->assertOk();
     }
 
@@ -75,16 +75,17 @@ class KeamananAksesTest extends TestCase
 
         // Tidak punya izin data jamaah → ditolak
         $this->actingAs($user)
-            ->get('/data-jamaah')
+            ->get('/id/data-jamaah')
             ->assertForbidden();
 
         // Punya izin ziswaf → boleh
         $this->actingAs($user)
-            ->get('/keuangan/infaq-sodaqoh')
+            ->get('/id/keuangan/infaq-sodaqoh')
             ->assertOk();
 
         // Dashboard selalu boleh
         $this->actingAs($user)
+            ->followingRedirects()
             ->get('/')
             ->assertOk();
     }
@@ -102,7 +103,7 @@ class KeamananAksesTest extends TestCase
         ]);
 
         $this->actingAs($user)
-            ->get('/ekspor/pengumuman')
+            ->get('/id/ekspor/pengumuman')
             ->assertForbidden();
     }
 
@@ -124,8 +125,8 @@ class KeamananAksesTest extends TestCase
             'mosque_id' => 1,
         ]);
 
-        $this->actingAs($petugas)->get('/pengawasan/log-aktivitas')->assertForbidden();
-        $this->actingAs($ketua)->get('/pengawasan/log-aktivitas')->assertOk();
+        $this->actingAs($petugas)->get('/id/pengawasan/log-aktivitas')->assertForbidden();
+        $this->actingAs($ketua)->get('/id/pengawasan/log-aktivitas')->assertOk();
     }
 
     public function test_ketua_dapat_menonaktifkan_user_biasa_meski_hanya_ada_satu_ketua(): void
@@ -141,7 +142,7 @@ class KeamananAksesTest extends TestCase
         ]);
 
         $this->actingAs($ketua)
-            ->patch('/pengaturan/user-management/' . $petugas->id . '/status', ['status' => 'nonaktif'])
+            ->patch('/id/pengaturan/user-management/' . $petugas->id . '/status', ['status' => 'nonaktif'])
             ->assertOk()
             ->assertJson(['success' => true]);
 
@@ -156,7 +157,7 @@ class KeamananAksesTest extends TestCase
             'status' => 'nonaktif', 'permissions' => ['data-jamaah'], 'mosque_id' => 1,
         ]);
 
-        $this->actingAs($user)->get('/data-jamaah')->assertRedirect(route('login'));
+        $this->actingAs($user)->get('/id/data-jamaah')->assertRedirect(route('login'));
         $this->assertGuest();
     }
 
@@ -173,7 +174,7 @@ class KeamananAksesTest extends TestCase
         ]);
 
         $this->actingAs($ketua)
-            ->delete('/keuangan/kas-masjid/' . $transaksi->id)
+            ->delete('/id/keuangan/kas-masjid/' . $transaksi->id)
             ->assertOk()
             ->assertJson(['success' => true]);
 
@@ -196,7 +197,7 @@ class KeamananAksesTest extends TestCase
         ]);
 
         $this->actingAs($ketua)
-            ->deleteJson('/pengumuman/' . $pengumuman->id)
+            ->deleteJson('/id/pengumuman/' . $pengumuman->id)
             ->assertOk()
             ->assertJson(['success' => true]);
 
@@ -245,11 +246,11 @@ class KeamananAksesTest extends TestCase
         ]);
 
         $this->actingAs($user)
-            ->get('/profil')
+            ->get('/id/profil')
             ->assertOk();
 
         $this->actingAs($user)
-            ->put('/profil', ['name' => 'Siti Aminah', 'email' => 'siti@example.com', 'phone' => '0812'])
+            ->put('/id/profil', ['name' => 'Siti Aminah', 'email' => 'siti@example.com', 'phone' => '0812'])
             ->assertJson(['success' => true]);
 
         $this->assertDatabaseHas('users', ['id' => $user->id, 'name' => 'Siti Aminah']);

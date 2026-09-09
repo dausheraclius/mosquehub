@@ -239,3 +239,8 @@ body.dark-mode .header-user-link:hover {
 body.topbar-collapsed .main-header {
   top: var(--topbar-collapsed-height);
 }
+
+/* Saat topbar tutup total, beri ruang untuk tombol chevron mengambang di kanan */
+body.topbar-collapsed .header-right {
+  padding-right: 56px;
+}

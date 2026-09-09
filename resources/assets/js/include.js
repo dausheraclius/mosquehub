@@ -100,14 +100,25 @@ function scrollActiveLinkIntoView() {
   const active = document.querySelector('.sidebar-item.active > .sidebar-link, .submenu-link.active')
   if (!sidebar || !active) return
 
-  const sidebarRect = sidebar.getBoundingClientRect()
-  const itemRect = active.getBoundingClientRect()
-  const top = itemRect.top - sidebarRect.top
-  const bottom = itemRect.bottom - sidebarRect.top
+  const align = () => {
+    const sidebarRect = sidebar.getBoundingClientRect()
+    const itemRect = active.getBoundingClientRect()
+    const top = itemRect.top - sidebarRect.top
+    const bottom = itemRect.bottom - sidebarRect.top
 
-  // Jika item aktif tidak terlihat di area sidebar, scroll agar item masuk ke area tampilan.
-  if (top < 0 || bottom > sidebarRect.height) {
-    const targetScroll = sidebar.scrollTop + top - (sidebarRect.height - itemRect.height) / 2
-    sidebar.scrollTop = Math.max(0, targetScroll)
+    // Jika item aktif tidak terlihat di area sidebar, scroll agar item masuk ke area tampilan.
+    if (top < 0 || bottom > sidebarRect.height) {
+      const targetScroll = sidebar.scrollTop + top - (sidebarRect.height - itemRect.height) / 2
+      sidebar.scrollTop = Math.max(0, targetScroll)
+    }
   }
+
+  // Layout belum final saat DOMContentLoaded: submenu aktif lagi
+  // nge-expand (transisi max-height) dan font/icon eksternal bisa
+  // geser posisi belakangan — jadi ukur ulang sampai stabil.
+  align()
+  requestAnimationFrame(() => requestAnimationFrame(align))
+  document.fonts?.ready.then(() => align())
+  active.closest('.submenu')?.addEventListener('transitionend', align, { once: true })
+  setTimeout(align, 300)
 }

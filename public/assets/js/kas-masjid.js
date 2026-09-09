@@ -277,7 +277,7 @@ transaksiForm.addEventListener('submit', async (e) => {
   e.preventDefault()
 
   const isEditing = !!editingId
-  const url = isEditing ? `/keuangan/kas-masjid/${editingId}` : '/keuangan/kas-masjid'
+  const url = adminUrl(isEditing ? `/keuangan/kas-masjid/${editingId}` : '/keuangan/kas-masjid')
 
   const payload = {
     tanggal: document.getElementById('txTanggal').value,
@@ -379,7 +379,7 @@ function openDeleteModal(id) {
     onConfirm: async () => {
 
       try {
-        const res = await fetch(`/keuangan/kas-masjid/${item.id}`, {
+        const res = await fetch(adminUrl(`/keuangan/kas-masjid/${item.id}`), {
           method: 'DELETE',
           headers: getHeaders(),
         })

@@ -16,11 +16,19 @@ function applyDarkModeState() {
 }
 
 // ===== Helper: attach event listeners ke komponen yang baru di-load =====
+let headerListenersBound = false
+
 function attachHeaderListeners() {
+  if (headerListenersBound) return
+
   const darkModeBtn = document.getElementById('darkModeToggle')
   const topbarCollapseBtn = document.getElementById('topbarCollapseBtn')
   const topbar = document.querySelector('.topbar')
   const logoutBtn = document.getElementById('logoutBtn')
+
+  if (!darkModeBtn && !topbarCollapseBtn && !logoutBtn && !topbar) {
+    return
+  }
 
   // Dark mode toggle
   darkModeBtn?.addEventListener('click', () => {
@@ -35,24 +43,28 @@ function attachHeaderListeners() {
 
   // Topbar collapse
   const topbarCollapsed = localStorage.getItem('mosquehub-topbar-collapsed') === 'true'
-  if (topbarCollapsed) {
-    topbar.classList.add('collapsed')
-    document.body.classList.add('topbar-collapsed')
-  }
-  setTopbarCollapseIcon(topbarCollapsed)
+  if (topbar) {
+    if (topbarCollapsed) {
+      topbar.classList.add('collapsed')
+      document.body.classList.add('topbar-collapsed')
+    }
+    setTopbarCollapseIcon(topbarCollapsed)
 
-  topbarCollapseBtn?.addEventListener('click', () => {
-    const now = topbar.classList.toggle('collapsed')
-    document.body.classList.toggle('topbar-collapsed')
-    localStorage.setItem('mosquehub-topbar-collapsed', now)
-    setTopbarCollapseIcon(now)
-  })
+    topbarCollapseBtn?.addEventListener('click', () => {
+      const now = topbar.classList.toggle('collapsed')
+      document.body.classList.toggle('topbar-collapsed')
+      localStorage.setItem('mosquehub-topbar-collapsed', now)
+      setTopbarCollapseIcon(now)
+    })
+  }
 
   // Logout — trigger modal dari app.js
   logoutBtn?.addEventListener('click', (e) => {
     e.preventDefault()
     if (typeof openLogoutModal === 'function') openLogoutModal()
   })
+
+  headerListenersBound = true
 }
 
 // Chevron tombol collapse menyesuaikan arah: ke atas saat terbuka, ke bawah saat tertutup
@@ -72,8 +84,15 @@ function applyFontSizeState() {
 }
 
 // ===== Init saat komponen selesai di-load =====
-document.addEventListener('componentsLoaded', () => {
+function initHeaderModule() {
   applyDarkModeState()
   applyFontSizeState()
   attachHeaderListeners()
-})
+}
+
+document.addEventListener('componentsLoaded', initHeaderModule)
+document.addEventListener('DOMContentLoaded', initHeaderModule)
+
+if (document.readyState !== 'loading') {
+  initHeaderModule()
+}

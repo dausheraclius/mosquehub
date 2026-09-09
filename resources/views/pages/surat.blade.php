@@ -102,7 +102,7 @@
         <div class="form-row">
           <div class="form-group">
             <label class="form-label" for="inputJenis">Jenis</label>
-            <select id="inputJenis" class="form-select" data-native-select>
+            <select id="inputJenis" class="form-select">
               <option value="Surat Undangan">Surat Undangan</option>
               <option value="Sertifikat">Sertifikat</option>
               <option value="Surat Keterangan">Surat Keterangan</option>
@@ -111,7 +111,7 @@
           </div>
           <div class="form-group">
             <label class="form-label" for="inputStatus">Status</label>
-            <select id="inputStatus" class="form-select" data-native-select>
+            <select id="inputStatus" class="form-select">
               <option value="Draft">Draf</option>
               <option value="Terkirim">Terkirim</option>
             </select>

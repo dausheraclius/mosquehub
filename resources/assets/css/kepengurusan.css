@@ -22,10 +22,10 @@
   font-size: 12px;
 }
 
-/* --- Top row: 4 card ringkasan --- */
+/* --- Top row: 3 card ringkasan --- */
 .kepengurusan-top-row {
   display: grid;
-  grid-template-columns: 1fr 1.3fr 1fr 1fr;
+  grid-template-columns: 1.3fr 1fr 1fr;
   gap: 16px;
   margin-bottom: 20px;
 }
@@ -65,31 +65,32 @@
   justify-content: space-between;
 }
 
-/* --- Tab Organisasi YMBPK --- */
+/* --- Tab Organisasi YMBPK / IKRAM (gaya seperti tab ZISWAF) --- */
 .org-tabs {
   display: flex;
   gap: 6px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--border-color);
+  overflow-x: auto;
 }
 
 .org-tab {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 16px;
+  padding: 10px 16px;
   font-size: 13px;
   font-weight: 400;
   color: var(--text-muted);
   background: transparent;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
+  border: none;
+  border-bottom: 2px solid transparent;
   cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
   transition:
     color 0.15s ease,
-    border-color 0.15s ease,
-    background 0.15s ease;
-  white-space: nowrap;
-  flex: 1;
-  justify-content: center;
+    border-color 0.15s ease;
 }
 
 .org-tab i {
@@ -98,14 +99,12 @@
 
 .org-tab:hover {
   color: var(--text-dark);
-  border-color: #b0b5bd;
 }
 
 .org-tab.active {
   color: var(--color-teal);
-  border-color: var(--color-teal);
-  background: var(--color-green-light);
-  font-weight: 500;
+  border-bottom-color: var(--color-teal);
+  font-weight: 600;
 }
 
 /* ============================

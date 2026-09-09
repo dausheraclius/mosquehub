@@ -255,7 +255,7 @@ function openDeleteModal(id) {
     onConfirm: async () => {
 
       try {
-        const res = await fetch(`/data-jamaah/${item.id}`, {
+        const res = await fetch(adminUrl(`/data-jamaah/${item.id}`), {
           method: 'DELETE',
           headers: getHeaders(),
         })
@@ -354,7 +354,7 @@ addJamaahForm.addEventListener('submit', async (e) => {
   e.preventDefault()
 
   const wasEditing = !!editingJamaahId
-  const url = editingJamaahId ? `/data-jamaah/${editingJamaahId}` : '/data-jamaah'
+  const url = adminUrl(editingJamaahId ? `/data-jamaah/${editingJamaahId}` : '/data-jamaah')
 
   const formData = new FormData()
   formData.append('nama', document.getElementById('addNama').value)
@@ -457,7 +457,7 @@ importJamaahInput.addEventListener('change', async () => {
   fd.append('file', file)
 
   try {
-    const res = await fetch('/data-jamaah/impor', {
+    const res = await fetch(adminUrl('/data-jamaah/impor'), {
       method: 'POST',
       headers: getHeaders({ multipart: true }),
       body: fd,

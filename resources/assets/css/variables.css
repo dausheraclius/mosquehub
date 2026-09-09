@@ -1,11 +1,11 @@
 :root {
   /* === Topbar (notif bar paling atas) === */
-  --topbar-bg: #eaf2f8;
-  --topbar-text: #3b4a5a;
+  --topbar-bg: #e6f4ea;
+  --topbar-text: #2c5e44;
   --accent-orange: #f5a623;
   --accent-orange-hover: #e0951a;
-  --topbar-icon-color: #1595a8;
-  --darkmode-btn-bg: #2d3142;
+  --topbar-icon-color: #0f766e;
+  --darkmode-btn-bg: #0f766e;
   --darkmode-btn-icon: #f9d71c;
   --power-color: #e03131;
   --power-bg: #fdeaea;
@@ -73,7 +73,7 @@
   --sidebar-width-collapsed: 72px;
   --header-height: 72px;
   --topbar-height: 44px;
-  --topbar-collapsed-height: 26px;
+  --topbar-collapsed-height: 0px;
 }
 
 /* ============================================================
@@ -81,10 +81,10 @@
    Aktif saat <body class="dark-mode">
    ============================================================ */
 body.dark-mode {
-  --topbar-bg: #0f1724;
-  --topbar-text: #94a3b8;
-  --topbar-icon-color: #60a5fa;
-  --darkmode-btn-bg: #334155;
+  --topbar-bg: #0e1f1a;
+  --topbar-text: #a3c9b8;
+  --topbar-icon-color: #4ade80;
+  --darkmode-btn-bg: #1a5c4d;
   --darkmode-btn-icon: #f9d71c;
   --power-color: #f87171;
   --power-bg: rgba(248, 113, 113, 0.12);

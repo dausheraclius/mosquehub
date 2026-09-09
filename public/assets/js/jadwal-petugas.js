@@ -188,7 +188,7 @@ function renderTable() {
         message: `Yakin ingin menghapus jadwal ${item.sholat} tanggal ${item.tanggal}? Tindakan ini tidak bisa dibatalkan.`,
         onConfirm: async () => {
           try {
-            const res = await fetch(`/kegiatan/jadwal-petugas-sholat/${id}`, {
+            const res = await fetch(adminUrl(`/kegiatan/jadwal-petugas-sholat/${id}`), {
               method: "DELETE",
               headers: {
                 "X-CSRF-TOKEN": getCsrf(),
@@ -273,7 +273,7 @@ document.getElementById("saveBtn").addEventListener("click", async () => {
   };
 
   const isEditing = !!editingId;
-  const url = isEditing ? `/kegiatan/jadwal-petugas-sholat/${editingId}` : "/kegiatan/jadwal-petugas-sholat";
+  const url = adminUrl(isEditing ? `/kegiatan/jadwal-petugas-sholat/${editingId}` : "/kegiatan/jadwal-petugas-sholat");
 
   try {
     const res = await fetch(url, {

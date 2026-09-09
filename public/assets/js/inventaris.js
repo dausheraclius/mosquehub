@@ -102,7 +102,7 @@ function renderTable() {
         message: `Yakin ingin menghapus "${item.nama}"? Tindakan ini tidak bisa dibatalkan.`,
         onConfirm: async () => {
           try {
-            const res = await fetch(`/inventaris/${id}`, {
+            const res = await fetch(adminUrl(`/inventaris/${id}`), {
               method: "DELETE",
               headers: {
                 "X-CSRF-TOKEN": getCsrf(),
@@ -271,7 +271,7 @@ document.getElementById("simpanTambahBtn").addEventListener("click", async () =>
   if (file) formData.append("gambar", file);
 
   const isEditing = !!editingId;
-  const url = isEditing ? `/inventaris/${editingId}` : "/inventaris";
+  const url = adminUrl(isEditing ? `/inventaris/${editingId}` : "/inventaris");
 
   try {
     const res = await fetch(url, {

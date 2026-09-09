@@ -12,6 +12,9 @@ class QurbanSetoranController extends Controller
 {
     use HasMosqueContext;
 
+    private const REQUIRED_STRING_255 = 'required|string|max:255';
+    private const NULLABLE_STRING_100 = 'nullable|string|max:100';
+
     public function storeSetoran(Request $request)
     {
         $validated = $request->validate([
@@ -19,8 +22,8 @@ class QurbanSetoranController extends Controller
             'qurban_peserta_member_id' => 'nullable|integer',
             'tanggal' => 'required|date',
             'jumlah' => 'required|numeric|min:1',
-            'metode' => 'nullable|string|max:100',
-            'petugas' => 'required|string|max:255',
+            'metode' => self::NULLABLE_STRING_100,
+            'petugas' => self::REQUIRED_STRING_255,
         ]);
 
         $peserta = QurbanPeserta::forMosque()
@@ -53,8 +56,8 @@ class QurbanSetoranController extends Controller
             'qurban_peserta_member_id' => 'nullable|integer',
             'tanggal' => 'required|date',
             'jumlah' => 'required|numeric|min:1',
-            'metode' => 'nullable|string|max:100',
-            'petugas' => 'required|string|max:255',
+            'metode' => self::NULLABLE_STRING_100,
+            'petugas' => self::REQUIRED_STRING_255,
         ]);
 
         // Anggota harus milik peserta qurban dari setoran ini. Validasi `exists`

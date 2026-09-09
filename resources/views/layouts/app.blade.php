@@ -26,6 +26,9 @@
   @stack('styles-after-components')
   @stack('styles-late')
   @vite('resources/assets/css/responsive.css')
+  @vite('resources/assets/js/include.js')
+  @vite('resources/assets/js/header.js')
+  @vite('resources/assets/js/sidebar.js')
   @stack('styles-final')
 </head>
 <body>
@@ -33,7 +36,7 @@
 @if (session('impersonator_id'))
   <div style="background:#1a1a2e;color:#fff;padding:8px 20px;text-align:center;font-size:13px;">
     Lo lagi login sebagai <strong>{{ auth()->user()->name }}</strong>.
-    <form action="{{ route('stop-impersonate') }}" method="POST" style="display:inline;">
+    <form action="{{ route('stop-impersonate', ['locale' => App::getLocale()]) }}" method="POST" style="display:inline;">
       @csrf
       <button type="submit" style="background:none;border:none;color:#7dd3c0;text-decoration:underline;cursor:pointer;font-size:13px;">Kembali ke akun Super Admin</button>
     </form>
@@ -80,11 +83,17 @@
 
   @yield('modals')
 
-  <script src="{{ asset('assets/js/include.js') }}"></script>
-  <script src="{{ asset('assets/js/header.js') }}"></script>
-  <script src="{{ asset('assets/js/sidebar.js') }}"></script>
   <script src="{{ asset('assets/js/app.js') }}"></script>
   @stack('scripts')
   @stack('scripts-late')
+
+  {{-- Safety net: pastikan halaman visible meski Vite module JS gagal load --}}
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      setTimeout(function () {
+        document.body.classList.add('components-ready');
+      }, 3000);
+    });
+  </script>
 </body>
 </html>

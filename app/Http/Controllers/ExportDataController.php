@@ -21,6 +21,8 @@ use App\Support\Concerns\HasMosqueContext;
 class ExportDataController extends Controller
 {
     use HasMosqueContext;
+
+    private const DATE_FORMAT = 'd/m/Y';
     // ============================================================
     // EKSPOR PER MODUL
     // ============================================================
@@ -28,7 +30,7 @@ class ExportDataController extends Controller
     public function pengumuman()
     {
         $rows = Pengumuman::forMosque()->orderByDesc('tanggal')->get()
-            ->map(fn ($p) => [$p->judul, $p->kategori ?? '-', $p->status, $p->tanggal?->format('d/m/Y') ?? '-', $p->isi ?? '']);
+            ->map(fn ($p) => [$p->judul, $p->kategori ?? '-', $p->status, $p->tanggal?->format(self::DATE_FORMAT) ?? '-', $p->isi ?? '']);
 
         return $this->streamExcel('pengumuman', ['Judul', 'Kategori', 'Status', 'Tanggal', 'Isi'], $rows);
     }
@@ -36,7 +38,7 @@ class ExportDataController extends Controller
     public function surat()
     {
         $rows = Surat::forMosque()->orderByDesc('tanggal')->get()
-            ->map(fn ($s) => [$s->nomor, $s->subjek, $s->jenis ?? '-', $s->status, $s->tanggal?->format('d/m/Y') ?? '-', $s->kepada ?? '-', $s->isi ?? '']);
+            ->map(fn ($s) => [$s->nomor, $s->subjek, $s->jenis ?? '-', $s->status, $s->tanggal?->format(self::DATE_FORMAT) ?? '-', $s->kepada ?? '-', $s->isi ?? '']);
 
         return $this->streamExcel('surat', ['Nomor', 'Subjek', 'Jenis', 'Status', 'Tanggal', 'Kepada', 'Isi'], $rows);
     }
@@ -44,7 +46,7 @@ class ExportDataController extends Controller
     public function inventaris()
     {
         $rows = Inventaris::forMosque()->orderBy('nama')->get()
-            ->map(fn ($i) => [$i->nama, $i->kode ?? '-', $i->kategori ?? '-', $i->lokasi ?? '-', $i->kondisi, $i->qty, $i->sumber ?? '-', $i->tgl_beli?->format('d/m/Y') ?? '-', $i->harga ?? 0, $i->catatan ?? '']);
+            ->map(fn ($i) => [$i->nama, $i->kode ?? '-', $i->kategori ?? '-', $i->lokasi ?? '-', $i->kondisi, $i->qty, $i->sumber ?? '-', $i->tgl_beli?->format(self::DATE_FORMAT) ?? '-', $i->harga ?? 0, $i->catatan ?? '']);
 
         return $this->streamExcel('inventaris', ['Nama', 'Kode', 'Kategori', 'Lokasi', 'Kondisi', 'Qty', 'Sumber', 'Tgl Beli', 'Harga', 'Catatan'], $rows);
     }
@@ -53,7 +55,7 @@ class ExportDataController extends Controller
     {
         $rows = Kegiatan::forMosque()->orderByDesc('tanggal')->get()
             ->map(fn ($k) => [
-                $k->tanggal?->format('d/m/Y') ?? '-',
+                $k->tanggal?->format(self::DATE_FORMAT) ?? '-',
                 $k->nama,
                 $k->kategori ?? '-',
                 $k->jam_mulai ? substr($k->jam_mulai, 0, 5) : '-',
@@ -103,7 +105,7 @@ class ExportDataController extends Controller
             ->with('kegiatan')
             ->latest()
             ->get()
-            ->map(fn ($r) => [$r->nama, $r->telepon ?? '-', $r->kegiatan?->nama ?? '-', $r->kegiatan?->tanggal?->format('d/m/Y') ?? '-']);
+            ->map(fn ($r) => [$r->nama, $r->telepon ?? '-', $r->kegiatan?->nama ?? '-', $r->kegiatan?->tanggal?->format(self::DATE_FORMAT) ?? '-']);
 
         return $this->streamExcel('relawan', ['Nama', 'Telepon', 'Kegiatan', 'Tanggal'], $rows);
     }
@@ -114,7 +116,7 @@ class ExportDataController extends Controller
             ->orderBy('tanggal')
             ->get()
             ->map(fn ($j) => [
-                $j->tanggal?->format('d/m/Y') ?? '-',
+                $j->tanggal?->format(self::DATE_FORMAT) ?? '-',
                 $j->sholat,
                 $j->khatib ?? '-',
                 $j->imam ?? '-',

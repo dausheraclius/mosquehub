@@ -259,7 +259,7 @@
 
             <div class="form-group">
               <label class="form-label" for="addGender">{{ __('pages.jamaah.jenis_kelamin') }}</label>
-              <select class="form-select" id="addGender" data-native-select required>
+              <select class="form-select" id="addGender" required>
                 <option value="">{{ __('pages.jamaah.pilih_jenis_kelamin') }}</option>
                 <option value="Laki-laki">Laki-laki</option>
                 <option value="Perempuan">Perempuan</option>
@@ -303,7 +303,7 @@
 
             <div class="form-group">
               <label class="form-label" for="addNikah">{{ __('pages.jamaah.status_pernikahan') }}</label>
-              <select class="form-select" id="addNikah" data-native-select>
+              <select class="form-select" id="addNikah">
                 <option value="Belum Menikah">{{ __('pages.jamaah.belum_menikah') }}</option>
                 <option value="Menikah">{{ __('pages.jamaah.menikah') }}</option>
                 <option value="Janda">Janda</option>
@@ -313,7 +313,7 @@
 
             <div class="form-group">
               <label class="form-label" for="addStatusJamaah">{{ __('pages.jamaah.status_jemaah') }}</label>
-              <select class="form-select" id="addStatusJamaah" data-native-select>
+              <select class="form-select" id="addStatusJamaah">
                 <option value="Aktif">{{ __('general.aktif') }}</option>
                 <option value="Tidak Aktif">{{ __('general.tidak_aktif') }}</option>
                 <option value="Pindah">{{ __('general.pindah') }}</option>

@@ -69,7 +69,7 @@ function renderTable() {
         confirmText: 'Hapus',
         onConfirm: async () => {
           try {
-            const res = await fetch(`/surat/${id}`, {
+            const res = await fetch(adminUrl(`/surat/${id}`), {
               method: 'DELETE',
               headers: {
                 'X-CSRF-TOKEN': getCsrf(),
@@ -214,7 +214,7 @@ document.getElementById('simpanTambahBtn').addEventListener('click', async () =>
   if (file) formData.append('file', file)
 
   try {
-    const res = await fetch('/surat', {
+    const res = await fetch(adminUrl('/surat'), {
       method: 'POST',
       headers: {
         'X-CSRF-TOKEN': getCsrf(),

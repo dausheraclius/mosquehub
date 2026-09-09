@@ -148,10 +148,10 @@ function renderPreview(id) {
     window.open(`/laporan/${r.id}/print${filterQuery()}`, '_blank')
   })
   document.getElementById('previewPdfBtn').addEventListener('click', () => {
-    downloadUrl(`/laporan/${r.id}/pdf${filterQuery()}`, `laporan-${slugify(r.judul)}.pdf`)
+    downloadUrl(adminUrl(`/laporan/${r.id}/pdf${filterQuery()}`), `laporan-${slugify(r.judul)}.pdf`)
   })
   document.getElementById('previewExcelBtn').addEventListener('click', () => {
-    downloadUrl(`/laporan/${r.id}/excel${filterQuery()}`, `laporan-${slugify(r.judul)}.xlsx`)
+    downloadUrl(adminUrl(`/laporan/${r.id}/excel${filterQuery()}`), `laporan-${slugify(r.judul)}.xlsx`)
   })
 }
 
@@ -171,7 +171,7 @@ function filterQuery() {
 // Minta ulang data laporan ke server sesuai filter aktif.
 async function reloadFromServer() {
   try {
-    const res = await fetch(`/laporan${filterQuery()}`, {
+    const res = await fetch(adminUrl(`/laporan${filterQuery()}`), {
       headers: { Accept: 'application/json' },
     })
     if (!res.ok) throw new Error('Gagal memuat data laporan')
@@ -221,7 +221,7 @@ document.getElementById('exportSemuaPdfBtn').addEventListener('click', () => {
     showToast('Tidak ada data untuk diekspor.', 'fa-solid fa-triangle-exclamation')
     return
   }
-  downloadUrl(`/laporan/ekspor/pdf${filterQuery()}`, 'laporan-semua.pdf')
+  downloadUrl(adminUrl(`/laporan/ekspor/pdf${filterQuery()}`), 'laporan-semua.pdf')
 })
 
 document.getElementById('exportSemuaBtn').addEventListener('click', () => {
@@ -229,7 +229,7 @@ document.getElementById('exportSemuaBtn').addEventListener('click', () => {
     showToast('Tidak ada data untuk diekspor.', 'fa-solid fa-triangle-exclamation')
     return
   }
-  downloadUrl(`/laporan/ekspor/excel${filterQuery()}`, 'laporan-semua.xlsx')
+  downloadUrl(adminUrl(`/laporan/ekspor/excel${filterQuery()}`), 'laporan-semua.xlsx')
 })
 
 // ==================== FILTER & PENCARIAN ====================

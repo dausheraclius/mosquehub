@@ -191,32 +191,7 @@
       </ul>
     </div>
 
-    <!-- LANGUAGE SWITCHER -->
-    <div class="sidebar-section">
-      <span class="sidebar-section-label">BAHASA / LANGUAGE</span>
-      <ul class="sidebar-menu">
-        <li class="sidebar-item">
-          <a href="{{ route(request()->route()->getName(), array_merge(request()->route()->parameters(), ['locale' => 'id'])) }}"
-             class="sidebar-link {{ $locale === 'id' ? 'active' : '' }}">
-            <i class="fa-solid fa-globe sidebar-icon"></i>
-            <span>Bahasa Indonesia</span>
-            @if ($locale === 'id')
-              <i class="fa-solid fa-check" style="margin-left:auto; color:var(--color-green); font-size:11px;"></i>
-            @endif
-          </a>
-        </li>
-        <li class="sidebar-item">
-          <a href="{{ route(request()->route()->getName(), array_merge(request()->route()->parameters(), ['locale' => 'en'])) }}"
-             class="sidebar-link {{ $locale === 'en' ? 'active' : '' }}">
-            <i class="fa-solid fa-globe sidebar-icon"></i>
-            <span>English</span>
-            @if ($locale === 'en')
-              <i class="fa-solid fa-check" style="margin-left:auto; color:var(--color-green); font-size:11px;"></i>
-            @endif
-          </a>
-        </li>
-      </ul>
-    </div>
+    <!-- LANGUAGE SWITCHER (pindah ke topbar.blade.php) -->
 
     <div class="sidebar-section sidebar-logout">
       <span class="sidebar-section-label">{{ __('menu.keluar_aplikasi') }}</span>

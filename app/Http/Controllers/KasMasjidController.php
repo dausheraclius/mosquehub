@@ -11,6 +11,9 @@ use App\Support\Concerns\HasMosqueContext;
 class KasMasjidController extends Controller
 {
     use HasMosqueContext;
+
+    private const REQUIRED_STRING_255 = 'required|string|max:255';
+    private const NULLABLE_STRING_255 = 'nullable|string|max:255';
     public function index()
     {
         $mosqueId = $this->mosqueId;
@@ -111,9 +114,9 @@ class KasMasjidController extends Controller
     {
         return [
             'tanggal' => 'required|date',
-            'jenis' => 'required|string|max:255',
-            'kategori' => 'nullable|string|max:255',
-            'keterangan' => 'nullable|string|max:255',
+            'jenis' => self::REQUIRED_STRING_255,
+            'kategori' => self::NULLABLE_STRING_255,
+            'keterangan' => self::NULLABLE_STRING_255,
             'tipe' => 'required|in:Pemasukan,Pengeluaran',
             'jumlah' => 'required|numeric|min:0',
         ];

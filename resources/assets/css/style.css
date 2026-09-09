@@ -1,12 +1,6 @@
 body {
-  opacity: 0;
   padding-top: calc(var(--topbar-height) + var(--header-height));
   font-family: var(--font-base);
-}
-
-body.components-ready {
-  opacity: 1;
-  transition: opacity 0.15s ease;
 }
 
 body.topbar-collapsed {

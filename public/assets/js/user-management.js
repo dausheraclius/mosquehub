@@ -125,7 +125,7 @@ function initUserManagement() {
       showToast('Password minimal 8 karakter.', 'fa-solid fa-triangle-exclamation')
       return
     }
-    const res = await fetch(`/pengaturan/user-management/${resetUserId}/reset-password`, {
+    const res = await fetch(adminUrl(`/pengaturan/user-management/${resetUserId}/reset-password`), {
       method: 'POST',
       headers: getHeaders(),
       body: JSON.stringify({ password }),
@@ -151,7 +151,7 @@ function initUserManagement() {
         title: 'Hapus User?',
         message: `Yakin ingin menghapus user "${nama}"? Tindakan ini tidak bisa dibatalkan.`,
         onConfirm: async () => {
-          const res = await fetch(`/pengaturan/user-management/${userId}`, {
+          const res = await fetch(adminUrl(`/pengaturan/user-management/${userId}`), {
             method: 'DELETE',
             headers: getHeaders(),
           })
@@ -181,7 +181,7 @@ function initUserManagement() {
     const nama = row.children[2].textContent.trim()
     const status = toggle.checked ? 'aktif' : 'nonaktif'
 
-    const res = await fetch(`/pengaturan/user-management/${row.dataset.id}/status`, {
+    const res = await fetch(adminUrl(`/pengaturan/user-management/${row.dataset.id}/status`), {
       method: 'PATCH',
       headers: getHeaders(),
       body: JSON.stringify({ status }),
@@ -247,7 +247,7 @@ function initUserManagement() {
       permissions: collectPermissions(),
     }
 
-    const url = editingId ? `/pengaturan/user-management/${editingId}` : '/pengaturan/user-management'
+    const url = adminUrl(editingId ? `/pengaturan/user-management/${editingId}` : '/pengaturan/user-management')
     const method = editingId ? 'PUT' : 'POST'
 
     if (!editingId) {

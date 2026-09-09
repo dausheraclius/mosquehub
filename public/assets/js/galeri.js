@@ -176,7 +176,7 @@ async function setCover(index) {
   const photo = album.photos[index]
 
   try {
-    await fetch(`/kegiatan/galeri/${album.id}/photos/${photo.id}/cover`, {
+    await fetch(adminUrl(`/kegiatan/galeri/${album.id}/photos/${photo.id}/cover`), {
       method: 'POST',
       headers: getHeaders(),
     })
@@ -198,7 +198,7 @@ async function deletePhoto(index) {
     onConfirm: async () => {
 
       try {
-        const res = await fetch(`/kegiatan/galeri/${album.id}/photos/${photo.id}`, {
+        const res = await fetch(adminUrl(`/kegiatan/galeri/${album.id}/photos/${photo.id}`), {
           method: 'DELETE',
           headers: getHeaders(),
         })
@@ -234,7 +234,7 @@ async function handleFiles(fileList) {
   showToast('Sedang mengupload foto...')
 
   try {
-    const res = await fetch(`/kegiatan/galeri/${album.id}/photos`, {
+    const res = await fetch(adminUrl(`/kegiatan/galeri/${album.id}/photos`), {
       method: 'POST',
       headers: getHeaders({ multipart: true }),
       body: formData,
@@ -348,7 +348,7 @@ async function saveAlbumModal() {
   }
 
   const isEdit = !!editingAlbumId
-  const url = isEdit ? `/kegiatan/galeri/${editingAlbumId}` : '/kegiatan/galeri'
+  const url = adminUrl(isEdit ? `/kegiatan/galeri/${editingAlbumId}` : '/kegiatan/galeri')
   const method = isEdit ? 'PUT' : 'POST'
 
   try {
@@ -406,7 +406,7 @@ document.addEventListener('DOMContentLoaded', function () {
       onConfirm: async () => {
 
         try {
-          await fetch(`/kegiatan/galeri/${activeAlbumId}`, {
+          await fetch(adminUrl(`/kegiatan/galeri/${activeAlbumId}`), {
             method: 'DELETE',
             headers: getHeaders(),
           })
@@ -426,7 +426,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const album = getActiveAlbum()
 
     try {
-      await fetch(`/kegiatan/galeri/${album.id}/publish`, {
+      await fetch(adminUrl(`/kegiatan/galeri/${album.id}/publish`), {
         method: 'PATCH',
         headers: getHeaders(),
         body: JSON.stringify({ published: e.target.checked }),

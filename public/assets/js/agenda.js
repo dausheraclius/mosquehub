@@ -7,7 +7,7 @@ let currentDetailItem = null
 
 // --- Helper: request API dengan auto-refresh token CSRF (saat 419) ---
 async function refreshCsrf() {
-  const res = await fetch('/csrf-token')
+  const res = await fetch(adminUrl('/csrf-token'))
   const data = await res.json()
   if (data.token) document.querySelector('meta[name="csrf-token"]').content = data.token
   return data.token
@@ -207,6 +207,7 @@ function renderJadwal() {
     list = getEventsOnDate(tomorrowKey, filtered)
   } else {
     list = []
+    const oneDayms = 24 * 60 * 60 * 1000
     for (let d = new Date(today); d <= weekEnd; d.setDate(d.getDate() + 1)) {
       list = list.concat(getEventsOnDate(toDateKey(d), filtered))
     }
@@ -311,7 +312,7 @@ document.getElementById('saveFormBtn').addEventListener('click', async () => {
   }
 
   const isEdit = !!editingId
-  const url = isEdit ? `/kegiatan/agenda/${editingId}` : '/kegiatan/agenda'
+  const url = adminUrl(isEdit ? `/kegiatan/agenda/${editingId}` : '/kegiatan/agenda')
   const method = isEdit ? 'PUT' : 'POST'
 
   try {
